@@ -13,4 +13,12 @@ export default defineConfig({
       '@pages': path.resolve(__dirname, 'src/pages'),
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+    },
+  },
 })

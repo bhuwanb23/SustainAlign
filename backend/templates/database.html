@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block title %}Database · SustainAlign Admin{% endblock %}
+{% block content %}
+<div class="space-y-6">
+  <div class="bg-white rounded-xl shadow p-6 border border-slate-200">
+    <h2 class="text-xl font-bold text-slate-900 mb-1">Database Explorer</h2>
+    <p class="text-slate-600 text-sm">Browse tables from SQLAlchemy metadata. Click a table to view up to 25 rows.</p>
+  </div>
+
+  {% if tables %}
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <!-- Sidebar nav -->
+    <aside class="md:col-span-1">
+      <nav class="bg-white rounded-xl shadow border border-slate-200 divide-y divide-slate-100" aria-label="Tables">
+        {% for t in tables %}
+        <a href="#table-{{ t.name }}"
+           data-target="table-{{ t.name }}"
+           class="flex items-center justify-between px-4 py-3 text-sm hover:bg-slate-50 group table-link {% if loop.first %}is-active{% endif %}">
+          <span class="text-slate-800 group-[.is-active]:text-emerald-700 font-medium">{{ t.name }}</span>
+          <span class="text-xs text-slate-600 group-[.is-active]:text-emerald-700">{{ t.count if t.count is not none else 'n/a' }}</span>
+        </a>
+        {% endfor %}
+      </nav>
+    </aside>
+
+    <!-- Content -->
+    <section class="md:col-span-3 space-y-6">
+      {% for t in tables %}
+      <div id="table-{{ t.name }}" class="bg-white rounded-xl shadow p-6 border border-slate-200 table-panel {% if not loop.first %}hidden{% endif %}">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-semibold text-slate-900">{{ t.name }}</h3>
+          <span class="text-sm text-slate-600">{{ t.count if t.count is not none else 'n/a' }} rows</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-sm">
+            <thead>
+              <tr class="text-left">
+                {% for col in t.columns %}
+                <th class="p-2 whitespace-nowrap">{{ col }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in t.rows %}
+              <tr class="odd:bg-slate-50">
+                {% for col in t.columns %}
+                <td class="p-2 whitespace-nowrap">{{ row[col] }}</td>
+                {% endfor %}
+              </tr>
+              {% else %}
+              <tr>
+                <td class="p-2 text-slate-600" colspan="{{ t.columns|length }}">No data.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endfor %}
+    </section>
+  </div>
+  {% else %}
+  <div class="bg-white rounded-xl shadow p-6 border border-slate-200">
+    <p class="text-slate-600">No tables found in metadata.</p>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const links = Array.from(document.querySelectorAll('.table-link'))
+    const panels = Array.from(document.querySelectorAll('.table-panel'))
+
+    function activate(targetId) {
+      panels.forEach(p => p.classList.add('hidden'))
+      links.forEach(l => l.classList.remove('is-active'))
+      const target = document.getElementById(targetId)
+      if (target) target.classList.remove('hidden')
+      const activeLink = links.find(l => l.dataset.target === targetId)
+      if (activeLink) activeLink.classList.add('is-active')
+    }
+
+    links.forEach(link => {
+      link.addEventListener('click', function (e) {
+        e.preventDefault()
+        activate(this.dataset.target)
+        history.replaceState(null, '', '#' + this.dataset.target)
+      })
+    })
+
+    // Deep-link support
+    if (location.hash) {
+      const tid = location.hash.replace('#', '')
+      if (document.getElementById(tid)) activate(tid)
+    }
+  })
+  </script>
+{% endblock %}
+
+

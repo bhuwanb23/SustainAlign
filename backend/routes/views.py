@@ -41,3 +41,34 @@ def health_page():
 	return render_template('health.html')
 
 
+
+@views_bp.get('/database')
+def database_view():
+	tables_info = []
+	# Iterate over all known tables in SQLAlchemy metadata
+	for table in db.metadata.sorted_tables:
+		try:
+			total_rows = db.session.scalar(
+				db.select(db.func.count()).select_from(table)
+			)
+		except Exception:
+			total_rows = None
+
+		column_names = [col.name for col in table.c]
+		preview_rows = []
+		try:
+			result = db.session.execute(db.select(table).limit(25))
+			for row in result:
+				mapping = row._mapping
+				preview_rows.append({name: mapping.get(name) for name in column_names})
+		except Exception:
+			preview_rows = []
+
+		tables_info.append({
+			'name': table.name,
+			'columns': column_names,
+			'count': total_rows,
+			'rows': preview_rows,
+		})
+
+	return render_template('database.html', tables=tables_info)
