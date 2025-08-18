@@ -1,7 +1,7 @@
 export default function ActiveProjectsSnapshot({ projects, kpis }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-      <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm p-6 border">
+      <div className="lg:col-span-2 bg-white rounded-2xl shadow p-6 border">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-lg font-semibold text-gray-900">Active Projects</h3>
           <a href="/monitoring/impact" className="text-emerald-700 text-sm">View All</a>
@@ -21,7 +21,7 @@ export default function ActiveProjectsSnapshot({ projects, kpis }) {
           ))}
         </div>
       </div>
-      <div className="bg-white rounded-2xl shadow-sm p-6 border">
+      <div className="bg-white rounded-2xl shadow p-6 border">
         <div className="text-gray-600 text-sm mb-2">Impact Highlights</div>
         <ul className="space-y-2">
           {kpis.map((k) => (
