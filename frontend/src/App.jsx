@@ -4,6 +4,7 @@ import LoginPage from './pages/auth/login.jsx'
 import SignupPage from './pages/auth/signup.jsx'
 import ForgotPasswordPage from './pages/auth/forgot-password.jsx'
 import ProfileSetupPage from './pages/auth/profile-setup.jsx'
+import AppLayout from './layouts/AppLayout.jsx'
 
 // Profile Setup pages
 import CompanyDetailsPage from './pages/profile/company-details/company-details.jsx'
@@ -51,56 +52,60 @@ import FeedbackPage from './pages/support/feedback/feedback.jsx'
 export default function App() {
   return (
     <Routes>
+      {/* Auth-only routes (no sidebar) */}
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/profile-setup" element={<ProfileSetupPage />} />
 
-      <Route path="/dashboard" element={<DashboardPage />} />
+      {/* App routes with universal sidebar */}
+      <Route element={<AppLayout />}>
+        <Route path="/dashboard" element={<DashboardPage />} />
 
-      {/* Corporate Profile Setup */}
-      <Route path="/profile/company-details" element={<CompanyDetailsPage />} />
-      <Route path="/profile/csr-history" element={<CsrHistoryPage />} />
-      <Route path="/profile/sdg-selector" element={<SdgSelectorPage />} />
+        {/* Corporate Profile Setup */}
+        <Route path="/profile/company-details" element={<CompanyDetailsPage />} />
+        <Route path="/profile/csr-history" element={<CsrHistoryPage />} />
+        <Route path="/profile/sdg-selector" element={<SdgSelectorPage />} />
 
-      {/* Project Discovery */}
-      <Route path="/discovery/search" element={<ProjectSearchPage />} />
-      <Route path="/discovery/cards" element={<ProjectCardsPage />} />
+        {/* Project Discovery */}
+        <Route path="/discovery/search" element={<ProjectSearchPage />} />
+        <Route path="/discovery/cards" element={<ProjectCardsPage />} />
 
-      {/* Alignment & Evaluation */}
-      <Route path="/alignment/matching" element={<AiMatchingPage />} />
-      <Route path="/alignment/comparison" element={<ComparisonMatrixPage />} />
-      <Route path="/alignment/risk" element={<RiskScoringPage />} />
+        {/* Alignment & Evaluation */}
+        <Route path="/alignment/matching" element={<AiMatchingPage />} />
+        <Route path="/alignment/comparison" element={<ComparisonMatrixPage />} />
+        <Route path="/alignment/risk" element={<RiskScoringPage />} />
 
-      {/* Decision Support */}
-      <Route path="/decision/rationale" element={<RecommendationRationalePage />} />
-      <Route path="/decision/approval" element={<ApprovalWorkflowPage />} />
+        {/* Decision Support */}
+        <Route path="/decision/rationale" element={<RecommendationRationalePage />} />
+        <Route path="/decision/approval" element={<ApprovalWorkflowPage />} />
 
-      {/* Monitoring & Tracking */}
-      <Route path="/monitoring/tracker" element={<ProjectTrackerPage />} />
-      <Route path="/monitoring/impact" element={<ImpactDashboardPage />} />
-      <Route path="/monitoring/alerts" element={<MonitoringAlertsPage />} />
+        {/* Monitoring & Tracking */}
+        <Route path="/monitoring/tracker" element={<ProjectTrackerPage />} />
+        <Route path="/monitoring/impact" element={<ImpactDashboardPage />} />
+        <Route path="/monitoring/alerts" element={<MonitoringAlertsPage />} />
 
-      {/* Reporting & Compliance */}
-      <Route path="/reporting/generator" element={<ReportGeneratorPage />} />
-      <Route path="/reporting/audit-trail" element={<AuditTrailPage />} />
+        {/* Reporting & Compliance */}
+        <Route path="/reporting/generator" element={<ReportGeneratorPage />} />
+        <Route path="/reporting/audit-trail" element={<AuditTrailPage />} />
 
-      {/* Marketplace */}
-      <Route path="/marketplace/ngo" element={<NgoDashboardPage />} />
-      <Route path="/marketplace/matching" element={<MatchingEnginePage />} />
-      <Route path="/marketplace/collaboration" element={<CollaborationToolsPage />} />
+        {/* Marketplace */}
+        <Route path="/marketplace/ngo" element={<NgoDashboardPage />} />
+        <Route path="/marketplace/matching" element={<MatchingEnginePage />} />
+        <Route path="/marketplace/collaboration" element={<CollaborationToolsPage />} />
 
-      {/* Settings & Admin */}
-      <Route path="/settings/users" element={<UserManagementPage />} />
-      <Route path="/settings/agents" element={<AgentControlsPage />} />
-      <Route path="/settings/integrations" element={<IntegrationSetupPage />} />
-      <Route path="/settings/apis" element={<ApiManagementPage />} />
+        {/* Settings & Admin */}
+        <Route path="/settings/users" element={<UserManagementPage />} />
+        <Route path="/settings/agents" element={<AgentControlsPage />} />
+        <Route path="/settings/integrations" element={<IntegrationSetupPage />} />
+        <Route path="/settings/apis" element={<ApiManagementPage />} />
 
-      {/* Help & Support */}
-      <Route path="/support/chat" element={<AiChatAssistantPage />} />
-      <Route path="/support/faq" element={<FaqPage />} />
-      <Route path="/support/feedback" element={<FeedbackPage />} />
+        {/* Help & Support */}
+        <Route path="/support/chat" element={<AiChatAssistantPage />} />
+        <Route path="/support/faq" element={<FaqPage />} />
+        <Route path="/support/feedback" element={<FeedbackPage />} />
+      </Route>
     </Routes>
   )
 }
