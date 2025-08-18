@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Welcome · SustainAlign Admin{% endblock %}
+{% block content %}
+<div class="bg-white rounded-xl shadow p-6 border border-slate-200">
+  <h1 class="text-2xl font-bold text-slate-900">Welcome</h1>
+  <p class="text-slate-700 mt-2">This is the lightweight admin/html view for the backend. Use the navbar to explore.</p>
+  <ul class="list-disc ml-6 mt-4 text-slate-700 space-y-1">
+    <li>Dashboard: quick stats</li>
+    <li>Users: list registered users</li>
+    <li>Projects: sample projects</li>
+    <li>API Docs: endpoints overview</li>
+  </ul>
+  <p class="text-slate-600 mt-4">API root: <code>/api</code></p>
+ </div>
+{% endblock %}
+
+

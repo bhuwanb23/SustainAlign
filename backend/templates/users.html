@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Users · SustainAlign Admin{% endblock %}
+{% block content %}
+<div class="bg-white rounded-xl shadow p-6 border border-slate-200">
+  <h2 class="text-xl font-bold text-slate-900 mb-4">Users</h2>
+  <table class="min-w-full text-sm">
+    <thead>
+      <tr class="text-left">
+        <th class="p-2">Email</th>
+        <th class="p-2">Role</th>
+        <th class="p-2">Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr class="odd:bg-slate-50">
+        <td class="p-2">{{ u.email }}</td>
+        <td class="p-2">{{ u.role }}</td>
+        <td class="p-2">{{ u.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+      </tr>
+      {% else %}
+      <tr>
+        <td class="p-2 text-slate-600" colspan="3">No users yet.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+

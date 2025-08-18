@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Projects · SustainAlign Admin{% endblock %}
+{% block content %}
+<div class="bg-white rounded-xl shadow p-6 border border-slate-200">
+  <h2 class="text-xl font-bold text-slate-900 mb-4">Projects</h2>
+  <ul class="space-y-2">
+    {% for p in projects %}
+      <li class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+        <span class="text-slate-900">{{ p.title }}</span>
+        <span class="text-slate-700">${{ '{:,'.replace(',',',') }}{{ p.budget }}</span>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
+
+

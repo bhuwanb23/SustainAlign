@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}SustainAlign Admin{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>body{font-family:Inter,system-ui,Arial,sans-serif}</style>
+  </head>
+  <body class="bg-slate-50">
+    <nav class="bg-white border-b border-slate-200">
+      <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+        <a class="text-lg font-bold text-emerald-700" href="/">SustainAlign Admin</a>
+        <div class="space-x-4 text-sm">
+          <a class="text-slate-700 hover:text-emerald-700" href="/dashboard">Dashboard</a>
+          <a class="text-slate-700 hover:text-emerald-700" href="/users">Users</a>
+          <a class="text-slate-700 hover:text-emerald-700" href="/projects">Projects</a>
+          <a class="text-slate-700 hover:text-emerald-700" href="/api-docs">API Docs</a>
+          <a class="text-slate-700 hover:text-emerald-700" href="/health">Health</a>
+        </div>
+      </div>
+    </nav>
+    <main class="max-w-6xl mx-auto p-6">
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+  </html>
+
+

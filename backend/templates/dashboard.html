@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard · SustainAlign Admin{% endblock %}
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+  <div class="bg-white rounded-xl shadow p-6 border border-slate-200">
+    <div class="text-slate-600 text-sm">Users</div>
+    <div class="text-3xl font-extrabold text-slate-900">{{ user_count }}</div>
+  </div>
+  <div class="bg-white rounded-xl shadow p-6 border border-slate-200">
+    <div class="text-slate-600 text-sm">API</div>
+    <div class="text-slate-900">/api/health</div>
+  </div>
+  <div class="bg-white rounded-xl shadow p-6 border border-slate-200">
+    <div class="text-slate-600 text-sm">Version</div>
+    <div class="text-slate-900">v0.1</div>
+  </div>
+</div>
+{% endblock %}
+
+

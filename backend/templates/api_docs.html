@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}API Docs · SustainAlign Admin{% endblock %}
+{% block content %}
+<div class="bg-white rounded-xl shadow p-6 border border-slate-200">
+  <h2 class="text-xl font-bold text-slate-900 mb-4">API Endpoints</h2>
+  <ul class="list-disc ml-6 text-slate-700 space-y-1">
+    <li>GET <code>/api/health</code></li>
+    <li>POST <code>/api/auth/signup</code></li>
+    <li>POST <code>/api/auth/login</code></li>
+    <li>POST <code>/api/auth/forgot-password</code></li>
+    <li>GET <code>/api/projects</code></li>
+  </ul>
+</div>
+{% endblock %}
+
+
