@@ -1,6 +1,6 @@
 export default function Header() {
   return (
-    <header className="bg-white/80 backdrop-blur border-b border-gray-200 px-8 py-5 sticky top-0 z-10">
+    <div className="px-8 py-5">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-700 to-emerald-500 text-transparent bg-clip-text">CSR Dashboard</h2>
@@ -14,7 +14,7 @@ export default function Header() {
           <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" alt="Profile" className="w-10 h-10 rounded-full ring-2 ring-emerald-100" />
         </div>
       </div>
-    </header>
+    </div>
   )
 }
 
