@@ -36,6 +36,7 @@ Design-first CSR/ESG platform aligning projects, stakeholders, and outcomes.
 - [Configuration](#-configuration-backend)
 - [Frontend Details](#-frontend-details)
 - [Backend Details](#-backend-details)
+- [Backend Setup](#-backend-setup-windowsmacoslinux)
 - [Deploy Notes](#-deploy-notes)
 - [Contributing](#-contributing)
 - [Roadmap](#-roadmap-ideas)
@@ -180,6 +181,69 @@ Suggested production entry:
 ```
 
 
+### 🛠 Backend Setup (Windows/macOS/Linux)
+
+> [!IMPORTANT]
+> On Windows PowerShell, do not start paths with `\`. Use `.` to refer to the current folder (e.g., `.\.venv\...`).
+
+1) Create and activate a virtual environment
+
+- Windows (PowerShell)
+```powershell
+cd backend
+python -m venv .venv
+# If policy error: Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
+. .\.venv\Scripts\Activate.ps1
+```
+- macOS/Linux
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+2) Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+3) Configure environment
+- Option A: export in shell (PowerShell shown)
+```powershell
+$env:SECRET_KEY = "dev-secret"
+$env:CORS_ORIGIN = "http://localhost:5173"
+$env:FLASK_ENV = "development"
+$env:PORT = "5000"
+```
+- Option B: create a `.env` file (auto-loaded via `python-dotenv`)
+```env
+SECRET_KEY=dev-secret
+CORS_ORIGIN=http://localhost:5173
+FLASK_ENV=development
+PORT=5000
+```
+
+4) Run the server
+```bash
+python app.py
+# http://localhost:5000
+```
+
+5) Smoke test
+```bash
+# Windows PowerShell
+curl http://localhost:5000/api/health
+# macOS/Linux
+curl -s http://localhost:5000/api/health | jq .  # if jq installed
+```
+
+Troubleshooting
+- Execution policy: run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned -Force`
+- Activation path: use `.` prefix, e.g., `..\\` vs `\\` (drive root)
+- Port in use: change `$env:PORT` or stop the other process
+- Python version: prefer Python 3.11+
+
+
 ### 📦 Deploy Notes
 - **Frontend**: build with `npm run build` → serve `frontend/dist/`
 - **Backend**: run behind a WSGI server; set `CORS_ORIGIN` to the deployed frontend URL
@@ -197,6 +261,162 @@ Suggested production entry:
 - **Dashboards**: KPIs, compliance, impact
 - **Exports**: PDF/XLSX reporting enhancements
 - **UX**: Accessibility pass and dark theme
+
+---
+
+### 🌟 Feature Highlights
+
+| Area | What you get |
+|---|---|
+| **Beautiful UI** | Soft gradients, rounded cards, subtle shadows, accessible forms |
+| **Role-based UX** | Tailored flows for corporates, NGOs, regulators |
+| **Insightful charts** | Highcharts integration for ESG/CSR visualizations |
+| **Snappy DX** | Vite HMR, clean aliases, React 19 ergonomics |
+| **Extensible API** | Flask blueprints ready for modular endpoints |
+
+
+### 🧰 Prerequisites
+
+| Tool | Recommended |
+|---|---|
+| Node.js | 20.x LTS |
+| npm | 10+ |
+| Python | 3.11+ |
+| Git | Any recent |
+
+
+### ⚙️ Environment Variables (Backend)
+
+| Variable | Description | Default |
+|---|---|---|
+| `SECRET_KEY` | Flask session/crypto secret | `dev-secret` |
+| `CORS_ORIGIN` | Allowed origin for `/api/*` | `*` (dev) |
+| `FLASK_ENV` | `development` enables debug | – |
+| `PORT` | Backend port | `5000` |
+
+
+### 📜 NPM Scripts (Frontend)
+
+| Script | What it does |
+|---|---|
+| `npm run dev` | Start Vite dev server (HMR) |
+| `npm run build` | Build production bundle to `dist/` |
+| `npm run preview` | Preview production build locally |
+| `npm run lint` | Lint the codebase |
+
+
+### 🧭 Path Aliases
+
+| Alias | Resolves to |
+|---|---|
+| `@pages` | `frontend/src/pages` |
+| `@components` | `frontend/src/pages/dashboard/components` |
+| `@constants` | `frontend/src/pages/dashboard/constants` |
+
+
+### 🏗️ Architecture
+
+```mermaid
+flowchart LR
+  subgraph Client[Frontend (Vite + React 19 + Tailwind)]
+    A[Routes: /login /signup /dashboard ...]
+    B[Highcharts visualizations]
+    C[Auth & Profile UIs]
+  end
+
+  subgraph Server[Backend (Flask 3)]
+    D[/Blueprints/]
+    D1[auth]
+    D2[profile]
+    D3[projects]
+    D4[reports]
+    H[(Health /api/health)]
+  end
+
+  A <--> |fetch| Server
+  B --> A
+  C --> A
+  H -.-> A
+```
+
+
+### 🔌 API Overview (WIP)
+
+- Base URL: `http://localhost:5000`
+- Health: `GET /api/health` → `{ "status": "ok" }`
+- Blueprints registered (endpoints to be expanded):
+  - `auth` → `/api/auth/*`
+  - `profile` → `/api/profile/*`
+  - `projects` → `/api/*` (project listing, discovery)
+  - `reports` → `/api/reports/*` (PDF/XLSX)
+
+> [!TIP]
+> Use `CORS_ORIGIN` to point the backend to your frontend URL in development and production.
+
+
+### 🖼️ UI Previews
+
+- Prototypes in `html/` (open in browser):
+  - `html/dashboard.html`
+  - `html/project-discovery.html`
+  - `html/profile-setup.html`
+  - `html/login.html`, `html/signup.html`, `html/forgot-password.html`
+
+> [!NOTE]
+> React pages in `frontend/src/pages/` mirror these prototypes with a modern component structure.
+
+
+### 🧑‍💻 Development Recipes
+
+<details>
+<summary><b>Run frontend and backend together (dev)</b></summary>
+
+1. Terminal A
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   # http://localhost:5173
+   ```
+2. Terminal B
+   ```bash
+   cd backend
+   python -m venv .venv
+   . .venv/Scripts/Activate.ps1  # PowerShell (or source .venv/bin/activate)
+   pip install -r requirements.txt
+   $env:SECRET_KEY = "dev-secret"
+   $env:CORS_ORIGIN = "http://localhost:5173"
+   $env:FLASK_ENV = "development"
+   python app.py
+   # http://localhost:5000
+   ```
+</details>
+
+<details>
+<summary><b>Troubleshooting</b></summary>
+
+- If charts don’t render, confirm `highcharts` and `highcharts-react-official` are installed.
+- If navigation fails, ensure `BrowserRouter` wraps the app (`src/main.jsx`).
+- For CORS errors, set `CORS_ORIGIN` to the exact frontend origin.
+- Vite build warnings about chunk size are informational; consider code splitting if needed.
+</details>
+
+
+### 🎨 Design System (Lightweight)
+
+- Colors: Emeralds/teals with soft gray neutrals
+- Components: Rounded cards, subtle borders, gentle shadows
+- Motion: Minimal hover transitions, focus-visible rings
+- Icons: Simple emoji-based placeholders (swap for SVGs as needed)
+
+
+### ❓ FAQ
+
+- **Can I use another router or chart library?** Yes—swap React Router/Highcharts with your preference.
+- **Is authentication implemented?** Routes are scaffolded; JWT flow is planned in the roadmap.
+- **How do I add a new page?** Create under `src/pages/<area>/<page>.jsx`, add a route in `src/App.jsx`, and link via `@pages`.
+- **Where do I configure allowed origins?** Backend `CORS_ORIGIN` env var.
+
 
 ---
 

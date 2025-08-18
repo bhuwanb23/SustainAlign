@@ -2,13 +2,21 @@ import os
 from flask import Flask, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
+from models import db
 
 
 def create_app() -> Flask:
 	load_dotenv()
 	app = Flask(__name__)
 	app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-secret")
+	app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///sustainalign.db")
+	app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 	CORS(app, resources={r"/api/*": {"origins": os.environ.get("CORS_ORIGIN", "*")}})
+
+	# Init DB
+	db.init_app(app)
+	with app.app_context():
+		db.create_all()
 
 	# Blueprints
 	from routes.auth import auth_bp
