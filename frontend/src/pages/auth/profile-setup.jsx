@@ -1,3 +1,18 @@
+import { Link } from 'react-router-dom'
+
+export default function ProfileSetupPage() {
+  return (
+    <div className="min-h-screen p-8 max-w-4xl mx-auto">
+      <h1 className="text-2xl font-extrabold text-gray-900 mb-6">Profile Setup</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Link className="bg-white rounded-2xl shadow p-6 border hover:shadow-lg transition-shadow" to="/profile/company-details">Company Details</Link>
+        <Link className="bg-white rounded-2xl shadow p-6 border hover:shadow-lg transition-shadow" to="/profile/csr-history">CSR History Upload</Link>
+        <Link className="bg-white rounded-2xl shadow p-6 border hover:shadow-lg transition-shadow" to="/profile/sdg-selector">ESG/SDG Selector</Link>
+      </div>
+    </div>
+  )
+}
+
 import AuthLayout from './AuthLayout.jsx'
 
 export default function ProfileSetupPage() {
