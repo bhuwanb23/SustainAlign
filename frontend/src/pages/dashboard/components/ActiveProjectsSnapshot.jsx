@@ -1,4 +1,15 @@
+import Highcharts from 'highcharts'
+import HighchartsReact from 'highcharts-react-official'
+
 export default function ActiveProjectsSnapshot({ projects, kpis }) {
+  const sectorCounts = { Health: 3, Education: 5, Climate: 2, Community: 4 }
+  const sectorOptions = {
+    chart: { type: 'column', height: 220, backgroundColor: 'transparent' },
+    title: { text: '' }, credits: { enabled: false }, legend: { enabled: false },
+    xAxis: { categories: Object.keys(sectorCounts) }, yAxis: { title: { text: '' } },
+    colors: ['#3B82F6'],
+    series: [{ data: Object.values(sectorCounts) }],
+  }
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
       <div className="lg:col-span-2 bg-white rounded-2xl shadow p-6 border">
@@ -31,6 +42,10 @@ export default function ActiveProjectsSnapshot({ projects, kpis }) {
             </li>
           ))}
         </ul>
+        <div className="mt-4">
+          <div className="text-gray-600 text-sm mb-1">Sector-wise Distribution</div>
+          <HighchartsReact highcharts={Highcharts} options={sectorOptions} />
+        </div>
       </div>
     </div>
   )
