@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 
-const linkBase = "px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+const linkBase = "px-2.5 py-1.5 rounded-md text-[13px] leading-none font-medium transition-colors duration-200 whitespace-nowrap"
 
 export default function TopNav() {
   const linkClass = ({ isActive }) =>
@@ -10,24 +10,9 @@ export default function TopNav() {
 
   return (
     <header className="bg-white/80 backdrop-blur border-b border-emerald-100 sticky top-0 z-20">
-      <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
-        <NavLink to="/dashboard" className="text-lg font-extrabold tracking-tight bg-gradient-to-r from-emerald-700 to-emerald-500 text-transparent bg-clip-text hover:opacity-90">
-          SustainAlign
-        </NavLink>
-        <nav className="hidden md:flex items-center gap-2">
-          {/* 🔐 Authentication & Access */}
-          <div className="relative group">
-            <button className={`${linkBase} text-emerald-800 hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-1`}>🔐 Auth <span className="text-emerald-400">▾</span></button>
-            <div className="absolute left-0 mt-2 w-64 bg-white/95 backdrop-blur-md border border-emerald-100 rounded-2xl shadow-xl shadow-emerald-100 ring-1 ring-emerald-100/50 p-4 hidden group-hover:block">
-              <div className="text-xs font-semibold text-emerald-600 mb-2">Authentication & Access</div>
-              <div className="flex flex-col gap-1">
-                <NavLink to="/login" className={linkClass}>Login Page</NavLink>
-                <NavLink to="/signup" className={linkClass}>Signup Page</NavLink>
-                <NavLink to="/forgot-password" className={linkClass}>Forgot Password Page</NavLink>
-                <NavLink to="/profile-setup" className={linkClass}>Profile Setup Page</NavLink>
-              </div>
-            </div>
-          </div>
+      <div className="max-w-7xl mx-auto px-4 py-2 flex items-center gap-3 min-w-0">
+        <NavLink to="/dashboard" className="shrink-0 text-xl font-extrabold tracking-tight text-emerald-700 hover:text-emerald-600">SustainAlign</NavLink>
+        <nav className="hidden md:flex items-center gap-1.5 flex-nowrap flex-1 min-w-0 justify-end overflow-visible">
 
           {/* 🏠 Corporate Dashboard */}
           <div className="relative group">
@@ -90,27 +75,18 @@ export default function TopNav() {
             </div>
           </div>
 
-          {/* 📊 Monitoring & Tracking */}
+          {/* 📊 Monitor & Report (combined) */}
           <div className="relative group">
-            <button className={`${linkBase} text-emerald-800 hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-1`}>📊 Monitoring <span className="text-emerald-400">▾</span></button>
+            <button className={`${linkBase} text-emerald-800 hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-1`}>📊 Monitor & Report <span className="text-emerald-400">▾</span></button>
             <div className="absolute left-0 mt-2 w-80 bg-white/95 backdrop-blur-md border border-emerald-100 rounded-2xl shadow-xl shadow-emerald-100 ring-1 ring-emerald-100/50 p-4 hidden group-hover:block">
-              <div className="text-xs font-semibold text-emerald-600 mb-2">Monitoring & Tracking Page (Agent 5)</div>
+              <div className="text-xs font-semibold text-emerald-600 mb-2">Monitoring & Reporting</div>
               <div className="flex flex-col gap-1">
-                <NavLink to="/monitoring/tracker" className={linkClass}>Project Tracker File</NavLink>
-                <NavLink to="/monitoring/impact" className={linkClass}>Impact Dashboard File</NavLink>
-                <NavLink to="/monitoring/alerts" className={linkClass}>Alerts File</NavLink>
-              </div>
-            </div>
-          </div>
-
-          {/* 📑 Reporting & Compliance */}
-          <div className="relative group">
-            <button className={`${linkBase} text-emerald-800 hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-1`}>📑 Reporting <span className="text-emerald-400">▾</span></button>
-            <div className="absolute left-0 mt-2 w-80 bg-white/95 backdrop-blur-md border border-emerald-100 rounded-2xl shadow-xl shadow-emerald-100 ring-1 ring-emerald-100/50 p-4 hidden group-hover:block">
-              <div className="text-xs font-semibold text-emerald-600 mb-2">Reporting & Compliance Page (Agent 6)</div>
-              <div className="flex flex-col gap-1">
-                <NavLink to="/reporting/generator" className={linkClass}>Report Generator File</NavLink>
-                <NavLink to="/reporting/audit-trail" className={linkClass}>Audit Trail File</NavLink>
+                <NavLink to="/monitoring/tracker" className={linkClass}>Project Tracker</NavLink>
+                <NavLink to="/monitoring/impact" className={linkClass}>Impact Dashboard</NavLink>
+                <NavLink to="/monitoring/alerts" className={linkClass}>Alerts</NavLink>
+                <div className="border-t border-emerald-100 my-1"></div>
+                <NavLink to="/reporting/generator" className={linkClass}>Report Generator</NavLink>
+                <NavLink to="/reporting/audit-trail" className={linkClass}>Audit Trail</NavLink>
               </div>
             </div>
           </div>
@@ -128,28 +104,28 @@ export default function TopNav() {
             </div>
           </div>
 
-          {/* ⚙️ Settings & Admin */}
+          {/* 👤 Profile (icon with menu) */}
           <div className="relative group">
-            <button className={`${linkBase} text-emerald-800 hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-1`}>⚙️ Settings <span className="text-emerald-400">▾</span></button>
-            <div className="absolute left-0 mt-2 w-80 bg-white/95 backdrop-blur-md border border-emerald-100 rounded-2xl shadow-xl shadow-emerald-100 ring-1 ring-emerald-100/50 p-4 hidden group-hover:block">
-              <div className="text-xs font-semibold text-emerald-600 mb-2">Settings & Admin Panel</div>
+            <button className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-emerald-600 text-white hover:opacity-90">
+              <span className="sr-only">Profile</span>
+              {/* simple user icon */}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+                <path fillRule="evenodd" d="M12 2.25a4.5 4.5 0 0 0-2.508 8.244A8.252 8.252 0 0 0 3.75 18a.75.75 0 0 0 1.5 0 6.75 6.75 0 1 1 13.5 0 .75.75 0 0 0 1.5 0 8.252 8.252 0 0 0-5.742-7.506A4.5 4.5 0 0 0 12 2.25Zm0 6a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" clipRule="evenodd" />
+              </svg>
+            </button>
+            <div className="absolute right-0 mt-2 w-56 bg-white/95 backdrop-blur-md border border-emerald-100 rounded-2xl shadow-xl shadow-emerald-100 ring-1 ring-emerald-100/50 p-4 hidden group-hover:block">
+              <div className="text-xs font-semibold text-emerald-600 mb-2">Account</div>
               <div className="flex flex-col gap-1">
-                <NavLink to="/settings/users" className={linkClass}>User Management File</NavLink>
-                <NavLink to="/settings/system" className={linkClass}>System Settings File</NavLink>
-                <NavLink to="/settings/data" className={linkClass}>Data Management File</NavLink>
-              </div>
-            </div>
-          </div>
-
-          {/* ❓ Help & Support */}
-          <div className="relative group">
-            <button className={`${linkBase} text-emerald-800 hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-1`}>❓ Support <span className="text-emerald-400">▾</span></button>
-            <div className="absolute left-0 mt-2 w-80 bg-white/95 backdrop-blur-md border border-emerald-100 rounded-2xl shadow-xl shadow-emerald-100 ring-1 ring-emerald-100/50 p-4 hidden group-hover:block">
-              <div className="text-xs font-semibold text-emerald-600 mb-2">Help & Support</div>
-              <div className="flex flex-col gap-1">
-                <NavLink to="/support/knowledge-base" className={linkClass}>Knowledge Base File</NavLink>
-                <NavLink to="/support/chat" className={linkClass}>Chat Support File</NavLink>
-                <NavLink to="/support/faq" className={linkClass}>FAQ File</NavLink>
+                <NavLink to="/settings/users" className={linkClass}>User Management</NavLink>
+                <NavLink to="/settings/agents" className={linkClass}>Agent Controls</NavLink>
+                <NavLink to="/settings/integrations" className={linkClass}>Integrations</NavLink>
+                <NavLink to="/settings/apis" className={linkClass}>API Management</NavLink>
+                <div className="border-t border-emerald-100 my-1"></div>
+                <NavLink to="/support/faq" className={linkClass}>Help / FAQ</NavLink>
+                <NavLink to="/support/chat" className={linkClass}>Chat Support</NavLink>
+                <NavLink to="/support/feedback" className={linkClass}>Feedback</NavLink>
+                <div className="border-t border-emerald-100 my-1"></div>
+                <NavLink to="/login" className={linkClass}>Log out</NavLink>
               </div>
             </div>
           </div>
