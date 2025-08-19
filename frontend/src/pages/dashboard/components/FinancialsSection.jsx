@@ -1,5 +1,6 @@
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
+import { widthClassFromPercent } from '../../../lib/ui.js'
 
 export default function FinancialsSection({ allocationData = [], trendData = [], breakdown }) {
   // Demo sector data if not provided
@@ -66,7 +67,11 @@ export default function FinancialsSection({ allocationData = [], trendData = [],
                   <td className="p-2">
                     <div className="flex items-center gap-2">
                       <div className="w-24 bg-gray-200 h-1.5 rounded">
-                        <div className="bg-emerald-600 h-1.5 rounded" style={{width: `${Math.round((r.spent/r.allocated)*100)}%`}}></div>
+                        {(() => {
+                          const pct = Math.round((r.spent/r.allocated)*100)
+                          const w = widthClassFromPercent(pct)
+                          return <div className={`bg-emerald-600 h-1.5 rounded ${w}`}></div>
+                        })()}
                       </div>
                       <span>{Math.round((r.spent/r.allocated)*100)}%</span>
                     </div>

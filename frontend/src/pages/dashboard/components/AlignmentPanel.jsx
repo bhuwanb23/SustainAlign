@@ -1,3 +1,5 @@
+import { widthClassFromPercent } from '../../../lib/ui.js'
+
 export default function AlignmentPanel({ esgScore, sdgs, alignedPct }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
@@ -19,7 +21,12 @@ export default function AlignmentPanel({ esgScore, sdgs, alignedPct }) {
       <div className="bg-white rounded-2xl shadow p-6 border">
         <div className="text-gray-600 text-sm">Alignment Progress</div>
         <div className="text-2xl font-extrabold text-gray-900">{alignedPct}%</div>
-        <div className="mt-2 w-full bg-gray-100 rounded-full h-2"><div className="bg-emerald-600 h-2 rounded-full" style={{width: `${alignedPct}%`}}></div></div>
+        <div className="mt-2 w-full bg-gray-100 rounded-full h-2">
+          {(() => {
+            const w = widthClassFromPercent(alignedPct)
+            return <div className={`bg-emerald-600 h-2 rounded-full ${w}`}></div>
+          })()}
+        </div>
       </div>
     </div>
   )

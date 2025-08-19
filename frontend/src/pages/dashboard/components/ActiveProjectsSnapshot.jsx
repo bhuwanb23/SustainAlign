@@ -1,5 +1,6 @@
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
+import { widthClassFromPercent } from '../../../lib/ui.js'
 
 export default function ActiveProjectsSnapshot({ projects, kpis }) {
   const sectorCounts = { Health: 3, Education: 5, Climate: 2, Community: 4 }
@@ -26,7 +27,13 @@ export default function ActiveProjectsSnapshot({ projects, kpis }) {
               </div>
               <div className="w-40">
                 <div className="text-xs text-gray-600">Progress</div>
-                <div className="w-full bg-gray-200 rounded-full h-2"><div className={`h-2 rounded-full ${p.status==='on'?'bg-emerald-600':p.status==='delay'?'bg-yellow-500':'bg-red-500'}`} style={{width: `${p.progress}%`}}></div></div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  {(() => {
+                    const w = widthClassFromPercent(p.progress)
+                    const color = p.status==='on'?'bg-emerald-600':p.status==='delay'?'bg-yellow-500':'bg-red-500'
+                    return <div className={`h-2 rounded-full ${color} ${w}`}></div>
+                  })()}
+                </div>
               </div>
             </div>
           ))}

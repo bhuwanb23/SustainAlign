@@ -1,14 +1,20 @@
 {% extends 'base.html' %}
 {% block title %}Projects · SustainAlign Admin{% endblock %}
 {% block content %}
-<div class="bg-white rounded-xl shadow p-6 border border-slate-200">
-  <h2 class="text-xl font-bold text-slate-900 mb-4">Projects</h2>
+<section class="mb-6">
+  <h1 class="text-xl font-bold text-emerald-400">Projects</h1>
+  <p class="text-slate-400 text-sm mt-1">Sample portfolio with budgets.</p>
+</section>
+
+<div class="rounded-xl border border-slate-200/20 bg-white/5 p-6">
   <ul class="space-y-2">
     {% for p in projects %}
-      <li class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-        <span class="text-slate-900">{{ p.title }}</span>
-        <span class="text-slate-700">${{ '{:,'.replace(',',',') }}{{ p.budget }}</span>
+      <li class="flex items-center justify-between p-3 rounded-lg border border-slate-200/20 bg-white/5">
+        <span class="text-slate-100">{{ p.title }}</span>
+        <span class="text-slate-300 text-sm">${{ '{:,'.format(p.budget) }}</span>
       </li>
+    {% else %}
+      <li class="p-3 text-slate-400">No projects found.</li>
     {% endfor %}
   </ul>
 </div>

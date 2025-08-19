@@ -1,3 +1,5 @@
+import { widthClassFromPercent } from '../../../lib/ui.js'
+
 export default function BudgetOverview({ budget }) {
   const { total, utilizedPct, remaining } = budget
   return (
@@ -15,7 +17,12 @@ export default function BudgetOverview({ budget }) {
           </div>
           <div className="text-emerald-700 text-sm">On track</div>
         </div>
-        <div className="mt-3 w-full bg-gray-100 rounded-full h-2"><div className="bg-emerald-600 h-2 rounded-full" style={{width: `${utilizedPct}%`}}></div></div>
+        <div className="mt-3 w-full bg-gray-100 rounded-full h-2">
+          {(() => {
+            const w = widthClassFromPercent(utilizedPct)
+            return <div className={`bg-emerald-600 h-2 rounded-full ${w}`}></div>
+          })()}
+        </div>
       </div>
       <div className="bg-white rounded-2xl shadow p-6 border">
         <div className="text-gray-600 text-sm">Remaining</div>

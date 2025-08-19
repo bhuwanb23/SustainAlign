@@ -1,23 +1,28 @@
 {% extends 'base.html' %}
 {% block title %}Dashboard · SustainAlign Admin{% endblock %}
 {% block content %}
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-  <div class="bg-white rounded-xl shadow p-6 border border-slate-200">
-    <div class="text-slate-600 text-sm">Users</div>
-    <div class="text-3xl font-extrabold text-slate-900">{{ user_count }}</div>
+<section class="mb-6">
+  <h1 class="text-xl font-bold text-emerald-400">Dashboard</h1>
+  <p class="text-slate-400 text-sm mt-1">Quick stats and helpful shortcuts.</p>
+</section>
+
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+  <div class="rounded-xl border border-slate-200/20 bg-white/5 p-6">
+    <div class="text-slate-400 text-sm">Users</div>
+    <div class="text-3xl font-extrabold text-slate-100">{{ user_count }}</div>
   </div>
-  <div class="bg-white rounded-xl shadow p-6 border border-slate-200">
-    <div class="text-slate-600 text-sm">API</div>
-    <div class="text-slate-900">/api/health</div>
+  <div class="rounded-xl border border-slate-200/20 bg-white/5 p-6">
+    <div class="text-slate-400 text-sm">API</div>
+    <div class="text-slate-100">/api/health</div>
   </div>
-  <div class="bg-white rounded-xl shadow p-6 border border-slate-200">
-    <div class="text-slate-600 text-sm">Version</div>
-    <div class="text-slate-900">v0.1</div>
+  <div class="rounded-xl border border-slate-200/20 bg-white/5 p-6">
+    <div class="text-slate-400 text-sm">Version</div>
+    <div class="text-slate-100">v0.1</div>
   </div>
-  <a href="/database" class="bg-white rounded-xl shadow p-6 border border-slate-200 hover:shadow-md transition-shadow">
-    <div class="text-slate-600 text-sm">Data</div>
-    <div class="text-slate-900 font-semibold">Browse Database →</div>
-    <p class="text-slate-600 text-sm mt-2">View tables, columns, and sample rows.</p>
+  <a href="/database" class="rounded-xl border border-slate-200/20 bg-white/5 p-6 hover:border-emerald-500/40 transition-colors">
+    <div class="text-slate-400 text-sm">Data</div>
+    <div class="text-slate-100 font-semibold">Browse Database →</div>
+    <p class="text-slate-400 text-sm mt-2">View tables, columns, and sample rows.</p>
   </a>
 </div>
 {% endblock %}

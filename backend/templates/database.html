@@ -2,22 +2,22 @@
 {% block title %}Database · SustainAlign Admin{% endblock %}
 {% block content %}
 <div class="space-y-6">
-  <div class="bg-white rounded-xl shadow p-6 border border-slate-200">
-    <h2 class="text-xl font-bold text-slate-900 mb-1">Database Explorer</h2>
-    <p class="text-slate-600 text-sm">Browse tables from SQLAlchemy metadata. Click a table to view up to 25 rows.</p>
+  <div class="rounded-xl border border-slate-200/20 bg-white/5 p-6">
+    <h1 class="text-xl font-bold text-emerald-400 mb-1">Database Explorer</h1>
+    <p class="text-slate-400 text-sm">Browse tables from SQLAlchemy metadata. Click a table to view up to 25 rows.</p>
   </div>
 
   {% if tables %}
   <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
     <!-- Sidebar nav -->
     <aside class="md:col-span-1">
-      <nav class="bg-white rounded-xl shadow border border-slate-200 divide-y divide-slate-100" aria-label="Tables">
+      <nav class="rounded-xl border border-slate-200/20 bg-white/5 divide-y divide-slate-200/10 sticky top-6" aria-label="Tables">
         {% for t in tables %}
         <a href="#table-{{ t.name }}"
            data-target="table-{{ t.name }}"
-           class="flex items-center justify-between px-4 py-3 text-sm hover:bg-slate-50 group table-link {% if loop.first %}is-active{% endif %}">
-          <span class="text-slate-800 group-[.is-active]:text-emerald-700 font-medium">{{ t.name }}</span>
-          <span class="text-xs text-slate-600 group-[.is-active]:text-emerald-700">{{ t.count if t.count is not none else 'n/a' }}</span>
+           class="flex items-center justify-between px-4 py-3 text-sm hover:bg-white/10 transition-colors group table-link {% if loop.first %}is-active{% endif %}">
+          <span class="text-slate-200 group-[.is-active]:text-emerald-300 font-medium">{{ t.name }}</span>
+          <span class="text-xs text-slate-400 group-[.is-active]:text-emerald-300">{{ t.count if t.count is not none else 'n/a' }}</span>
         </a>
         {% endfor %}
       </nav>
@@ -26,30 +26,30 @@
     <!-- Content -->
     <section class="md:col-span-3 space-y-6">
       {% for t in tables %}
-      <div id="table-{{ t.name }}" class="bg-white rounded-xl shadow p-6 border border-slate-200 table-panel {% if not loop.first %}hidden{% endif %}">
+      <div id="table-{{ t.name }}" class="rounded-xl border border-slate-200/20 bg-white/5 p-6 table-panel {% if not loop.first %}hidden{% endif %}">
         <div class="flex items-center justify-between mb-3">
-          <h3 class="text-lg font-semibold text-slate-900">{{ t.name }}</h3>
-          <span class="text-sm text-slate-600">{{ t.count if t.count is not none else 'n/a' }} rows</span>
+          <h3 class="text-lg font-semibold text-slate-100">{{ t.name }}</h3>
+          <span class="text-sm text-slate-400">{{ t.count if t.count is not none else 'n/a' }} rows</span>
         </div>
         <div class="overflow-x-auto">
           <table class="min-w-full text-sm">
             <thead>
               <tr class="text-left">
                 {% for col in t.columns %}
-                <th class="p-2 whitespace-nowrap">{{ col }}</th>
+                <th class="p-2 whitespace-nowrap text-slate-300">{{ col }}</th>
                 {% endfor %}
               </tr>
             </thead>
             <tbody>
               {% for row in t.rows %}
-              <tr class="odd:bg-slate-50">
+              <tr class="odd:bg-white/5">
                 {% for col in t.columns %}
-                <td class="p-2 whitespace-nowrap">{{ row[col] }}</td>
+                <td class="p-2 whitespace-nowrap text-slate-200">{{ row[col] }}</td>
                 {% endfor %}
               </tr>
               {% else %}
               <tr>
-                <td class="p-2 text-slate-600" colspan="{{ t.columns|length }}">No data.</td>
+                <td class="p-2 text-slate-400" colspan="{{ t.columns|length }}">No data.</td>
               </tr>
               {% endfor %}
             </tbody>

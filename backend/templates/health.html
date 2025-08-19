@@ -1,9 +1,17 @@
 {% extends 'base.html' %}
 {% block title %}Health · SustainAlign Admin{% endblock %}
 {% block content %}
-<div class="bg-white rounded-xl shadow p-6 border border-slate-200">
-  <h2 class="text-xl font-bold text-slate-900 mb-4">Health</h2>
-  <p class="text-slate-700">API health endpoint: <a class="text-emerald-700" href="/api/health" target="_blank">/api/health</a></p>
+<section class="mb-6">
+  <h1 class="text-xl font-bold text-emerald-400">Service Health</h1>
+  <p class="text-slate-400 text-sm mt-1">Check the running status of the API.</p>
+</section>
+
+<div class="rounded-xl border border-slate-200/20 bg-white/5 p-6">
+  <div class="flex items-center gap-3 text-slate-200">
+    <span class="text-emerald-400">●</span>
+    <span>API health endpoint:</span>
+    <a class="text-emerald-300 hover:text-emerald-200" href="/api/health" target="_blank">/api/health</a>
+  </div>
 </div>
 {% endblock %}
 

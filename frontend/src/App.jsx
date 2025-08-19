@@ -52,7 +52,7 @@ import FeedbackPage from './pages/support/feedback/feedback.jsx'
 export default function App() {
   return (
     <Routes>
-      {/* Auth-only routes (no sidebar) */}
+      {/* 🔐 Authentication & Access */}
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
@@ -61,50 +61,58 @@ export default function App() {
 
       {/* App routes with universal sidebar */}
       <Route element={<AppLayout />}>
+        {/* 🏠 Corporate Dashboard (Main Landing) */}
         <Route path="/dashboard" element={<DashboardPage />} />
 
-        {/* Corporate Profile Setup */}
+        {/* 🏗️ Corporate Profile Setup */}
         <Route path="/profile/company-details" element={<CompanyDetailsPage />} />
         <Route path="/profile/csr-history" element={<CsrHistoryPage />} />
         <Route path="/profile/sdg-selector" element={<SdgSelectorPage />} />
 
-        {/* Project Discovery */}
+        {/* 🔎 Project Discovery Page (Agent 1) */}
         <Route path="/discovery/search" element={<ProjectSearchPage />} />
         <Route path="/discovery/cards" element={<ProjectCardsPage />} />
 
-        {/* Alignment & Evaluation */}
+        {/* 🎯 Alignment & Evaluation Page (Agents 2 & 3) */}
         <Route path="/alignment/matching" element={<AiMatchingPage />} />
         <Route path="/alignment/comparison" element={<ComparisonMatrixPage />} />
         <Route path="/alignment/risk" element={<RiskScoringPage />} />
 
-        {/* Decision Support */}
+        {/* 🧑‍⚖️ Decision Support Page (Agent 4) */}
         <Route path="/decision/rationale" element={<RecommendationRationalePage />} />
         <Route path="/decision/approval" element={<ApprovalWorkflowPage />} />
 
-        {/* Monitoring & Tracking */}
+        {/* 📊 Monitoring & Tracking Page (Agent 5) */}
         <Route path="/monitoring/tracker" element={<ProjectTrackerPage />} />
         <Route path="/monitoring/impact" element={<ImpactDashboardPage />} />
         <Route path="/monitoring/alerts" element={<MonitoringAlertsPage />} />
 
-        {/* Reporting & Compliance */}
+        {/* 📑 Reporting & Compliance Page (Agent 6) */}
         <Route path="/reporting/generator" element={<ReportGeneratorPage />} />
         <Route path="/reporting/audit-trail" element={<AuditTrailPage />} />
 
-        {/* Marketplace */}
+        {/* 📂 CSR/ESG Marketplace (Future) */}
         <Route path="/marketplace/ngo" element={<NgoDashboardPage />} />
         <Route path="/marketplace/matching" element={<MatchingEnginePage />} />
         <Route path="/marketplace/collaboration" element={<CollaborationToolsPage />} />
+        {/* Aliases for the requested marketplace breakdown */}
+        <Route path="/marketplace/projects" element={<CollaborationToolsPage />} />
 
-        {/* Settings & Admin */}
+        {/* ⚙️ Settings & Admin Panel */}
         <Route path="/settings/users" element={<UserManagementPage />} />
         <Route path="/settings/agents" element={<AgentControlsPage />} />
         <Route path="/settings/integrations" element={<IntegrationSetupPage />} />
         <Route path="/settings/apis" element={<ApiManagementPage />} />
+        {/* Aliases to match requested naming */}
+        <Route path="/settings/system" element={<IntegrationSetupPage />} />
+        <Route path="/settings/data" element={<ApiManagementPage />} />
 
-        {/* Help & Support */}
+        {/* ❓ Help & Support */}
         <Route path="/support/chat" element={<AiChatAssistantPage />} />
         <Route path="/support/faq" element={<FaqPage />} />
         <Route path="/support/feedback" element={<FeedbackPage />} />
+        {/* Alias for Knowledge Base */}
+        <Route path="/support/knowledge-base" element={<FaqPage />} />
       </Route>
     </Routes>
   )

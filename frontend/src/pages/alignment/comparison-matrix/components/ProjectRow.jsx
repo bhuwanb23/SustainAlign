@@ -1,3 +1,5 @@
+import { widthClassFromPercent } from '../../../../lib/ui.js'
+
 export default function ProjectRow({ project }) {
   return (
     <div className="grid grid-cols-8 gap-4 p-6 border-b border-gray-100 bg-gradient-to-r from-emerald-50 to-sky-50 hover:from-emerald-100/30 hover:to-sky-100/30 transition-colors">
@@ -16,7 +18,11 @@ export default function ProjectRow({ project }) {
       <div className="text-center flex items-center justify-center">
         <div className="flex items-center justify-center">
           <div className="w-16 bg-gray-200 rounded-full h-2">
-            <div className="bg-emerald-500 h-2 rounded-full" style={{ width: project.impactPct }} />
+            {(() => {
+              const pct = parseInt(project.impactPct, 10)
+              const w = widthClassFromPercent(isNaN(pct) ? 0 : pct)
+              return <div className={`bg-emerald-500 h-2 rounded-full ${w}`}></div>
+            })()}
           </div>
           <span className="ml-2 text-sm font-medium">{project.impactScore}</span>
         </div>

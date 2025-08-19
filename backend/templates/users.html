@@ -1,26 +1,32 @@
 {% extends 'base.html' %}
 {% block title %}Users · SustainAlign Admin{% endblock %}
 {% block content %}
-<div class="bg-white rounded-xl shadow p-6 border border-slate-200">
-  <h2 class="text-xl font-bold text-slate-900 mb-4">Users</h2>
+<section class="mb-6">
+  <h1 class="text-xl font-bold text-emerald-400">Users</h1>
+  <p class="text-slate-400 text-sm mt-1">Registered accounts and roles.</p>
+  </section>
+
+<div class="rounded-xl border border-slate-200/20 bg-white/5 p-6">
   <table class="min-w-full text-sm">
     <thead>
-      <tr class="text-left">
-        <th class="p-2">Email</th>
-        <th class="p-2">Role</th>
-        <th class="p-2">Created</th>
+      <tr class="text-left text-slate-300">
+        <th class="p-2 font-semibold">Email</th>
+        <th class="p-2 font-semibold">Role</th>
+        <th class="p-2 font-semibold">Created</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody class="divide-y divide-slate-200/10">
       {% for u in users %}
-      <tr class="odd:bg-slate-50">
-        <td class="p-2">{{ u.email }}</td>
-        <td class="p-2">{{ u.role }}</td>
-        <td class="p-2">{{ u.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+      <tr>
+        <td class="p-2 text-slate-100">{{ u.email }}</td>
+        <td class="p-2">
+          <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold bg-white/5 text-slate-200 border border-slate-200/20">{{ u.role }}</span>
+        </td>
+        <td class="p-2 text-slate-300">{{ u.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
       </tr>
       {% else %}
       <tr>
-        <td class="p-2 text-slate-600" colspan="3">No users yet.</td>
+        <td class="p-2 text-slate-400" colspan="3">No users yet.</td>
       </tr>
       {% endfor %}
     </tbody>

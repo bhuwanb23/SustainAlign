@@ -12,7 +12,7 @@ export default function AuthLayout({ title, subtitle, children, footer }) {
             <span className="text-2xl">🌱</span>
             <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-700 to-emerald-500 text-transparent bg-clip-text">SustainAlign</span>
           </a>
-          <div className="hidden md:flex items-center text-sm text-gray-600 space-x-6 sa-fade-up" style={{animationDelay:'.05s'}}>
+          <div className="hidden md:flex items-center text-sm text-gray-600 space-x-6 sa-fade-up [animation-delay:.05s]">
             <span className="inline-flex items-center"><span className="mr-2">🛡️</span>Compliance-ready</span>
             <span className="inline-flex items-center"><span className="mr-2">♻️</span>CSR focused</span>
           </div>
@@ -40,7 +40,7 @@ export default function AuthLayout({ title, subtitle, children, footer }) {
             </div>
           </div>
 
-          <div className="sa-fade-up" style={{animationDelay:'.08s'}}>
+          <div className="sa-fade-up [animation-delay:.08s]">
             <div className="mx-auto w-full max-w-md bg-white rounded-2xl border border-gray-200 shadow-xl shadow-emerald-100/40 p-8">
               {children}
             </div>

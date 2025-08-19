@@ -1,18 +1,43 @@
 {% extends 'base.html' %}
 {% block title %}Welcome · SustainAlign Admin{% endblock %}
 {% block content %}
-<div class="bg-white rounded-xl shadow p-6 border border-slate-200">
-  <h1 class="text-2xl font-bold text-slate-900">Welcome</h1>
-  <p class="text-slate-700 mt-2">This is the lightweight admin/html view for the backend. Use the navbar to explore.</p>
-  <ul class="list-disc ml-6 mt-4 text-slate-700 space-y-1">
-    <li>Dashboard: quick stats</li>
-    <li>Users: list registered users</li>
-    <li>Projects: sample projects</li>
-    <li>API Docs: endpoints overview</li>
-    <li>Database: browse tables, columns, and sample rows</li>
-  </ul>
-  <p class="text-slate-600 mt-4">API root: <code>/api</code></p>
- </div>
+<section class="rounded-2xl border border-slate-200/20 bg-white/5 shadow p-6">
+  <h1 class="text-2xl font-extrabold text-emerald-400">SustainAlign Admin</h1>
+  <p class="text-slate-300 mt-2">Lightweight admin views for the backend. Use the navigation or quick links below.</p>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+    <a href="/dashboard" class="group rounded-xl border border-slate-200/20 bg-white/5 p-4 hover:border-emerald-500/40 transition-colors">
+      <div class="text-slate-400 text-xs">Overview</div>
+      <div class="mt-1 text-slate-100 font-semibold group-hover:text-emerald-300">Dashboard →</div>
+      <p class="text-slate-400 text-xs mt-2">Quick stats and shortcuts.</p>
+    </a>
+    <a href="/users" class="group rounded-xl border border-slate-200/20 bg-white/5 p-4 hover:border-emerald-500/40 transition-colors">
+      <div class="text-slate-400 text-xs">Directory</div>
+      <div class="mt-1 text-slate-100 font-semibold group-hover:text-emerald-300">Users →</div>
+      <p class="text-slate-400 text-xs mt-2">Browse registered users.</p>
+    </a>
+    <a href="/projects" class="group rounded-xl border border-slate-200/20 bg-white/5 p-4 hover:border-emerald-500/40 transition-colors">
+      <div class="text-slate-400 text-xs">Portfolio</div>
+      <div class="mt-1 text-slate-100 font-semibold group-hover:text-emerald-300">Projects →</div>
+      <p class="text-slate-400 text-xs mt-2">Sample projects and budgets.</p>
+    </a>
+    <a href="/database" class="group rounded-xl border border-slate-200/20 bg-white/5 p-4 hover:border-emerald-500/40 transition-colors">
+      <div class="text-slate-400 text-xs">Data</div>
+      <div class="mt-1 text-slate-100 font-semibold group-hover:text-emerald-300">Database →</div>
+      <p class="text-slate-400 text-xs mt-2">Tables, columns, and sample rows.</p>
+    </a>
+    <a href="/api-docs" class="group rounded-xl border border-slate-200/20 bg-white/5 p-4 hover:border-emerald-500/40 transition-colors">
+      <div class="text-slate-400 text-xs">Develop</div>
+      <div class="mt-1 text-slate-100 font-semibold group-hover:text-emerald-300">API Docs →</div>
+      <p class="text-slate-400 text-xs mt-2">Endpoints overview.</p>
+    </a>
+    <a href="/health" class="group rounded-xl border border-slate-200/20 bg-white/5 p-4 hover:border-emerald-500/40 transition-colors">
+      <div class="text-slate-400 text-xs">Status</div>
+      <div class="mt-1 text-slate-100 font-semibold group-hover:text-emerald-300">Health →</div>
+      <p class="text-slate-400 text-xs mt-2">Check service health.</p>
+    </a>
+  </div>
+  <p class="text-slate-400 mt-6">API root: <code>/api</code></p>
+</section>
 {% endblock %}
 
 
