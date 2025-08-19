@@ -38,6 +38,8 @@ body {
 .sa-float-slow { animation: sa-float 12s ease-in-out infinite; }
 .sa-fade-up { animation: sa-fade-up .6s ease-out both; }
 
+/* (No custom utilities needed for AI Matching; using Tailwind classes only) */
+
 
 h1 {
   font-size: 3.2em;

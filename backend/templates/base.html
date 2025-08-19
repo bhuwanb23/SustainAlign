@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,20 +7,60 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+    <script>
+      // Configure Tailwind for class-based dark mode and small theme tweaks
+      tailwind = window.tailwind || {}
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                primary: '#10b981', // emerald-500
+                primaryHover: '#34d399',
+              }
+            }
+          }
+        }
+      }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>body{font-family:Inter,system-ui,Arial,sans-serif}</style>
+    <style>
+      body{font-family:Inter,system-ui,Arial,sans-serif}
+      /* Dark mode overrides to harmonize existing light utility classes */
+      .dark body{background:rgb(2 6 23);color:rgb(226 232 240)} /* slate-950 / slate-200 */
+      .dark .bg-white{background-color:rgb(30 41 59)!important} /* slate-800 */
+      .dark .bg-slate-50{background-color:rgb(30 41 59)!important}
+      .dark .text-slate-900{color:rgb(226 232 240)!important}
+      .dark .text-slate-800{color:rgb(226 232 240)!important}
+      .dark .text-slate-700{color:rgb(203 213 225)!important}
+      .dark .text-slate-600{color:rgb(148 163 184)!important}
+      .dark .border-slate-200{border-color:rgb(71 85 105)!important} /* slate-600 */
+      .dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]){border-color:rgb(71 85 105)!important}
+      .dark .hover\:bg-slate-50:hover{background-color:rgb(51 65 85)!important} /* slate-700 */
+      .dark .odd\:bg-slate-50:nth-child(odd){background-color:rgb(42 56 77)!important}
+      .dark .shadow{--tw-shadow-color: 0 0 0;box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.25), 0 1px 1px -1px rgb(0 0 0 / 0.25)}
+      /* Code and table tweaks */
+      code{background:rgb(15 23 42);color:rgb(248 250 252);padding:0.125rem 0.375rem;border-radius:0.375rem}
+      .dark table thead tr{background:rgb(15 23 42)}
+      .dark table tbody tr{border-color:rgb(51 65 85)}
+      a{transition:color .2s ease, opacity .2s ease}
+      /* Ensure emerald accents are bright enough on dark backgrounds */
+      .dark .text-emerald-700{color:rgb(52 211 153)!important} /* emerald-400 */
+      .dark .hover\:text-emerald-700:hover{color:rgb(110 231 183)!important} /* emerald-300 */
+    </style>
   </head>
-  <body class="bg-slate-50">
-    <nav class="bg-white border-b border-slate-200">
+  <body class="min-h-screen bg-slate-950 text-slate-100">
+    <nav class="bg-slate-800/60 backdrop-blur border-b border-slate-700">
       <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        <a class="text-lg font-bold text-emerald-700" href="/">SustainAlign Admin</a>
+        <a class="text-lg font-bold text-emerald-400" href="/">SustainAlign Admin</a>
         <div class="space-x-4 text-sm">
-          <a class="text-slate-700 hover:text-emerald-700" href="/dashboard">Dashboard</a>
-          <a class="text-slate-700 hover:text-emerald-700" href="/users">Users</a>
-          <a class="text-slate-700 hover:text-emerald-700" href="/projects">Projects</a>
-          <a class="text-slate-700 hover:text-emerald-700" href="/database">Database</a>
-          <a class="text-slate-700 hover:text-emerald-700" href="/api-docs">API Docs</a>
-          <a class="text-slate-700 hover:text-emerald-700" href="/health">Health</a>
+          <a class="text-slate-300 hover:text-emerald-400" href="/dashboard">Dashboard</a>
+          <a class="text-slate-300 hover:text-emerald-400" href="/users">Users</a>
+          <a class="text-slate-300 hover:text-emerald-400" href="/projects">Projects</a>
+          <a class="text-slate-300 hover:text-emerald-400" href="/database">Database</a>
+          <a class="text-slate-300 hover:text-emerald-400" href="/api-docs">API Docs</a>
+          <a class="text-slate-300 hover:text-emerald-400" href="/health">Health</a>
         </div>
       </div>
     </nav>
