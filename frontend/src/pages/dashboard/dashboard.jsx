@@ -60,20 +60,95 @@ export default function DashboardPage() {
   const forecast = { water: '2.1M L', students: '8,200', co2: '350 t' }
 
   return (
-    <div className="p-4 max-w-7xl mx-auto">
-      <AdminHeader adminName="CSR Admin" dateString={today} kpis={kpis} />
-      <FinancialsSection allocationData={allocationData} trendData={trendData} breakdown={breakdown} />
-      <EsgSdgSection esg={esg} sdgHeatmap={sdgHeatmap} comparison={comparison} />
-      <ActiveProjectsSnapshot projects={projects} kpis={impactKpis} />
-      <ComplianceRiskSection notifications={notifications} riskLevel="Medium" />
-      <InsightsSection suggestions={suggestions} topProjects={topProjects} forecast={forecast} />
-      <QuickActionsPanel
-        onFind={() => (window.location.href = '/discovery/search')}
-        onReport={() => (window.location.href = '/reporting/generator')}
-        onMonitor={() => (window.location.href = '/monitoring/impact')}
-        onSettings={() => (window.location.href = '/settings/users')}
-      />
-      <AdminFooter compliancePct={78} />
+    <div className="relative">
+      {/* Ambient animated background */}
+      <div className="pointer-events-none absolute inset-0 -z-10 sa-animated-bg opacity-70"></div>
+
+      <div className="px-4 py-6 md:px-6 md:py-8 max-w-7xl mx-auto space-y-6">
+        {/* Hero header */}
+        <div className="sa-fade-up" style={{ animationDelay: '0ms' }}>
+          <AdminHeader adminName="CSR Admin" dateString={today} kpis={kpis} />
+        </div>
+
+        {/* Quick toolbar */}
+        <div
+          className="sa-fade-up rounded-2xl border border-emerald-100 bg-white/70 backdrop-blur p-3 md:p-4 flex flex-col md:flex-row md:items-center gap-3"
+          style={{ animationDelay: '60ms' }}
+        >
+          <div className="flex-1 flex items-center gap-2">
+            <div className="relative max-w-md w-full">
+              <input
+                type="text"
+                placeholder="Search projects, NGOs, locations..."
+                className="w-full rounded-xl border border-emerald-100/80 bg-white px-3 py-2 text-sm text-emerald-900 placeholder:text-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-200"
+              />
+              <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-emerald-400">🔎</span>
+            </div>
+            <select
+              className="rounded-xl border border-emerald-100/80 bg-white px-3 py-2 text-sm text-emerald-900 focus:outline-none focus:ring-2 focus:ring-emerald-200"
+              defaultValue="q3"
+              aria-label="Date range"
+            >
+              <option value="mtd">MTD</option>
+              <option value="q3">Q3</option>
+              <option value="ytd">YTD</option>
+              <option value="12m">12M</option>
+            </select>
+          </div>
+          <div className="flex items-center gap-2 md:justify-end">
+            <button
+              className="px-3 py-2 rounded-lg text-sm font-medium text-emerald-800 border border-emerald-100 hover:bg-emerald-50"
+              onClick={() => window.location.reload()}
+            >
+              Refresh
+            </button>
+            <button
+              className="px-3 py-2 rounded-lg text-sm font-medium text-white bg-emerald-600 hover:opacity-90 shadow-sm"
+              onClick={() => window.alert('Exporting dashboard...')}
+            >
+              Export
+            </button>
+            <button
+              className="px-3 py-2 rounded-lg text-sm font-medium text-emerald-800 border border-emerald-100 hover:bg-emerald-50"
+              onClick={() => (window.location.href = '/discovery/cards')}
+            >
+              + New Project
+            </button>
+          </div>
+        </div>
+
+        {/* Core sections with staggered entrance */}
+        <div className="sa-fade-up" style={{ animationDelay: '120ms' }}>
+          <FinancialsSection allocationData={allocationData} trendData={trendData} breakdown={breakdown} />
+        </div>
+        <div className="sa-fade-up" style={{ animationDelay: '180ms' }}>
+          <EsgSdgSection esg={esg} sdgHeatmap={sdgHeatmap} comparison={comparison} />
+        </div>
+        <div className="sa-fade-up" style={{ animationDelay: '240ms' }}>
+          <ActiveProjectsSnapshot projects={projects} kpis={impactKpis} />
+        </div>
+        <div className="sa-fade-up" style={{ animationDelay: '300ms' }}>
+          <ComplianceRiskSection notifications={notifications} riskLevel="Medium" />
+        </div>
+        <div className="sa-fade-up" style={{ animationDelay: '360ms' }}>
+          <InsightsSection suggestions={suggestions} topProjects={topProjects} forecast={forecast} />
+        </div>
+
+        {/* Quick actions panel */}
+        <div className="sa-fade-up" style={{ animationDelay: '420ms' }}>
+          <QuickActionsPanel
+            onFind={() => (window.location.href = '/discovery/search')}
+            onReport={() => (window.location.href = '/reporting/generator')}
+            onMonitor={() => (window.location.href = '/monitoring/impact')}
+            onSettings={() => (window.location.href = '/settings/users')}
+          />
+        </div>
+
+        {/* Footer */}
+        <div className="sa-fade-up" style={{ animationDelay: '480ms' }}>
+          <AdminFooter compliancePct={78} />
+        </div>
+      </div>
     </div>
   )
 }

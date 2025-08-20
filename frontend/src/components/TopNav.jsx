@@ -1,23 +1,27 @@
 import { NavLink } from 'react-router-dom'
 
-const linkBase = "px-2.5 py-1.5 rounded-md text-[13px] leading-none font-medium transition-colors duration-200 whitespace-nowrap"
+const linkBase = "px-3 py-1.5 rounded-full text-[13px] leading-none font-medium transition-all duration-200 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/50"
 
 export default function TopNav() {
   const linkClass = ({ isActive }) =>
     isActive
-      ? `${linkBase} bg-emerald-600 text-white`
-      : `${linkBase} text-emerald-800 hover:bg-emerald-50 hover:text-emerald-700`
+      ? `${linkBase} bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-sm shadow-emerald-300`
+      : `${linkBase} text-emerald-800 hover:bg-emerald-50/80 hover:text-emerald-700 hover:shadow-sm hover:shadow-emerald-100/60`
 
   return (
-    <header className="bg-white/80 backdrop-blur border-b border-emerald-100 sticky top-0 z-20">
-      <div className="max-w-7xl mx-auto px-4 py-2 flex items-center gap-3 min-w-0">
-        <NavLink to="/dashboard" className="shrink-0 text-xl font-extrabold tracking-tight text-emerald-700 hover:text-emerald-600">SustainAlign</NavLink>
-        <nav className="hidden md:flex items-center gap-1.5 flex-nowrap flex-1 min-w-0 justify-end overflow-visible">
+    <header className="bg-gradient-to-r from-emerald-50/80 via-white/70 to-teal-50/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-emerald-100/60 sticky top-0 z-40">
+      <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center gap-4 min-w-0">
+        <NavLink to="/dashboard" className="shrink-0 inline-flex items-center gap-2 text-xl font-extrabold tracking-tight text-emerald-700 hover:text-emerald-600">
+          <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-sm shadow-emerald-300">🌿</span>
+          <span>SustainAlign</span>
+        </NavLink>
+        <nav className="hidden md:flex items-center flex-nowrap flex-1 min-w-0 justify-end overflow-visible">
+          <div className="flex items-center gap-1.5 bg-white/70 backdrop-blur-md border border-emerald-100 rounded-full p-1.5 shadow-sm shadow-emerald-100/40">
 
           {/* 🏠 Corporate Dashboard */}
           <div className="relative group">
-            <button className={`${linkBase} text-emerald-800 hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-1`}>🏠 Dashboard <span className="text-emerald-400">▾</span></button>
-            <div className="absolute left-0 mt-2 w-64 bg-white/95 backdrop-blur-md border border-emerald-100 rounded-2xl shadow-xl shadow-emerald-100 ring-1 ring-emerald-100/50 p-4 hidden group-hover:block">
+            <button className={`${linkBase} text-emerald-800 hover:bg-emerald-50 hover:text-emerald-700 hover:shadow-sm flex items-center gap-1`}>🏠 Dashboard <span className="text-emerald-500 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
+            <div className="absolute left-0 mt-2 w-64 bg-white/95 backdrop-blur-xl border border-emerald-100/70 rounded-2xl shadow-xl shadow-emerald-200/50 ring-1 ring-emerald-200/40 p-4 hidden group-hover:block">
               <div className="text-xs font-semibold text-emerald-600 mb-2">Corporate Dashboard</div>
               <div className="flex flex-col gap-1">
                 <NavLink to="/dashboard" className={linkClass}>Dashboard Main File</NavLink>
@@ -27,8 +31,8 @@ export default function TopNav() {
 
           {/* 🏗️ Corporate Profile Setup */}
           <div className="relative group">
-            <button className={`${linkBase} text-emerald-800 hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-1`}>🏗️ Corporate Setup <span className="text-emerald-400">▾</span></button>
-            <div className="absolute left-0 mt-2 w-72 bg-white/95 backdrop-blur-md border border-emerald-100 rounded-2xl shadow-xl shadow-emerald-100 ring-1 ring-emerald-100/50 p-4 hidden group-hover:block">
+            <button className={`${linkBase} text-emerald-800 hover:bg-emerald-50 hover:text-emerald-700 hover:shadow-sm flex items-center gap-1`}>🏗️ Corporate Setup <span className="text-emerald-500 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
+            <div className="absolute left-0 mt-2 w-72 bg-white/95 backdrop-blur-xl border border-emerald-100/70 rounded-2xl shadow-xl shadow-emerald-200/50 ring-1 ring-emerald-200/40 p-4 hidden group-hover:block">
               <div className="text-xs font-semibold text-emerald-600 mb-2">Corporate Profile Setup</div>
               <div className="flex flex-col gap-1">
                 <NavLink to="/profile/company-details" className={linkClass}>Company Details File</NavLink>
@@ -40,8 +44,8 @@ export default function TopNav() {
 
           {/* 🔎 Project Discovery */}
           <div className="relative group">
-            <button className={`${linkBase} text-emerald-800 hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-1`}>🔎 Discovery <span className="text-emerald-400">▾</span></button>
-            <div className="absolute left-0 mt-2 w-72 bg-white/95 backdrop-blur-md border border-emerald-100 rounded-2xl shadow-xl shadow-emerald-100 ring-1 ring-emerald-100/50 p-4 hidden group-hover:block">
+            <button className={`${linkBase} text-emerald-800 hover:bg-emerald-50 hover:text-emerald-700 hover:shadow-sm flex items-center gap-1`}>🔎 Discovery <span className="text-emerald-500 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
+            <div className="absolute left-0 mt-2 w-72 bg-white/95 backdrop-blur-xl border border-emerald-100/70 rounded-2xl shadow-xl shadow-emerald-200/50 ring-1 ring-emerald-200/40 p-4 hidden group-hover:block">
               <div className="text-xs font-semibold text-emerald-600 mb-2">Project Discovery Page (Agent 1)</div>
               <div className="flex flex-col gap-1">
                 <NavLink to="/discovery/search" className={linkClass}>Project Search File</NavLink>
@@ -52,8 +56,8 @@ export default function TopNav() {
 
           {/* 🎯 Alignment & Evaluation */}
           <div className="relative group">
-            <button className={`${linkBase} text-emerald-800 hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-1`}>🎯 Alignment <span className="text-emerald-400">▾</span></button>
-            <div className="absolute left-0 mt-2 w-80 bg-white/95 backdrop-blur-md border border-emerald-100 rounded-2xl shadow-xl shadow-emerald-100 ring-1 ring-emerald-100/50 p-4 hidden group-hover:block">
+            <button className={`${linkBase} text-emerald-800 hover:bg-emerald-50 hover:text-emerald-700 hover:shadow-sm flex items-center gap-1`}>🎯 Alignment <span className="text-emerald-500 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
+            <div className="absolute left-0 mt-2 w-80 bg-white/95 backdrop-blur-xl border border-emerald-100/70 rounded-2xl shadow-xl shadow-emerald-200/50 ring-1 ring-emerald-200/40 p-4 hidden group-hover:block">
               <div className="text-xs font-semibold text-emerald-600 mb-2">Alignment & Evaluation Page (Agents 2 & 3)</div>
               <div className="flex flex-col gap-1">
                 <NavLink to="/alignment/matching" className={linkClass}>AI Matching Results File</NavLink>
@@ -65,8 +69,8 @@ export default function TopNav() {
 
           {/* 🧑‍⚖️ Decision Support */}
           <div className="relative group">
-            <button className={`${linkBase} text-emerald-800 hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-1`}>🧑‍⚖️ Decision <span className="text-emerald-400">▾</span></button>
-            <div className="absolute left-0 mt-2 w-80 bg-white/95 backdrop-blur-md border border-emerald-100 rounded-2xl shadow-xl shadow-emerald-100 ring-1 ring-emerald-100/50 p-4 hidden group-hover:block">
+            <button className={`${linkBase} text-emerald-800 hover:bg-emerald-50 hover:text-emerald-700 hover:shadow-sm flex items-center gap-1`}>🧑‍⚖️ Decision <span className="text-emerald-500 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
+            <div className="absolute left-0 mt-2 w-80 bg-white/95 backdrop-blur-xl border border-emerald-100/70 rounded-2xl shadow-xl shadow-emerald-200/50 ring-1 ring-emerald-200/40 p-4 hidden group-hover:block">
               <div className="text-xs font-semibold text-emerald-600 mb-2">Decision Support Page (Agent 4)</div>
               <div className="flex flex-col gap-1">
                 <NavLink to="/decision/rationale" className={linkClass}>Recommendation Rationale File</NavLink>
@@ -77,8 +81,8 @@ export default function TopNav() {
 
           {/* 📊 Monitor & Report (combined) */}
           <div className="relative group">
-            <button className={`${linkBase} text-emerald-800 hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-1`}>📊 Monitor & Report <span className="text-emerald-400">▾</span></button>
-            <div className="absolute left-0 mt-2 w-80 bg-white/95 backdrop-blur-md border border-emerald-100 rounded-2xl shadow-xl shadow-emerald-100 ring-1 ring-emerald-100/50 p-4 hidden group-hover:block">
+            <button className={`${linkBase} text-emerald-800 hover:bg-emerald-50 hover:text-emerald-700 hover:shadow-sm flex items-center gap-1`}>📊 Monitor & Report <span className="text-emerald-500 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
+            <div className="absolute left-0 mt-2 w-80 bg-white/95 backdrop-blur-xl border border-emerald-100/70 rounded-2xl shadow-xl shadow-emerald-200/50 ring-1 ring-emerald-200/40 p-4 hidden group-hover:block">
               <div className="text-xs font-semibold text-emerald-600 mb-2">Monitoring & Reporting</div>
               <div className="flex flex-col gap-1">
                 <NavLink to="/monitoring/tracker" className={linkClass}>Project Tracker</NavLink>
@@ -93,8 +97,8 @@ export default function TopNav() {
 
           {/* 📂 Marketplace */}
           <div className="relative group">
-            <button className={`${linkBase} text-emerald-800 hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-1`}>📂 Marketplace <span className="text-emerald-400">▾</span></button>
-            <div className="absolute left-0 mt-2 w-80 bg-white/95 backdrop-blur-md border border-emerald-100 rounded-2xl shadow-xl shadow-emerald-100 ring-1 ring-emerald-100/50 p-4 hidden group-hover:block">
+            <button className={`${linkBase} text-emerald-800 hover:bg-emerald-50 hover:text-emerald-700 hover:shadow-sm flex items-center gap-1`}>📂 Marketplace <span className="text-emerald-500 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
+            <div className="absolute left-0 mt-2 w-80 bg-white/95 backdrop-blur-xl border border-emerald-100/70 rounded-2xl shadow-xl shadow-emerald-200/50 ring-1 ring-emerald-200/40 p-4 hidden group-hover:block">
               <div className="text-xs font-semibold text-emerald-600 mb-2">CSR/ESG Marketplace (Future)</div>
               <div className="flex flex-col gap-1">
                 <NavLink to="/marketplace/projects" className={linkClass}>CSR Projects Marketplace File</NavLink>
@@ -106,14 +110,14 @@ export default function TopNav() {
 
           {/* 👤 Profile (icon with menu) */}
           <div className="relative group">
-            <button className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-emerald-600 text-white hover:opacity-90">
+            <button className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-gradient-to-br from-emerald-600 to-teal-600 text-white hover:opacity-95 hover:shadow-md shadow-emerald-200/60 ring-1 ring-emerald-300/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/50">
               <span className="sr-only">Profile</span>
               {/* simple user icon */}
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
                 <path fillRule="evenodd" d="M12 2.25a4.5 4.5 0 0 0-2.508 8.244A8.252 8.252 0 0 0 3.75 18a.75.75 0 0 0 1.5 0 6.75 6.75 0 1 1 13.5 0 .75.75 0 0 0 1.5 0 8.252 8.252 0 0 0-5.742-7.506A4.5 4.5 0 0 0 12 2.25Zm0 6a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" clipRule="evenodd" />
               </svg>
             </button>
-            <div className="absolute right-0 mt-2 w-56 bg-white/95 backdrop-blur-md border border-emerald-100 rounded-2xl shadow-xl shadow-emerald-100 ring-1 ring-emerald-100/50 p-4 hidden group-hover:block">
+            <div className="absolute right-0 mt-2 w-56 bg-white/95 backdrop-blur-xl border border-emerald-100/70 rounded-2xl shadow-xl shadow-emerald-200/50 ring-1 ring-emerald-200/40 p-4 hidden group-hover:block">
               <div className="text-xs font-semibold text-emerald-600 mb-2">Account</div>
               <div className="flex flex-col gap-1">
                 <NavLink to="/settings/users" className={linkClass}>User Management</NavLink>
@@ -128,6 +132,7 @@ export default function TopNav() {
                 <NavLink to="/login" className={linkClass}>Log out</NavLink>
               </div>
             </div>
+          </div>
           </div>
         </nav>
       </div>
