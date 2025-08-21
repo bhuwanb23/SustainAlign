@@ -9,7 +9,7 @@ export default function TopNav() {
             : `${linkBase} text-green-800/95 hover:bg-gradient-to-r hover:from-green-50 hover:to-blue-50 hover:text-green-800 hover:ring-1 hover:ring-green-200/80 hover:shadow-sm`
 
     return (
-        <header className="bg-green-600/95 backdrop-blur supports-[backdrop-filter]:bg-green-600/80 text-white border-b border-green-700 sticky top-0 z-40">
+        <header className="bg-green-600/95 backdrop-blur supports-[backdrop-filter]:bg-green-600/80 text-white border-b border-green-700 sticky top-0 z-[9999]">
             <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4 min-w-0">
                 <NavLink to="/dashboard" className="shrink-0 inline-flex items-center gap-2 text-xl font-extrabold tracking-tight text-white hover:text-green-100">
                     <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-green-600 to-blue-600 text-white shadow-sm ring-1 ring-white/40">🌿</span>
@@ -21,7 +21,7 @@ export default function TopNav() {
                         {/* 🏠 Corporate Dashboard */}
                         <div className="relative group">
                             <button className={`${linkBase} bg-transparent text-white flex items-center gap-1 hover:bg-white/10`}>🏠 Dashboard <span className="text-green-100 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
-                            <div className="absolute left-0 mt-2 w-64 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
+                            <div className="absolute left-0 mt-2 w-64 z-50 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
                                 <div className="text-xs font-semibold text-green-600 mb-2">Corporate Dashboard</div>
                                 <div className="flex flex-col gap-1">
                                     <NavLink to="/dashboard" className={linkClass}>Dashboard Main File</NavLink>
@@ -32,7 +32,7 @@ export default function TopNav() {
                         {/* 🏗️ Corporate Profile Setup */}
                         <div className="relative group">
                             <button className={`${linkBase} bg-transparent text-white flex items-center gap-1 hover:bg-white/10`}>🏗️ Corporate Setup <span className="text-green-100 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
-                            <div className="absolute left-0 mt-2 w-72 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
+                            <div className="absolute left-0 mt-2 w-72 z-50 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
                                 <div className="text-xs font-semibold text-green-600 mb-2">Corporate Profile Setup</div>
                                 <div className="flex flex-col gap-1">
                                     <NavLink to="/profile/company-details" className={linkClass}>Company Details File</NavLink>
@@ -45,7 +45,7 @@ export default function TopNav() {
                         {/* 🔎 Project Discovery */}
                         <div className="relative group">
                             <button className={`${linkBase} bg-transparent text-white flex items-center gap-1 hover:bg-white/10`}>🔎 Discovery <span className="text-green-100 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
-                            <div className="absolute left-0 mt-2 w-72 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
+                            <div className="absolute left-0 mt-2 w-72 z-50 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
                                 <div className="text-xs font-semibold text-green-600 mb-2">Project Discovery Page (Agent 1)</div>
                                 <div className="flex flex-col gap-1">
                                     <NavLink to="/discovery/search" className={linkClass}>Project Search File</NavLink>
@@ -57,7 +57,7 @@ export default function TopNav() {
                         {/* 🎯 Alignment & Evaluation */}
                         <div className="relative group">
                             <button className={`${linkBase} bg-transparent text-white flex items-center gap-1 hover:bg-white/10`}>🎯 Alignment <span className="text-green-100 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
-                            <div className="absolute left-0 mt-2 w-80 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
+                            <div className="absolute left-0 mt-2 w-80 z-50 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
                                 <div className="text-xs font-semibold text-green-600 mb-2">Alignment & Evaluation Page (Agents 2 & 3)</div>
                                 <div className="flex flex-col gap-1">
                                     <NavLink to="/alignment/matching" className={linkClass}>AI Matching Results File</NavLink>
@@ -70,7 +70,7 @@ export default function TopNav() {
                         {/* 🧑‍⚖️ Decision Support */}
                         <div className="relative group">
                             <button className={`${linkBase} bg-transparent text-white flex items-center gap-1 hover:bg-white/10`}>🧑‍⚖️ Decision <span className="text-green-100 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
-                            <div className="absolute left-0 mt-2 w-80 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
+                            <div className="absolute left-0 mt-2 w-80 z-50 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
                                 <div className="text-xs font-semibold text-green-600 mb-2">Decision Support Page (Agent 4)</div>
                                 <div className="flex flex-col gap-1">
                                     <NavLink to="/decision/rationale" className={linkClass}>Recommendation Rationale File</NavLink>
@@ -82,7 +82,7 @@ export default function TopNav() {
                         {/* 📊 Monitor & Report (combined) */}
                         <div className="relative group">
                             <button className={`${linkBase} bg-transparent text-white flex items-center gap-1 hover:bg-white/10`}>📊 Monitor & Report <span className="text-green-100 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
-                            <div className="absolute left-0 mt-2 w-80 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
+                            <div className="absolute left-0 mt-2 w-80 z-50 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
                                 <div className="text-xs font-semibold text-green-600 mb-2">Monitoring & Reporting</div>
                                 <div className="flex flex-col gap-1">
                                     <NavLink to="/monitoring/tracker" className={linkClass}>Project Tracker</NavLink>
@@ -117,7 +117,7 @@ export default function TopNav() {
                                     <path fillRule="evenodd" d="M12 2.25a4.5 4.5 0 0 0-2.508 8.244A8.252 8.252 0 0 0 3.75 18a.75.75 0 0 0 1.5 0 6.75 6.75 0 1 1 13.5 0 .75.75 0 0 0 1.5 0 8.252 8.252 0 0 0-5.742-7.506A4.5 4.5 0 0 0 12 2.25Zm0 6a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" clipRule="evenodd" />
                                 </svg>
                             </button>
-                            <div className="absolute right-0 mt-2 w-56 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
+                            <div className="absolute right-0 mt-2 w-56 z-50 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
                                 <div className="text-xs font-semibold text-green-700 mb-2">Account</div>
                                 <div className="flex flex-col gap-1">
                                     <NavLink to="/settings/users" className={linkClass}>User Management</NavLink>

@@ -3,6 +3,10 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
 from models import db
+from routes.auth import auth_bp
+from routes.projects import projects_bp
+from routes.reports import reports_bp
+from routes.profile import profile_bp
 
 
 def create_app() -> Flask:
@@ -19,10 +23,6 @@ def create_app() -> Flask:
 		db.create_all()
 
 	# Blueprints (API)
-	from routes.auth import auth_bp
-	from routes.projects import projects_bp
-	from routes.reports import reports_bp
-	from routes.profile import profile_bp
 	app.register_blueprint(auth_bp, url_prefix="/api/auth")
 	app.register_blueprint(profile_bp, url_prefix="/api/profile")
 	app.register_blueprint(projects_bp, url_prefix="/api")
