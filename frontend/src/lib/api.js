@@ -1,7 +1,9 @@
+import { getToken } from './auth'
+
 export async function apiPost(path, body) {
   const res = await fetch(path, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
     body: JSON.stringify(body),
   })
   if (!res.ok) {

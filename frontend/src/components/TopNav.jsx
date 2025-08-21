@@ -129,7 +129,7 @@ export default function TopNav() {
                                     <NavLink to="/support/chat" className={linkClass}>Chat Support</NavLink>
                                     <NavLink to="/support/feedback" className={linkClass}>Feedback</NavLink>
                                     <div className="border-t border-green-200 my-1"></div>
-                                    <NavLink to="/login" className={linkClass}>Log out</NavLink>
+                                    <NavLink to="/logout" className={linkClass}>Log out</NavLink>
                                 </div>
                             </div>
                         </div>

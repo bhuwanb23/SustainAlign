@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import DashboardPage from './pages/dashboard/dashboard.jsx'
 import LoginPage from './pages/auth/login.jsx'
 import SignupPage from './pages/auth/signup.jsx'
@@ -49,6 +49,16 @@ import AiChatAssistantPage from './pages/support/chat/chat.jsx'
 import FaqPage from './pages/support/faq/faq.jsx'
 import FeedbackPage from './pages/support/feedback/feedback.jsx'
 
+import { isAuthenticated } from './lib/auth'
+import LogoutPage from './pages/auth/Logout.jsx'
+
+function RequireAuth() {
+  if (!isAuthenticated()) {
+    return <Navigate to="/login" replace />
+  }
+  return <Outlet />
+}
+
 export default function App() {
   return (
     <Routes>
@@ -60,7 +70,8 @@ export default function App() {
       <Route path="/profile-setup" element={<ProfileSetupPage />} />
 
       {/* App routes with universal sidebar */}
-      <Route element={<AppLayout />}>
+      <Route element={<RequireAuth />}>
+        <Route element={<AppLayout />}>
         {/* 🏠 Corporate Dashboard (Main Landing) */}
         <Route path="/dashboard" element={<DashboardPage />} />
 
@@ -113,7 +124,11 @@ export default function App() {
         <Route path="/support/feedback" element={<FeedbackPage />} />
         {/* Alias for Knowledge Base */}
         <Route path="/support/knowledge-base" element={<FaqPage />} />
+        </Route>
       </Route>
+
+      {/* explicit logout route */}
+      <Route path="/logout" element={<LogoutPage />} />
     </Routes>
   )
 }
