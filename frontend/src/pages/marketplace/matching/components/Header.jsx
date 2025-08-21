@@ -1,7 +1,7 @@
 export default function Header() {
     return (
         <header className="rounded-2xl overflow-hidden shadow-lg">
-            <div className="gradient-bg text-white">
+            <div className="bg-gradient-to-br from-emerald-600 via-teal-600 to-sky-600 text-white">
                 <div className="px-6 md:px-8 py-6">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">

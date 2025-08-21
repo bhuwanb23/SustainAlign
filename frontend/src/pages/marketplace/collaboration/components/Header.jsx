@@ -2,9 +2,9 @@ export default function Header() {
     return (
         <header className="rounded-2xl overflow-hidden shadow-lg">
             <div className="text-white bg-gradient-to-r from-emerald-600 to-teal-700">
-                <div className="px-6 md:px-8 py-6">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
+                    <div className="px-6 md:px-8 py-6">
+                        <div className="flex items-center justify-between text-black">
+                            <div className="flex items-center space-x-3">
                             <span className="text-2xl">🌐</span>
                             <h1 className="text-2xl font-bold">CSR Impact Hub</h1>
                         </div>
