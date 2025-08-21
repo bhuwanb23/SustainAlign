@@ -1,11 +1,20 @@
+import Header from './components/Header.jsx'
+import HeroSpotlight from './components/HeroSpotlight.jsx'
+import FilterPanel from './components/FilterPanel.jsx'
+import ProjectGrid from './components/ProjectGrid.jsx'
+
 export default function CollaborationToolsPage() {
   return (
-    <div className="p-8 max-w-6xl mx-auto">
-      <h1 className="text-2xl font-extrabold bg-gradient-to-r from-emerald-700 to-emerald-500 text-transparent bg-clip-text mb-4">Collaboration</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="bg-white rounded-2xl shadow p-6 border border-gray-100">Chat Area</div>
-        <div className="bg-white rounded-2xl shadow p-6 border border-gray-100">Documents</div>
-      </div>
+    <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 space-y-8">
+      <Header />
+      <HeroSpotlight />
+
+      <section className="py-2">
+        <div className="flex flex-col lg:flex-row gap-8">
+          <FilterPanel />
+          <ProjectGrid />
+        </div>
+      </section>
     </div>
   )
 }

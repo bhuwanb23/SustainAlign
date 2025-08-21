@@ -101,9 +101,9 @@ export default function TopNav() {
                             <div className="absolute left-0 mt-2 w-80 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
                                 <div className="text-xs font-semibold text-green-600 mb-2">CSR/ESG Marketplace (Future)</div>
                                 <div className="flex flex-col gap-1">
-                                    <NavLink to="/marketplace/projects" className={linkClass}>CSR Projects Marketplace File</NavLink>
-                                    <NavLink to="/marketplace/ngo" className={linkClass}>NGO Profiles File</NavLink>
-                                    <NavLink to="/marketplace/matching" className={linkClass}>Bidding/Matching File</NavLink>
+                                    <NavLink to="/marketplace/projects" className={linkClass}>CSR Projects Marketplace</NavLink>
+                                    <NavLink to="/marketplace/ngo" className={linkClass}>NGO Profiles</NavLink>
+                                    <NavLink to="/marketplace/matching" className={linkClass}>Bidding/Matching</NavLink>
                                 </div>
                             </div>
                         </div>
