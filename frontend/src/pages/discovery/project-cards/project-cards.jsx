@@ -4,15 +4,17 @@ import useProjectCards from './hooks/useProjectCards.js'
 export default function ProjectCardsPage() {
   const { projects } = useProjectCards()
   return (
-    <div className="p-8 max-w-6xl mx-auto">
-      <header className="mb-6">
-        <h1 className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-sky-600 to-emerald-600 text-transparent bg-clip-text">Project Cards</h1>
-        <p className="text-gray-600 mt-1">Reusable project cards for discovery and alignment.</p>
-      </header>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {projects.map((p) => (
-          <ProjectCard key={p.id} project={p} />
-        ))}
+    <div className="bg-gray-50 p-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Sustainable Impact Projects</h1>
+          <p className="text-gray-600">Discover verified NGO projects making a real difference</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {projects.map((p) => (
+            <ProjectCard key={p.id} project={p} />
+          ))}
+        </div>
       </div>
     </div>
   )
