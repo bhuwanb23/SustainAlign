@@ -1,16 +1,46 @@
+import Header from './components/Header.jsx'
+import Sidebar from './components/Sidebar.jsx'
+import ReportTypes from './components/ReportTypes.jsx'
+import ReportPreview from './components/ReportPreview.jsx'
+import FloatingActions from './components/FloatingActions.jsx'
+import useReportGenerator from './hooks/useReportGenerator.js'
+
 export default function ReportGeneratorPage() {
+  const {
+    metrics,
+    period,
+    reportType,
+    isGenerating,
+    lastUpdated,
+    periodOptions,
+    reportTypes,
+    toggleMetric,
+    selectPeriod,
+    selectReportType,
+    generate,
+  } = useReportGenerator()
+
   return (
-    <div className="p-8 max-w-5xl mx-auto">
-      <h1 className="text-2xl font-extrabold bg-gradient-to-r from-emerald-700 to-emerald-500 text-transparent bg-clip-text mb-4">Report Generator</h1>
-      <div className="bg-white rounded-2xl shadow p-6 border border-gray-100">
-        <p className="text-gray-700">Generate CSR/ESG reports. Download as PDF, Excel, or PPT.</p>
-        <div className="flex gap-3 mt-4">
-          <button className="px-4 py-2 rounded-xl bg-gray-100">JSON</button>
-          <button className="px-4 py-2 rounded-xl bg-blue-600 text-white">PPT</button>
-          <button className="px-4 py-2 rounded-xl bg-emerald-600 text-white">PDF</button>
-          <button className="px-4 py-2 rounded-xl bg-yellow-600 text-white">Excel</button>
+    <div className="bg-gray-50 min-h-screen">
+      <Header />
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        <div className="flex gap-8">
+          <Sidebar
+            metrics={metrics}
+            toggleMetric={toggleMetric}
+            period={period}
+            periodOptions={periodOptions}
+            selectPeriod={selectPeriod}
+            onGenerate={generate}
+          />
+
+          <div className="flex-1">
+            <ReportTypes reportTypes={reportTypes} selected={reportType} onSelect={selectReportType} />
+            <ReportPreview isGenerating={isGenerating} lastUpdated={lastUpdated} />
+          </div>
         </div>
-      </div>
+      </main>
+      <FloatingActions />
     </div>
   )
 }
