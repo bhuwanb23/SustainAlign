@@ -1,20 +1,43 @@
+import HeaderBar from './components/HeaderBar.jsx'
+import FilterSection from './components/FilterSection.jsx'
+import Timeline from './components/Timeline.jsx'
+import SummaryCards from './components/SummaryCards.jsx'
+import useAuditTrail from './hooks/useAuditTrail.js'
+
 export default function AuditTrailPage() {
-  const logs = [
-    { ts: '2025-01-02 10:10', msg: 'AI recommended Clean Water Initiative' },
-    { ts: '2025-01-05 14:20', msg: 'Compliance review added notes' },
-    { ts: '2025-01-07 09:00', msg: 'Project approved by Board' },
-  ]
+  const {
+    query, setQuery,
+    typeFilter, setTypeFilter,
+    statusFilter, setStatusFilter,
+    dateFilter, setDateFilter,
+    entries, details, expandedId, toggle,
+    summary,
+    onExport,
+    onAddEntry,
+  } = useAuditTrail()
+
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-extrabold bg-gradient-to-r from-emerald-700 to-emerald-500 text-transparent bg-clip-text mb-4">Audit Trail</h1>
-      <div className="space-y-3">
-        {logs.map((l, i) => (
-          <div key={i} className="bg-white rounded-2xl shadow p-4 border border-gray-100">
-            <div className="text-sm text-gray-500">{l.ts}</div>
-            <div className="text-gray-800">{l.msg}</div>
-          </div>
-        ))}
-      </div>
+    <div className="bg-gradient-to-br from-emerald-50 to-blue-50 min-h-screen">
+      <HeaderBar onExport={onExport} onAdd={onAddEntry} />
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        <FilterSection
+          query={query}
+          setQuery={setQuery}
+          typeFilter={typeFilter}
+          setTypeFilter={setTypeFilter}
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+          dateFilter={dateFilter}
+          setDateFilter={setDateFilter}
+        />
+        <Timeline
+          entries={entries}
+          details={details}
+          expandedId={expandedId}
+          toggle={toggle}
+        />
+        <SummaryCards summary={summary} />
+      </main>
     </div>
   )
 }
