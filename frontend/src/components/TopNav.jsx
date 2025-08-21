@@ -5,7 +5,7 @@ const linkBase = "px-4 py-2 rounded-full text-[13px] leading-none font-medium tr
 export default function TopNav() {
     const linkClass = ({ isActive }) =>
         isActive
-            ? `${linkBase} bg-gradient-to-r from-green-600 to-blue-600 text-white shadow-md ring-1 ring-blue-300/30`
+            ? `${linkBase} bg-green-600 text-white shadow-md ring-1 ring-green-300/40`
             : `${linkBase} text-green-800/95 hover:bg-gradient-to-r hover:from-green-50 hover:to-blue-50 hover:text-green-800 hover:ring-1 hover:ring-green-200/80 hover:shadow-sm`
 
     return (
@@ -20,7 +20,7 @@ export default function TopNav() {
 
                         {/* 🏠 Corporate Dashboard */}
                         <div className="relative group">
-                            <button className={`${linkBase} text-white flex items-center gap-1 hover:bg-white/10`}>🏠 Dashboard <span className="text-green-100 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
+                            <button className={`${linkBase} bg-transparent text-white flex items-center gap-1 hover:bg-white/10`}>🏠 Dashboard <span className="text-green-100 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
                             <div className="absolute left-0 mt-2 w-64 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
                                 <div className="text-xs font-semibold text-green-600 mb-2">Corporate Dashboard</div>
                                 <div className="flex flex-col gap-1">
@@ -31,7 +31,7 @@ export default function TopNav() {
 
                         {/* 🏗️ Corporate Profile Setup */}
                         <div className="relative group">
-                            <button className={`${linkBase} text-white flex items-center gap-1 hover:bg-white/10`}>🏗️ Corporate Setup <span className="text-green-100 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
+                            <button className={`${linkBase} bg-transparent text-white flex items-center gap-1 hover:bg-white/10`}>🏗️ Corporate Setup <span className="text-green-100 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
                             <div className="absolute left-0 mt-2 w-72 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
                                 <div className="text-xs font-semibold text-green-600 mb-2">Corporate Profile Setup</div>
                                 <div className="flex flex-col gap-1">
@@ -44,7 +44,7 @@ export default function TopNav() {
 
                         {/* 🔎 Project Discovery */}
                         <div className="relative group">
-                            <button className={`${linkBase} text-white flex items-center gap-1 hover:bg-white/10`}>🔎 Discovery <span className="text-green-100 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
+                            <button className={`${linkBase} bg-transparent text-white flex items-center gap-1 hover:bg-white/10`}>🔎 Discovery <span className="text-green-100 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
                             <div className="absolute left-0 mt-2 w-72 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
                                 <div className="text-xs font-semibold text-green-600 mb-2">Project Discovery Page (Agent 1)</div>
                                 <div className="flex flex-col gap-1">
@@ -56,7 +56,7 @@ export default function TopNav() {
 
                         {/* 🎯 Alignment & Evaluation */}
                         <div className="relative group">
-                            <button className={`${linkBase} text-white flex items-center gap-1 hover:bg-white/10`}>🎯 Alignment <span className="text-green-100 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
+                            <button className={`${linkBase} bg-transparent text-white flex items-center gap-1 hover:bg-white/10`}>🎯 Alignment <span className="text-green-100 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
                             <div className="absolute left-0 mt-2 w-80 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
                                 <div className="text-xs font-semibold text-green-600 mb-2">Alignment & Evaluation Page (Agents 2 & 3)</div>
                                 <div className="flex flex-col gap-1">
@@ -69,7 +69,7 @@ export default function TopNav() {
 
                         {/* 🧑‍⚖️ Decision Support */}
                         <div className="relative group">
-                            <button className={`${linkBase} text-white flex items-center gap-1 hover:bg-white/10`}>🧑‍⚖️ Decision <span className="text-green-100 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
+                            <button className={`${linkBase} bg-transparent text-white flex items-center gap-1 hover:bg-white/10`}>🧑‍⚖️ Decision <span className="text-green-100 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
                             <div className="absolute left-0 mt-2 w-80 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
                                 <div className="text-xs font-semibold text-green-600 mb-2">Decision Support Page (Agent 4)</div>
                                 <div className="flex flex-col gap-1">
@@ -81,7 +81,7 @@ export default function TopNav() {
 
                         {/* 📊 Monitor & Report (combined) */}
                         <div className="relative group">
-                            <button className={`${linkBase} text-white flex items-center gap-1 hover:bg-white/10`}>📊 Monitor & Report <span className="text-green-100 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
+                            <button className={`${linkBase} bg-transparent text-white flex items-center gap-1 hover:bg-white/10`}>📊 Monitor & Report <span className="text-green-100 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
                             <div className="absolute left-0 mt-2 w-80 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
                                 <div className="text-xs font-semibold text-green-600 mb-2">Monitoring & Reporting</div>
                                 <div className="flex flex-col gap-1">
@@ -97,7 +97,7 @@ export default function TopNav() {
 
                         {/* 📂 Marketplace */}
                         <div className="relative group">
-                            <button className={`${linkBase} text-white flex items-center gap-1 hover:bg-white/10`}>📂 Marketplace <span className="text-green-100 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
+                            <button className={`${linkBase} bg-transparent text-white flex items-center gap-1 hover:bg-white/10`}>📂 Marketplace <span className="text-green-100 transition-transform duration-200 group-hover:translate-y-[1px]">▾</span></button>
                             <div className="absolute left-0 mt-2 w-80 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
                                 <div className="text-xs font-semibold text-green-600 mb-2">CSR/ESG Marketplace (Future)</div>
                                 <div className="flex flex-col gap-1">
