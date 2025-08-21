@@ -66,14 +66,13 @@ export default function DashboardPage() {
 
       <div className="px-4 py-6 md:px-6 md:py-8 max-w-7xl mx-auto space-y-6">
         {/* Hero header */}
-        <div className="sa-fade-up" style={{ animationDelay: '0ms' }}>
+        <div className="sa-fade-up [animation-delay:0ms]">
           <AdminHeader adminName="CSR Admin" dateString={today} kpis={kpis} />
         </div>
 
         {/* Quick toolbar */}
         <div
-          className="sa-fade-up rounded-2xl border border-emerald-100 bg-white/70 backdrop-blur p-3 md:p-4 flex flex-col md:flex-row md:items-center gap-3"
-          style={{ animationDelay: '60ms' }}
+          className="sa-fade-up [animation-delay:60ms] rounded-2xl border border-emerald-100 bg-white/70 backdrop-blur p-3 md:p-4 flex flex-col md:flex-row md:items-center gap-3"
         >
           <div className="flex-1 flex items-center gap-2">
             <div className="relative max-w-md w-full">
@@ -118,24 +117,24 @@ export default function DashboardPage() {
         </div>
 
         {/* Core sections with staggered entrance */}
-        <div className="sa-fade-up" style={{ animationDelay: '120ms' }}>
+        <div className="sa-fade-up [animation-delay:120ms]">
           <FinancialsSection allocationData={allocationData} trendData={trendData} breakdown={breakdown} />
         </div>
-        <div className="sa-fade-up" style={{ animationDelay: '180ms' }}>
+        <div className="sa-fade-up [animation-delay:180ms]">
           <EsgSdgSection esg={esg} sdgHeatmap={sdgHeatmap} comparison={comparison} />
         </div>
-        <div className="sa-fade-up" style={{ animationDelay: '240ms' }}>
+        <div className="sa-fade-up [animation-delay:240ms]">
           <ActiveProjectsSnapshot projects={projects} kpis={impactKpis} />
         </div>
-        <div className="sa-fade-up" style={{ animationDelay: '300ms' }}>
+        <div className="sa-fade-up [animation-delay:300ms]">
           <ComplianceRiskSection notifications={notifications} riskLevel="Medium" />
         </div>
-        <div className="sa-fade-up" style={{ animationDelay: '360ms' }}>
+        <div className="sa-fade-up [animation-delay:360ms]">
           <InsightsSection suggestions={suggestions} topProjects={topProjects} forecast={forecast} />
         </div>
 
         {/* Quick actions panel */}
-        <div className="sa-fade-up" style={{ animationDelay: '420ms' }}>
+        <div className="sa-fade-up [animation-delay:420ms]">
           <QuickActionsPanel
             onFind={() => (window.location.href = '/discovery/search')}
             onReport={() => (window.location.href = '/reporting/generator')}
@@ -145,7 +144,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Footer */}
-        <div className="sa-fade-up" style={{ animationDelay: '480ms' }}>
+        <div className="sa-fade-up [animation-delay:480ms]">
           <AdminFooter compliancePct={78} />
         </div>
       </div>

@@ -1,20 +1,29 @@
 import { useState } from 'react'
-import ComparisonTable from './components/ComparisonTable.jsx'
 import useComparison from './hooks/useComparison.js'
 import Toolbar from './components/Toolbar.jsx'
 import KpiStrip from './components/KpiStrip.jsx'
+import ProjectRow from './components/ProjectRow.jsx'
 import { CostImpactChart, EsgScoreChart } from './components/Charts.jsx'
 
 export default function ComparisonMatrixPage() {
-  const { rows, columns } = useComparison()
+  const { projects, selectedCount } = useComparison()
   const [mode, setMode] = useState('table')
   return (
     <div className="p-8 max-w-7xl mx-auto">
       <header className="mb-6">
-        <h1 className="text-2xl font-extrabold bg-gradient-to-r from-emerald-700 to-emerald-500 text-transparent bg-clip-text">Project Comparison Matrix</h1>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-sky-500 rounded-lg flex items-center justify-center text-white">🌿</div>
+            <h1 className="text-2xl font-bold text-gray-900">Project Comparison Matrix</h1>
+          </div>
+          <div className="flex items-center space-x-4">
+            <span className="text-sm text-gray-600">{selectedCount} Projects Selected</span>
+            <button className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors">Export Report</button>
+          </div>
+        </div>
       </header>
       <section className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-6">
-        <Toolbar mode={mode} onMode={setMode} />
+        <Toolbar mode={mode} onMode={setMode} selectedCount={selectedCount} />
         <KpiStrip />
       </section>
 
@@ -31,8 +40,10 @@ export default function ComparisonMatrixPage() {
               <div className="text-center">Actions</div>
             </div>
           </div>
-          <div className="overflow-x-auto">
-            <ComparisonTable rows={rows} columns={columns} />
+          <div>
+            {projects.map((p) => (
+              <ProjectRow key={p.id} project={p} />
+            ))}
           </div>
         </section>
       ) : (
