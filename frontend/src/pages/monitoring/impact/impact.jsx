@@ -1,19 +1,36 @@
+import Header from './components/Header.jsx'
+import OverviewCards from './components/OverviewCards.jsx'
+import ImpactTrends from './components/ImpactTrends.jsx'
+import RenewableEnergy from './components/RenewableEnergy.jsx'
+import WasteReduction from './components/WasteReduction.jsx'
+import RegionalMap from './components/RegionalMap.jsx'
+import SustainabilityKpis from './components/SustainabilityKpis.jsx'
+import MonthlyGoals from './components/MonthlyGoals.jsx'
+import ImpactHeatmap from './components/ImpactHeatmap.jsx'
+
 export default function ImpactDashboardPage() {
-  const kpis = [
-    { label: 'CO₂ Saved', value: '1,200t' },
-    { label: 'Children Educated', value: '10,500' },
-    { label: 'Water Conserved', value: '5.2M L' },
-  ]
   return (
-    <div className="p-8 max-w-6xl mx-auto">
-      <h1 className="text-2xl font-extrabold bg-gradient-to-r from-emerald-700 to-emerald-500 text-transparent bg-clip-text mb-4">Impact Dashboard</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {kpis.map((k) => (
-          <div key={k.label} className="bg-white rounded-2xl shadow p-6 border border-gray-100">
-            <div className="text-sm text-gray-600">{k.label}</div>
-            <div className="text-2xl font-extrabold text-gray-900 mt-1">{k.value}</div>
+    <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 space-y-8">
+      <Header />
+      <OverviewCards />
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-8">
+          <ImpactTrends />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <RenewableEnergy />
+            <WasteReduction />
           </div>
-        ))}
+        </div>
+        <RegionalMap />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <SustainabilityKpis />
+        <div className="space-y-6">
+          <MonthlyGoals />
+          <ImpactHeatmap />
+        </div>
       </div>
     </div>
   )

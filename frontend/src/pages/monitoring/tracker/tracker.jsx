@@ -1,25 +1,24 @@
+import useTracker from './hooks/useTracker.js'
+import HeaderBar from './components/HeaderBar.jsx'
+import FiltersBar from './components/FiltersBar.jsx'
+import TimelineOverview from './components/TimelineOverview.jsx'
+import ProjectCard from './components/ProjectCard.jsx'
+
 export default function ProjectTrackerPage() {
-  const milestones = [
-    { date: '2025-01-10', title: 'Kickoff', status: 'Done' },
-    { date: '2025-02-01', title: 'Site Survey', status: 'In Progress' },
-    { date: '2025-03-15', title: 'Procurement', status: 'Pending' },
-  ]
+  const { filter, setFilter, projects, timeline } = useTracker()
+
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-extrabold bg-gradient-to-r from-emerald-700 to-emerald-500 text-transparent bg-clip-text mb-4">Project Tracker</h1>
-      <div className="bg-white rounded-2xl shadow p-6 border border-gray-100">
-        <ul className="space-y-3">
-          {milestones.map((m) => (
-            <li key={m.title} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-              <div>
-                <div className="font-semibold text-gray-900">{m.title}</div>
-                <div className="text-sm text-gray-600">{m.date}</div>
-              </div>
-              <span className="text-sm bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full">{m.status}</span>
-            </li>
+    <div className="bg-gray-50 min-h-screen">
+      <HeaderBar onNew={() => {}} />
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        <FiltersBar filter={filter} setFilter={setFilter} />
+        <TimelineOverview timeline={timeline} />
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {projects.map((p) => (
+            <ProjectCard key={p.id} project={p} />
           ))}
-        </ul>
-      </div>
+        </section>
+      </main>
     </div>
   )
 }
