@@ -21,15 +21,20 @@ function SpotlightCard({ gradient, tag, rating, title, desc, price, chips }) {
 
 export default function HeroSpotlight() {
     return (
-        <section className="bg-white rounded-2xl p-6 md:p-8 shadow-lg">
-            <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">Trending Impact Projects</h2>
-                <p className="text-gray-600">Discover high-impact CSR opportunities making a difference worldwide</p>
-            </div>
-            <div className="grid md:grid-cols-3 gap-6">
-                <SpotlightCard gradient="from-green-500 to-emerald-600" tag="🌱 Climate Action" rating="4.9" title="Amazon Reforestation Initiative" desc="Plant 50,000 trees in deforested areas" price="$250,000" chips={["SDG 13","SDG 15"]} />
-                <SpotlightCard gradient="from-blue-500 to-cyan-600" tag="💧 Clean Water" rating="4.8" title="Rural Water Access Project" desc="Provide clean water to 10,000 people" price="$180,000" chips={["SDG 6","SDG 3"]} />
-                <SpotlightCard gradient="from-purple-500 to-pink-600" tag="📚 Education" rating="4.7" title="Digital Learning Centers" desc="Establish tech labs in rural schools" price="$320,000" chips={["SDG 4","SDG 9"]} />
+        <section className="relative rounded-2xl overflow-hidden shadow-lg">
+            {/* Solid gradient backdrop (removed white blur orbs for clarity) */}
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 via-teal-500 to-sky-500" />
+
+            <div className="relative p-6 md:p-10">
+                <div className="relative text-center mb-8">
+                    <h2 className="text-3xl font-bold text-white mb-2">Trending Impact Projects</h2>
+                    <p className="text-white/90">Discover high-impact CSR opportunities making a difference worldwide</p>
+                </div>
+                <div className="grid md:grid-cols-3 gap-6">
+                    <SpotlightCard gradient="from-green-500 to-emerald-600" tag="🌱 Climate Action" rating="4.9" title="Amazon Reforestation Initiative" desc="Plant 50,000 trees in deforested areas" price="$250,000" chips={["SDG 13","SDG 15"]} />
+                    <SpotlightCard gradient="from-blue-500 to-cyan-600" tag="💧 Clean Water" rating="4.8" title="Rural Water Access Project" desc="Provide clean water to 10,000 people" price="$180,000" chips={["SDG 6","SDG 3"]} />
+                    <SpotlightCard gradient="from-purple-500 to-pink-600" tag="📚 Education" rating="4.7" title="Digital Learning Centers" desc="Establish tech labs in rural schools" price="$320,000" chips={["SDG 4","SDG 9"]} />
+                </div>
             </div>
         </section>
     )
