@@ -1,5 +1,5 @@
 export default function WizardActions({ step, back, next, canProceed, onFinish }) {
-  const isLast = step === 8
+  const isLast = step === 4
   return (
     <div className="flex items-center justify-between mt-4">
       <button className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700" onClick={back} disabled={step === 1}>Back</button>
