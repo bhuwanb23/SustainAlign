@@ -35,9 +35,8 @@ export default function TopNav() {
                             <div className="absolute left-0 mt-2 w-72 z-50 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
                                 <div className="text-xs font-semibold text-green-600 mb-2">Corporate Profile Setup</div>
                                 <div className="flex flex-col gap-1">
-                                    <NavLink to="/profile/company-details" className={linkClass}>Company Details File</NavLink>
-                                    <NavLink to="/profile/csr-history" className={linkClass}>CSR History Upload File</NavLink>
-                                    <NavLink to="/profile/sdg-selector" className={linkClass}>ESG/SDG Selector File</NavLink>
+                                    <NavLink to="/profile/company-details" className={linkClass}>Company Details Form</NavLink>
+                                    <NavLink to="/profile/company-showcase" className={linkClass}>Company Details Showcase</NavLink>
                                 </div>
                             </div>
                         </div>

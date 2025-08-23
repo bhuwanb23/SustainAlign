@@ -8,8 +8,6 @@ import AppLayout from './layouts/AppLayout.jsx'
 
 // Profile Setup pages
 import CompanyDetailsPage from './pages/profile/company-details/company-details.jsx'
-import CsrHistoryPage from './pages/profile/csr-history/csr-history.jsx'
-import SdgSelectorPage from './pages/profile/sdg-selector/sdg-selector.jsx'
 
 // Discovery pages
 import ProjectSearchPage from './pages/discovery/project-search/project-search.jsx'
@@ -77,8 +75,7 @@ export default function App() {
 
         {/* 🏗️ Corporate Profile Setup */}
         <Route path="/profile/company-details" element={<CompanyDetailsPage />} />
-        <Route path="/profile/csr-history" element={<CsrHistoryPage />} />
-        <Route path="/profile/sdg-selector" element={<SdgSelectorPage />} />
+        <Route path="/profile/company-showcase" element={<CompanyDetailsPage />} />
 
         {/* 🔎 Project Discovery Page (Agent 1) */}
         <Route path="/discovery/search" element={<ProjectSearchPage />} />

@@ -1,4 +1,4 @@
-export default function Stepper({ step, goTo }) {
+export default function Stepper({ step, goTo, mode = 'form' }) {
   const steps = [
     {
       label: 'Company & Contact',
@@ -21,6 +21,11 @@ export default function Stepper({ step, goTo }) {
       description: 'Configure AI settings and manage user access'
     }
   ]
+
+  // Don't render stepper in showcase mode
+  if (mode === 'showcase') {
+    return null
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 pt-6">
