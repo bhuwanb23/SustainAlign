@@ -10,7 +10,7 @@ import AppLayout from './layouts/AppLayout.jsx'
 import CompanyDetailsPage from './pages/profile/company-details/company-details.jsx'
 
 // Discovery pages
-import ProjectSearchPage from './pages/discovery/project-search/project-search.jsx'
+import ProjectAddPage from './pages/discovery/project-add/project-add.jsx'
 import ProjectCardsPage from './pages/discovery/project-cards/project-cards.jsx'
 
 // Alignment & Evaluation
@@ -78,7 +78,7 @@ export default function App() {
         <Route path="/profile/company-showcase" element={<CompanyDetailsPage />} />
 
         {/* 🔎 Project Discovery Page (Agent 1) */}
-        <Route path="/discovery/search" element={<ProjectSearchPage />} />
+        <Route path="/discovery/add" element={<ProjectAddPage />} />
         <Route path="/discovery/cards" element={<ProjectCardsPage />} />
 
         {/* 🎯 Alignment & Evaluation Page (Agents 2 & 3) */}

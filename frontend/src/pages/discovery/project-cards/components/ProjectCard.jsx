@@ -1,71 +1,160 @@
-const badgeClass = {
-  verified: 'badge-verified text-white text-xs px-3 py-1 rounded-full font-medium',
-  review: 'badge-review text-white text-xs px-3 py-1 rounded-full font-medium',
-}
-
-const ngoColor = {
-  green: 'text-green-700',
-  blue: 'text-blue-700',
-}
-
-const tagClass = {
-  green: 'bg-green-100 text-green-700',
-  blue: 'bg-blue-100 text-blue-700',
-  yellow: 'bg-yellow-100 text-yellow-700',
-  purple: 'bg-purple-100 text-purple-700',
-  red: 'bg-red-100 text-red-700',
-}
+import { motion } from 'framer-motion'
 
 export default function ProjectCard({ project }) {
-  const cardGradient = project.theme === 'blue' ? 'project-card-blue border-blue-100' : 'project-card border-green-100'
-  const cBadge = badgeClass[project.status] || badgeClass.verified
-  const ngoCls = ngoColor[project.ngo?.color] || 'text-green-700'
+  const getSdgColor = (sdgName) => {
+    const colorMap = {
+      'No Poverty': 'bg-red-500',
+      'Zero Hunger': 'bg-orange-500',
+      'Good Health': 'bg-green-500',
+      'Quality Education': 'bg-blue-500',
+      'Gender Equality': 'bg-pink-500',
+      'Clean Water': 'bg-cyan-500',
+      'Clean Energy': 'bg-yellow-500',
+      'Decent Work': 'bg-purple-500',
+      'Climate Action': 'bg-emerald-500',
+      'Life on Land': 'bg-teal-500'
+    }
+    return colorMap[sdgName] || 'bg-gray-500'
+  }
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    })
+  }
+
+  const formatBudget = (budget) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(budget)
+  }
+
   return (
-    <div className={`${cardGradient} rounded-2xl p-6 shadow-lg card-hover cursor-pointer border group`}>
-      <div className="relative mb-4">
-        <img className="w-full h-48 object-cover rounded-xl" src={project.image} alt={project.alt} />
-        <div className="absolute top-3 right-3">
-          <span className={`${cBadge} flex items-center gap-1`}>{project.status === 'review' ? 'Under Review' : 'Verified'}</span>
+    <motion.div
+      whileHover={{ y: -8 }}
+      transition={{ duration: 0.3 }}
+      className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100"
+    >
+      {/* Header */}
+      <div className="relative h-48 bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center">
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-teal-500/20"></div>
+        <div className="relative z-10 text-center">
+          <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg">
+            <span className="text-2xl">
+              {project.impactArea === 'Education' ? '📚' :
+               project.impactArea === 'Healthcare' ? '🏥' :
+               project.impactArea === 'Environment' ? '🌿' :
+               project.impactArea === 'Clean Energy' ? '⚡' :
+               project.impactArea === 'Water & Sanitation' ? '💧' :
+               project.impactArea === 'Women Empowerment' ? '👩‍💼' :
+               project.impactArea === 'Agriculture' ? '🌾' :
+               '🌍'}
+            </span>
+          </div>
+          <div className="text-xs font-medium text-emerald-700 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1 inline-block">
+            {project.status === 'pending' ? 'Under Review' : 'Verified'}
+          </div>
         </div>
       </div>
 
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold text-gray-800 mb-2">{project.title}</h3>
-        <p className={`text-sm font-medium mb-2 ${ngoCls}`}>{project.ngo?.name}</p>
-        <p className="text-sm text-gray-600 mb-3">{project.summary}</p>
+      {/* Content */}
+      <div className="p-6">
+        {/* Title and Organization */}
+        <div className="mb-4">
+          <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+            {project.projectName}
+          </h3>
+          <p className="text-sm text-emerald-600 font-medium">
+            {project.organization}
+          </p>
+        </div>
 
-        <div className="flex justify-between items-center mb-4">
-          <div>
-            <span className="text-xs text-gray-500">Budget Needed</span>
-            <p className={`text-lg font-bold ${project.theme === 'blue' ? 'text-blue-600' : 'text-green-600'}`}>
-              ${project.budgetNeeded.toLocaleString()}
-            </p>
+        {/* Description */}
+        <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+          {project.description}
+        </p>
+
+        {/* Location and Timeline */}
+        <div className="flex items-center gap-4 text-xs text-gray-500 mb-4">
+          <div className="flex items-center gap-1">
+            <span>📍</span>
+            <span>{project.location}</span>
           </div>
-          <div className="text-right">
-            <span className="text-xs text-gray-500">Credibility</span>
-            <p className={`text-sm font-semibold ${project.theme === 'blue' ? 'text-blue-600' : 'text-green-600'}`}>{project.credibility}%</p>
+          <div className="flex items-center gap-1">
+            <span>⏱️</span>
+            <span>{project.timeline}</span>
           </div>
         </div>
-      </div>
 
-      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 mb-4">
+        {/* Budget */}
+        <div className="mb-4">
+          <div className="text-xs text-gray-500 mb-1">Budget Required</div>
+          <div className="text-lg font-bold text-emerald-600">
+            {formatBudget(project.budget)}
+          </div>
+        </div>
+
+        {/* SDGs */}
+        <div className="mb-4">
+          <div className="text-xs text-gray-500 mb-2">Sustainable Development Goals</div>
+          <div className="flex flex-wrap gap-1">
+            {project.sdgs.slice(0, 3).map((sdg, index) => (
+              <span
+                key={index}
+                className={`${getSdgColor(sdg)} text-white text-xs px-2 py-1 rounded-full`}
+              >
+                {sdg}
+              </span>
+            ))}
+            {project.sdgs.length > 3 && (
+              <span className="bg-gray-300 text-gray-700 text-xs px-2 py-1 rounded-full">
+                +{project.sdgs.length - 3} more
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+          <div className="flex items-center gap-1">
+            <span>👁️</span>
+            <span>{project.views} views</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span>❤️</span>
+            <span>{project.likes} likes</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span>📅</span>
+            <span>{formatDate(project.createdAt)}</span>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
         <div className="flex gap-2">
-          <button className={`flex-1 ${project.theme === 'blue' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-green-600 hover:bg-green-700'} text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors`}>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-medium py-2 px-4 rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all duration-200"
+          >
             View Details
-          </button>
-          <button className="bg-gray-100 text-gray-600 p-2 rounded-lg hover:bg-gray-200 transition-colors">❤</button>
-          <button className="bg-gray-100 text-gray-600 p-2 rounded-lg hover:bg-gray-200 transition-colors">⚖️</button>
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="px-4 py-2 border border-emerald-500 text-emerald-600 text-sm font-medium rounded-lg hover:bg-emerald-50 transition-all duration-200"
+          >
+            Contact
+          </motion.button>
         </div>
       </div>
-
-      <div className={`flex gap-2 pt-3 border-t ${project.theme === 'blue' ? 'border-blue-100' : 'border-green-100'}`}>
-        {project.tags.map((t) => (
-          <span key={t.label} className={`${tagClass[t.color] || 'bg-green-100 text-green-700'} text-xs px-2 py-1 rounded-full flex items-center gap-1`}>
-            {t.label}
-          </span>
-        ))}
-      </div>
-    </div>
+    </motion.div>
   )
 }
 

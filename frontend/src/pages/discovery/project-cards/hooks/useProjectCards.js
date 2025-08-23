@@ -1,103 +1,145 @@
+import { useState, useEffect } from 'react'
+
 export default function useProjectCards() {
-  const projects = [
-    {
-      id: 'card-1',
-      theme: 'green',
-      status: 'verified',
-      image: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/44f46ecb32-e45e5602ec89eb08d3c6.png',
-      alt: 'children in classroom with solar panels on roof, bright educational environment, sustainable energy',
-      title: 'Solar-Powered Learning Centers',
-      ngo: { name: 'Green Education Foundation', color: 'green' },
-      summary: 'Bringing sustainable electricity to rural schools, impacting 2,500+ students across 15 communities.',
-      budgetNeeded: 45000,
-      credibility: 98,
-      tags: [
-        { label: 'Education', color: 'green' },
-        { label: 'Clean Energy', color: 'blue' },
-      ],
-    },
-    {
-      id: 'card-2',
-      theme: 'blue',
-      status: 'verified',
-      image: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/60cab717ca-858f1c83264b0a594a15.png',
-      alt: 'clean water well in African village, people collecting water, sustainable infrastructure',
-      title: 'Clean Water Access Initiative',
-      ngo: { name: 'Water for Life NGO', color: 'blue' },
-      summary: 'Installing sustainable water systems in underserved communities, providing clean water to 8,000+ people.',
-      budgetNeeded: 67500,
-      credibility: 95,
-      tags: [
-        { label: 'Clean Water', color: 'blue' },
-        { label: 'Health', color: 'green' },
-      ],
-    },
-    {
-      id: 'card-3',
-      theme: 'green',
-      status: 'review',
-      image: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/5dd5fe0bf7-4973f059e2e813107fbc.png',
-      alt: 'community garden with vegetables, people farming together, sustainable agriculture',
-      title: 'Sustainable Agriculture Program',
-      ngo: { name: 'Farm to Future Initiative', color: 'green' },
-      summary: 'Teaching organic farming techniques to 500+ families, improving food security and income.',
-      budgetNeeded: 28900,
-      credibility: 87,
-      tags: [
-        { label: 'Agriculture', color: 'green' },
-        { label: 'Food Security', color: 'yellow' },
-      ],
-    },
-    {
-      id: 'card-4',
-      theme: 'blue',
-      status: 'verified',
-      image: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/57d4e1cbe3-8ed29a14baa07df071bb.png',
-      alt: 'women learning computer skills in technology center, empowerment and education',
-      title: "Women's Digital Literacy",
-      ngo: { name: 'Empower Her Foundation', color: 'blue' },
-      summary: 'Providing technology training to 300+ women, enabling economic independence and digital inclusion.',
-      budgetNeeded: 32400,
-      credibility: 92,
-      tags: [
-        { label: 'Gender Equality', color: 'purple' },
-        { label: 'Technology', color: 'blue' },
-      ],
-    },
-    {
-      id: 'card-5',
-      theme: 'green',
-      status: 'verified',
-      image: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/25325458d5-ef0f502706181039a057.png',
-      alt: 'forest restoration with people planting trees, environmental conservation, green landscape',
-      title: 'Forest Restoration Project',
-      ngo: { name: 'Green Earth Alliance', color: 'green' },
-      summary: 'Restoring 1,200 hectares of degraded forest, planting 50,000+ trees to combat climate change.',
-      budgetNeeded: 89200,
-      credibility: 96,
-      tags: [
-        { label: 'Environment', color: 'green' },
-        { label: 'Climate Action', color: 'blue' },
-      ],
-    },
-    {
-      id: 'card-6',
-      theme: 'blue',
-      status: 'review',
-      image: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/e283997565-95512ca96f68dcebbca7.png',
-      alt: 'mobile health clinic serving rural community, medical care, healthcare access',
-      title: 'Mobile Healthcare Units',
-      ngo: { name: 'Health Access Network', color: 'blue' },
-      summary: 'Bringing essential medical services to remote areas, serving 12,000+ patients annually.',
-      budgetNeeded: 156000,
-      credibility: 84,
-      tags: [
-        { label: 'Health', color: 'red' },
-        { label: 'Access', color: 'blue' },
-      ],
-    },
-  ]
-  return { projects }
+  const [projects, setProjects] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadProjects = () => {
+      try {
+        // Load projects from localStorage (added via project-add)
+        const storedProjects = JSON.parse(localStorage.getItem('projects') || '[]')
+        
+        // Combine with default projects
+        const defaultProjects = [
+          {
+            id: 1,
+            projectName: 'Clean Water Initiative',
+            organization: 'WaterAid India',
+            description: 'Providing clean drinking water to rural communities through sustainable water purification systems.',
+            impactArea: 'Water & Sanitation',
+            location: 'Rural Maharashtra, India',
+            budget: 50000,
+            timeline: '1-2 years',
+            sdgs: ['Clean Water', 'Good Health'],
+            contactEmail: 'contact@wateraidindia.org',
+            website: 'https://wateraidindia.org',
+            status: 'active',
+            createdAt: '2024-01-15T10:00:00Z',
+            views: 245,
+            likes: 18
+          },
+          {
+            id: 2,
+            projectName: 'Solar Energy for Schools',
+            organization: 'Green Energy Foundation',
+            description: 'Installing solar panels in government schools to provide reliable electricity and reduce carbon emissions.',
+            impactArea: 'Clean Energy',
+            location: 'Karnataka, India',
+            budget: 75000,
+            timeline: '6-12 months',
+            sdgs: ['Clean Energy', 'Quality Education', 'Climate Action'],
+            contactEmail: 'info@greenenergyfoundation.org',
+            website: 'https://greenenergyfoundation.org',
+            status: 'active',
+            createdAt: '2024-01-10T14:30:00Z',
+            views: 189,
+            likes: 23
+          },
+          {
+            id: 3,
+            projectName: 'Women Empowerment through Skills Training',
+            organization: 'Empower Women NGO',
+            description: 'Providing vocational training and entrepreneurship skills to women from marginalized communities.',
+            impactArea: 'Women Empowerment',
+            location: 'Delhi, India',
+            budget: 35000,
+            timeline: '1-2 years',
+            sdgs: ['Gender Equality', 'Decent Work', 'No Poverty'],
+            contactEmail: 'hello@empowerwomen.org',
+            website: 'https://empowerwomen.org',
+            status: 'active',
+            createdAt: '2024-01-05T09:15:00Z',
+            views: 312,
+            likes: 45
+          },
+          {
+            id: 4,
+            projectName: 'Digital Literacy Program',
+            organization: 'Tech for Good Foundation',
+            description: 'Teaching computer skills and digital literacy to underprivileged youth to improve employability.',
+            impactArea: 'Education',
+            location: 'Hyderabad, India',
+            budget: 40000,
+            timeline: '1-2 years',
+            sdgs: ['Quality Education', 'Decent Work'],
+            contactEmail: 'contact@techforgood.org',
+            website: 'https://techforgood.org',
+            status: 'active',
+            createdAt: '2024-01-01T11:45:00Z',
+            views: 178,
+            likes: 29
+          },
+          {
+            id: 5,
+            projectName: 'Organic Farming Initiative',
+            organization: 'Sustainable Agriculture Trust',
+            description: 'Training farmers in organic farming techniques to improve soil health and increase crop yields.',
+            impactArea: 'Agriculture',
+            location: 'Punjab, India',
+            budget: 60000,
+            timeline: '2+ years',
+            sdgs: ['Zero Hunger', 'Climate Action', 'Life on Land'],
+            contactEmail: 'info@sustainableagriculture.org',
+            website: 'https://sustainableagriculture.org',
+            status: 'active',
+            createdAt: '2023-12-28T16:20:00Z',
+            views: 203,
+            likes: 34
+          },
+          {
+            id: 6,
+            projectName: 'Healthcare Mobile Clinic',
+            organization: 'Health for All Foundation',
+            description: 'Operating mobile medical clinics to provide healthcare services to remote villages.',
+            impactArea: 'Healthcare',
+            location: 'Rajasthan, India',
+            budget: 45000,
+            timeline: '1-2 years',
+            sdgs: ['Good Health', 'No Poverty'],
+            contactEmail: 'contact@healthforall.org',
+            website: 'https://healthforall.org',
+            status: 'active',
+            createdAt: '2023-12-25T13:10:00Z',
+            views: 267,
+            likes: 41
+          }
+        ]
+
+        const allProjects = [...defaultProjects, ...storedProjects]
+        
+        // Sort by creation date (newest first)
+        allProjects.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        
+        setProjects(allProjects)
+      } catch (error) {
+        console.error('Error loading projects:', error)
+        setProjects([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    // Simulate loading delay
+    const timer = setTimeout(loadProjects, 1000)
+    
+    return () => clearTimeout(timer)
+  }, [])
+
+  return {
+    projects,
+    loading
+  }
 }
 
 
