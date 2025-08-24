@@ -12,7 +12,11 @@ from dotenv import load_dotenv
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from app import create_app
-from models import db, User, Company, CompanyBranch, CSRContact, Budget, FocusArea, ComplianceDocument, NGOPreference, AIConfig, UserRole
+from models import (
+    db, User, Company, CompanyBranch, CSRContact, Budget, FocusArea, 
+    ComplianceDocument, NGOPreference, AIConfig, UserRole,
+    Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile
+)
 
 def get_table_names():
     """Get list of existing table names from database"""
@@ -54,7 +58,12 @@ def add_new_tables():
             'compliance_documents',
             'ngo_preferences',
             'ai_configs',
-            'user_roles'
+            'user_roles',
+            'projects',
+            'project_milestones',
+            'project_applications',
+            'project_impact_reports',
+            'ngo_profiles'
         ]
         
         # Find missing tables
@@ -205,10 +214,111 @@ def create_sample_data():
         )
         db.session.add(user_role)
         
+        # Create sample NGO profile
+        ngo_profile = NGOProfile(
+            name='EduCare Foundation',
+            registration_number='EDU001',
+            legal_status='Trust',
+            year_established=2015,
+            address='123 Education Street, Bangalore',
+            city='Bangalore',
+            state='Karnataka',
+            country='India',
+            phone='+91-9876543211',
+            email='info@educare.org',
+            website='https://educare.org',
+            pan_number='ABCDE1234F',
+            _80g_status='Valid',
+            fcra_status='Valid',
+            fcra_number='FCRA123456',
+            rating=4,
+            verification_badge='Verified',
+            total_projects_completed=25,
+            total_beneficiaries_reached=5000
+        )
+        ngo_profile.set_primary_sectors(['Education', 'Rural Development'])
+        ngo_profile.set_sdg_focus([4, 1, 5])  # Quality Education, No Poverty, Gender Equality
+        ngo_profile.set_geographic_focus(['Karnataka', 'Maharashtra', 'Tamil Nadu'])
+        ngo_profile.set_funding_sources(['CSR', 'Government Grants', 'Individual Donors'])
+        ngo_profile.set_documents(['trust-deed.pdf', '80g-certificate.pdf', 'fcra-certificate.pdf'])
+        db.session.add(ngo_profile)
+        db.session.flush()
+        
+        # Create sample project
+        from datetime import date, timedelta
+        project = Project(
+            title='Digital Literacy for Rural Students',
+            short_description='Providing computer education and digital skills to 500 students in rural Karnataka villages',
+            ngo_name='EduCare Foundation',
+            location_city='Bangalore',
+            location_region='Karnataka',
+            location_country='India',
+            total_project_cost=2500000,
+            funding_required=1500000,
+            currency='INR',
+            csr_eligibility=True,
+            preferred_contribution_type='cash',
+            start_date=date.today(),
+            end_date=date.today() + timedelta(days=365),
+            ngo_registration_number='EDU001',
+            ngo_80g_status='Valid',
+            ngo_fcra_status='Valid',
+            ngo_rating=4,
+            ngo_verification_badge='Verified',
+            past_projects_completed=25,
+            status='published',
+            visibility='public',
+            created_by=user.id
+        )
+        project.set_sdg_goals([4, 9, 10])  # Quality Education, Industry & Innovation, Reduced Inequalities
+        project.set_csr_focus_areas(['Education', 'Technology', 'Rural Development'])
+        project.set_target_beneficiaries(['Students', 'Rural Communities', 'Youth'])
+        project.set_expected_outcomes({
+            'students_enrolled': 500,
+            'villages_covered': 10,
+            'computer_labs_established': 5
+        })
+        project.set_kpis({
+            'digital_literacy_rate': '80%',
+            'employment_placement': '60%',
+            'community_engagement': '90%'
+        })
+        project.set_project_images([
+            'https://example.com/project1.jpg',
+            'https://example.com/project2.jpg'
+        ])
+        project.proposal_document_url = 'https://example.com/proposal.pdf'
+        db.session.add(project)
+        db.session.flush()
+        
+        # Create sample project milestone
+        milestone = ProjectMilestone(
+            project_id=project.id,
+            title='Project Setup and Infrastructure',
+            description='Establish computer labs and recruit trainers',
+            target_date=date.today() + timedelta(days=30),
+            status='pending',
+            progress_percentage=0
+        )
+        db.session.add(milestone)
+        
+        # Create sample project application
+        application = ProjectApplication(
+            project_id=project.id,
+            company_id=company.id,
+            application_type='funding',
+            amount_offered=1000000,
+            contribution_details='Funding support for computer equipment and trainer salaries',
+            status='pending'
+        )
+        db.session.add(application)
+        
         db.session.commit()
         print("✅ Sample data created successfully!")
         print("📧 Demo user: demo@techcorp.com")
         print("🔑 Demo password: demo123")
+        print("🏗️  Sample project: Digital Literacy for Rural Students")
+        print("🏢 Sample NGO: EduCare Foundation")
 
 def show_database_info():
     """Show database information"""
@@ -229,7 +339,12 @@ def show_database_info():
             'compliance_documents': ComplianceDocument,
             'ngo_preferences': NGOPreference,
             'ai_configs': AIConfig,
-            'user_roles': UserRole
+            'user_roles': UserRole,
+            'projects': Project,
+            'project_milestones': ProjectMilestone,
+            'project_applications': ProjectApplication,
+            'project_impact_reports': ProjectImpactReport,
+            'ngo_profiles': NGOProfile
         }
         
         for table_name, model in tables.items():
@@ -269,7 +384,12 @@ def check_database_status():
             'compliance_documents',
             'ngo_preferences',
             'ai_configs',
-            'user_roles'
+            'user_roles',
+            'projects',
+            'project_milestones',
+            'project_applications',
+            'project_impact_reports',
+            'ngo_profiles'
         ]
         
         # Find missing tables

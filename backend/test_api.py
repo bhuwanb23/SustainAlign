@@ -147,6 +147,65 @@ def test_get_companies():
     print(f"Response: {response.json()}")
     return response.status_code == 200
 
+def test_create_project():
+    """Test creating a project"""
+    print("\n🔍 Testing create project...")
+    headers = {"Authorization": f"Bearer {auth_token}"} if auth_token else {}
+    
+    data = {
+        "title": "Digital Literacy for Rural Students",
+        "short_description": "Providing computer education and digital skills to 500 students in rural Karnataka villages",
+        "ngo_name": "EduCare Foundation",
+        "location_city": "Bangalore",
+        "location_region": "Karnataka",
+        "location_country": "India",
+        "sdg_goals": [4, 9, 10],  # Quality Education, Industry & Innovation, Reduced Inequalities
+        "csr_focus_areas": ["Education", "Technology", "Rural Development"],
+        "target_beneficiaries": ["Students", "Rural Communities", "Youth"],
+        "total_project_cost": 2500000,
+        "funding_required": 1500000,
+        "currency": "INR",
+        "csr_eligibility": True,
+        "preferred_contribution_type": "cash",
+        "start_date": "2024-01-01",
+        "end_date": "2024-12-31",
+        "expected_outcomes": {
+            "students_enrolled": 500,
+            "villages_covered": 10,
+            "computer_labs_established": 5
+        },
+        "kpis": {
+            "digital_literacy_rate": "80%",
+            "employment_placement": "60%",
+            "community_engagement": "90%"
+        },
+        "ngo_registration_number": "EDU001",
+        "ngo_80g_status": "Valid",
+        "ngo_fcra_status": "Valid",
+        "ngo_rating": 4,
+        "ngo_verification_badge": "Verified",
+        "past_projects_completed": 25,
+        "project_images": [
+            "https://example.com/project1.jpg",
+            "https://example.com/project2.jpg"
+        ],
+        "proposal_document_url": "https://example.com/proposal.pdf"
+    }
+    
+    response = requests.post(f"{BASE_URL}/projects", json=data, headers=headers)
+    print(f"Status: {response.status_code}")
+    print(f"Response: {response.json()}")
+    return response.status_code == 201
+
+def test_get_projects():
+    """Test getting projects list"""
+    print("\n🔍 Testing get projects list...")
+    headers = {"Authorization": f"Bearer {auth_token}"} if auth_token else {}
+    response = requests.get(f"{BASE_URL}/projects", headers=headers)
+    print(f"Status: {response.status_code}")
+    print(f"Response: {response.json()}")
+    return response.status_code == 200
+
 def main():
     """Run all tests"""
     print("🚀 Starting API tests...")
@@ -159,6 +218,8 @@ def main():
         ("Get Profile", test_get_profile),
         ("Create Company", test_create_company),
         ("Get Companies", test_get_companies),
+        ("Create Project", test_create_project),
+        ("Get Projects", test_get_projects),
     ]
     
     passed = 0

@@ -1,27 +1,39 @@
 from .base import db
 from .user import User
 from .company_details import (
-    Company, 
-    CompanyBranch, 
-    CSRContact, 
-    Budget, 
-    FocusArea, 
-    ComplianceDocument, 
-    NGOPreference, 
-    AIConfig, 
+    Company,
+    CompanyBranch,
+    CSRContact,
+    Budget,
+    FocusArea,
+    ComplianceDocument,
+    NGOPreference,
+    AIConfig,
     UserRole
+)
+from .projects import (
+    Project,
+    ProjectMilestone,
+    ProjectApplication,
+    ProjectImpactReport,
+    NGOProfile
 )
 
 __all__ = [
     'db',
     'User',
     'Company',
-    'CompanyBranch', 
+    'CompanyBranch',
     'CSRContact',
     'Budget',
     'FocusArea',
     'ComplianceDocument',
     'NGOPreference',
     'AIConfig',
-    'UserRole'
+    'UserRole',
+    'Project',
+    'ProjectMilestone',
+    'ProjectApplication',
+    'ProjectImpactReport',
+    'NGOProfile'
 ]
