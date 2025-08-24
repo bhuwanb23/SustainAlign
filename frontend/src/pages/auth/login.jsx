@@ -97,76 +97,7 @@ export default function LoginPage() {
   }
 
   return (
-    <>
-      <style jsx>{`
-        .form-field {
-          opacity: 0;
-          transform: translateY(50px);
-          transition: all 0.6s ease-out;
-        }
-        
-        .form-field.animate-in {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        
-        .submit-btn {
-          opacity: 0;
-          transform: scale(0.8);
-          transition: all 0.4s ease-out;
-        }
-        
-        .submit-btn.animate-in {
-          opacity: 1;
-          transform: scale(1);
-        }
-        
-        .submit-btn.button-hover {
-          transform: scale(1.05);
-        }
-        
-        .submit-btn.loading {
-          animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        
-        .auth-header {
-          opacity: 0;
-          transform: translateY(-30px);
-          transition: all 0.8s ease-out;
-        }
-        
-        .auth-header.animate-in {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        
-        .error-message {
-          opacity: 0;
-          transform: translateX(-20px);
-          transition: all 0.4s ease-out;
-        }
-        
-        .error-message.animate-error {
-          opacity: 1;
-          transform: translateX(0);
-        }
-        
-        .form-container {
-          transition: all 0.5s ease-in-out;
-        }
-        
-        .form-container.success-exit {
-          transform: translateY(-20px);
-          opacity: 0;
-        }
-      `}</style>
-      
-      <AuthLayout
+    <AuthLayout
         title="Secure sign in"
         subtitle="Minimal, CSR-themed access for corporates, NGOs and regulators"
         footer={<span>New here? <a className="text-emerald-700 hover:underline" href="/signup">Create an account</a></span>}
@@ -249,9 +180,8 @@ export default function LoginPage() {
           </button>
                  </form>
        </div>
-     </AuthLayout>
-     </>
-   )
- }
+           </AuthLayout>
+    )
+  }
 
 

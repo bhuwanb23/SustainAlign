@@ -128,107 +128,7 @@ export default function SignupPage() {
   }
 
   return (
-    <>
-      <style jsx>{`
-        .form-field {
-          opacity: 0;
-          transform: translateY(50px);
-          transition: all 0.6s ease-out;
-        }
-        
-        .form-field.animate-in {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        
-        .submit-btn {
-          opacity: 0;
-          transform: scale(0.8);
-          transition: all 0.4s ease-out;
-        }
-        
-        .submit-btn.animate-in {
-          opacity: 1;
-          transform: scale(1);
-        }
-        
-        .submit-btn.button-hover {
-          transform: scale(1.05);
-        }
-        
-        .submit-btn.loading {
-          animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        
-        .auth-header {
-          opacity: 0;
-          transform: translateY(-30px);
-          transition: all 0.8s ease-out;
-        }
-        
-        .auth-header.animate-in {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        
-        .error-message {
-          opacity: 0;
-          transform: translateX(-20px);
-          transition: all 0.4s ease-out;
-        }
-        
-        .error-message.animate-error {
-          opacity: 1;
-          transform: translateX(0);
-        }
-        
-        .success-overlay {
-          opacity: 0;
-          transition: all 0.3s ease-out;
-        }
-        
-        .success-overlay.animate-in {
-          opacity: 1;
-        }
-        
-        .success-overlay.animate-out {
-          opacity: 0;
-        }
-        
-        .success-modal {
-          opacity: 0;
-          transform: translateY(50px) scale(0.9);
-          transition: all 0.5s ease-out;
-        }
-        
-        .success-modal.animate-in {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-        }
-        
-        .success-modal.animate-out {
-          opacity: 0;
-          transform: translateY(50px) scale(0.9);
-        }
-        
-        .success-icon {
-          opacity: 0;
-          transform: scale(0) rotate(180deg);
-          transition: all 0.6s ease-out;
-        }
-        
-        .success-icon.animate-in {
-          opacity: 1;
-          transform: scale(1) rotate(0deg);
-        }
-      `}</style>
-      
-      <AuthLayout
+    <AuthLayout
         title="Create your SustainAlign account"
         subtitle="Guided onboarding for corporates, NGOs, and regulators"
         footer={<span>Already have an account? <a className="text-emerald-700 hover:underline" href="/login">Sign in</a></span>}
@@ -359,7 +259,6 @@ export default function SignupPage() {
         </div>
       )}
     </AuthLayout>
-    </>
   )
 }
 

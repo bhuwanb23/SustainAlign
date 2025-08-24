@@ -45,56 +45,7 @@ export default function AuthLayout({ title, subtitle, children, footer }) {
   }, [])
 
   return (
-    <>
-      <style jsx>{`
-        .floating-bg {
-          transition: all 6s ease-in-out;
-        }
-        
-        .floating-bg.animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-          0%, 100% { transform: translate(0, 0); }
-          50% { transform: translate(10px, -20px); }
-        }
-        
-        .header-element {
-          opacity: 0;
-          transform: translateY(-30px);
-          transition: all 0.8s ease-out;
-        }
-        
-        .header-element.animate-in {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        
-        .main-content {
-          opacity: 0;
-          transform: translateY(50px);
-          transition: all 1s ease-out;
-        }
-        
-        .main-content.animate-in {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        
-        .feature-item {
-          opacity: 0;
-          transform: translateX(-30px);
-          transition: all 0.6s ease-out;
-        }
-        
-        .feature-item.animate-in {
-          opacity: 1;
-          transform: translateX(0);
-        }
-      `}</style>
-      
-      <div ref={layoutRef} className="min-h-screen relative bg-gradient-to-br from-emerald-50 via-white to-emerald-100 sa-animated-bg">
+    <div ref={layoutRef} className="min-h-screen relative bg-gradient-to-br from-emerald-50 via-white to-emerald-100 sa-animated-bg">
       <div ref={floatingElementsRef} className="absolute inset-0 -z-10 overflow-hidden">
         <div className="floating-bg absolute -top-24 -left-24 w-96 h-96 rounded-full bg-emerald-200/40 blur-3xl"></div>
         <div className="floating-bg absolute -bottom-24 -right-24 w-[32rem] h-[32rem] rounded-full bg-teal-200/40 blur-3xl"></div>
@@ -148,7 +99,6 @@ export default function AuthLayout({ title, subtitle, children, footer }) {
                  </div>
        </main>
      </div>
-     </>
    )
  }
 
