@@ -1,70 +1,138 @@
 {% extends 'base.html' %}
 {% block title %}Database · SustainAlign Admin{% endblock %}
 {% block content %}
-<div class="space-y-6">
-  <div class="rounded-xl border border-slate-200/20 bg-white/5 p-6">
-    <h1 class="text-xl font-bold text-emerald-400 mb-1">Database Explorer</h1>
-    <p class="text-slate-400 text-sm">Browse tables from SQLAlchemy metadata. Click a table to view up to 25 rows.</p>
+<!-- Header Section -->
+<div class="mb-8">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-bold gradient-text mb-2">Database Explorer</h1>
+      <p class="text-slate-300 text-lg">Browse and explore database tables and data</p>
+    </div>
+    <div class="flex items-center space-x-4">
+      <div class="px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700">
+        <span class="text-slate-300 text-sm font-medium">{{ tables|length }} Tables</span>
+      </div>
+      <button class="px-4 py-2 bg-gradient-to-r from-brand-500 to-brand-600 text-white rounded-lg hover:from-brand-600 hover:to-brand-700 transition-all duration-200 flex items-center space-x-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
+        </svg>
+        <span>Export Schema</span>
+      </button>
+    </div>
   </div>
+</div>
 
-  {% if tables %}
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-    <!-- Sidebar nav -->
-    <aside class="md:col-span-1">
-      <nav class="rounded-xl border border-slate-200/20 bg-white/5 divide-y divide-slate-200/10 sticky top-6" aria-label="Tables">
+{% if tables %}
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+  <!-- Sidebar Navigation -->
+  <aside class="lg:col-span-1">
+    <div class="glass-effect rounded-2xl p-6 sticky top-6">
+      <h3 class="text-lg font-semibold text-slate-100 mb-4">Tables</h3>
+      <nav class="space-y-2" aria-label="Tables">
         {% for t in tables %}
         <a href="#table-{{ t.name }}"
            data-target="table-{{ t.name }}"
-           class="flex items-center justify-between px-4 py-3 text-sm hover:bg-white/10 transition-colors group table-link {% if loop.first %}is-active{% endif %}">
-          <span class="text-slate-200 group-[.is-active]:text-emerald-300 font-medium">{{ t.name }}</span>
-          <span class="text-xs text-slate-400 group-[.is-active]:text-emerald-300">{{ t.count if t.count is not none else 'n/a' }}</span>
+           class="flex items-center justify-between p-3 rounded-lg hover:bg-slate-700/50 transition-all duration-200 group table-link {% if loop.first %}bg-brand-500/20 border border-brand-500/30{% endif %}">
+          <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
+              </svg>
+            </div>
+            <div>
+              <span class="text-sm font-medium text-slate-200 group-hover:text-brand-300 transition-colors">{{ t.name }}</span>
+              <div class="text-xs text-slate-400">{{ t.columns|length }} columns</div>
+            </div>
+          </div>
+          <span class="text-xs px-2 py-1 rounded-full bg-slate-700/50 text-slate-300">{{ t.count if t.count is not none else '0' }}</span>
         </a>
         {% endfor %}
       </nav>
-    </aside>
+    </div>
+  </aside>
 
-    <!-- Content -->
-    <section class="md:col-span-3 space-y-6">
-      {% for t in tables %}
-      <div id="table-{{ t.name }}" class="rounded-xl border border-slate-200/20 bg-white/5 p-6 table-panel {% if not loop.first %}hidden{% endif %}">
-        <div class="flex items-center justify-between mb-3">
-          <h3 class="text-lg font-semibold text-slate-100">{{ t.name }}</h3>
-          <span class="text-sm text-slate-400">{{ t.count if t.count is not none else 'n/a' }} rows</span>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="min-w-full text-sm">
-            <thead>
-              <tr class="text-left">
-                {% for col in t.columns %}
-                <th class="p-2 whitespace-nowrap text-slate-300">{{ col }}</th>
-                {% endfor %}
-              </tr>
-            </thead>
-            <tbody>
-              {% for row in t.rows %}
-              <tr class="odd:bg-white/5">
-                {% for col in t.columns %}
-                <td class="p-2 whitespace-nowrap text-slate-200">{{ row[col] }}</td>
-                {% endfor %}
-              </tr>
-              {% else %}
-              <tr>
-                <td class="p-2 text-slate-400" colspan="{{ t.columns|length }}">No data.</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+  <!-- Main Content -->
+  <section class="lg:col-span-3 space-y-6">
+    {% for t in tables %}
+    <div id="table-{{ t.name }}" class="glass-effect rounded-2xl overflow-hidden table-panel {% if not loop.first %}hidden{% endif %}">
+      <!-- Table Header -->
+      <div class="p-6 border-b border-slate-700/50">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-xl font-semibold text-slate-100">{{ t.name }}</h3>
+            <p class="text-slate-400 text-sm mt-1">{{ t.count if t.count is not none else '0' }} rows • {{ t.columns|length }} columns</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button class="p-2 text-slate-400 hover:text-brand-400 hover:bg-slate-700/50 rounded-lg transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+              </svg>
+            </button>
+            <button class="p-2 text-slate-400 hover:text-brand-400 hover:bg-slate-700/50 rounded-lg transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
-      {% endfor %}
-    </section>
-  </div>
-  {% else %}
-  <div class="bg-white rounded-xl shadow p-6 border border-slate-200">
-    <p class="text-slate-600">No tables found in metadata.</p>
-  </div>
-  {% endif %}
+
+      <!-- Table Content -->
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-slate-800/50">
+            <tr>
+              {% for col in t.columns %}
+              <th class="px-6 py-4 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">{{ col }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-700/50">
+            {% for row in t.rows %}
+            <tr class="hover:bg-slate-800/30 transition-colors">
+              {% for col in t.columns %}
+              <td class="px-6 py-4 text-sm text-slate-200">
+                {% if row[col] is string and row[col]|length > 50 %}
+                  <span title="{{ row[col] }}">{{ row[col][:50] }}...</span>
+                {% else %}
+                  {{ row[col] }}
+                {% endif %}
+              </td>
+              {% endfor %}
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="{{ t.columns|length }}" class="px-6 py-12 text-center">
+                <div class="flex flex-col items-center">
+                  <div class="w-16 h-16 rounded-full bg-slate-700/50 flex items-center justify-center mb-4">
+                    <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                    </svg>
+                  </div>
+                  <h3 class="text-lg font-medium text-slate-200 mb-2">No data found</h3>
+                  <p class="text-slate-400 text-sm">This table is empty.</p>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endfor %}
+  </section>
 </div>
+{% else %}
+<div class="glass-effect rounded-2xl p-12 text-center">
+  <div class="w-20 h-20 rounded-full bg-slate-700/50 flex items-center justify-center mx-auto mb-6">
+    <svg class="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
+    </svg>
+  </div>
+  <h3 class="text-xl font-semibold text-slate-200 mb-2">No tables found</h3>
+  <p class="text-slate-400">No database tables are available in the metadata.</p>
+</div>
+{% endif %}
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -73,11 +141,17 @@
 
     function activate(targetId) {
       panels.forEach(p => p.classList.add('hidden'))
-      links.forEach(l => l.classList.remove('is-active'))
+      links.forEach(l => {
+        l.classList.remove('bg-brand-500/20', 'border', 'border-brand-500/30')
+        l.classList.add('hover:bg-slate-700/50')
+      })
       const target = document.getElementById(targetId)
       if (target) target.classList.remove('hidden')
       const activeLink = links.find(l => l.dataset.target === targetId)
-      if (activeLink) activeLink.classList.add('is-active')
+      if (activeLink) {
+        activeLink.classList.add('bg-brand-500/20', 'border', 'border-brand-500/30')
+        activeLink.classList.remove('hover:bg-slate-700/50')
+      }
     }
 
     links.forEach(link => {
@@ -94,7 +168,7 @@
       if (document.getElementById(tid)) activate(tid)
     }
   })
-  </script>
+</script>
 {% endblock %}
 
 
