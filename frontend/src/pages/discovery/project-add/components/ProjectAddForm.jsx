@@ -1,24 +1,63 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { AnimatePresence } from 'framer-motion'
+import { 
+  allSdgGoals, 
+  csrFocusAreas, 
+  targetBeneficiaries, 
+  contributionTypes, 
+  ngoRatings 
+} from '../constants/index.js'
 
 export default function ProjectAddForm({ onSubmit, isSubmitting }) {
   const [formData, setFormData] = useState({
-    projectName: '',
-    organization: '',
-    description: '',
-    impactArea: '',
+    // Basic Info
+    projectTitle: '',
+    shortDescription: '',
+    ngoName: '',
     location: '',
-    budget: '',
-    timeline: '',
-    sdgs: [],
+    
+    // Thematic Info
+    sdgGoals: [],
+    csrFocusAreas: [],
+    targetBeneficiaries: [],
+    
+    // Financials
+    totalProjectCost: '',
+    fundingRequired: '',
+    csrEligibility: '',
+    preferredContributionType: '',
+    
+    // Timeline
+    startDate: '',
+    endDate: '',
+    duration: '',
+    milestones: '',
+    
+    // Impact Metrics
+    expectedOutcomes: '',
+    kpis: '',
+    pastImpact: '',
+    
+    // NGO Credibility
+    registrationNumber: '',
+    g80Status: '',
+    fcraStatus: '',
+    pastProjectsCompleted: '',
+    ngoRating: '',
+    
+    // Media & Supporting Files
+    projectImages: [],
+    proposalDocument: null,
+    videoLink: '',
+    
+    // Contact Info
     contactEmail: '',
-    website: '',
-    images: []
+    website: ''
   })
 
   const [currentStep, setCurrentStep] = useState(1)
-  const totalSteps = 3
+  const totalSteps = 7
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -28,12 +67,24 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
     }))
   }
 
-  const handleSdgToggle = (sdg) => {
+  const handleArrayChange = (field, value, action = 'toggle') => {
     setFormData(prev => ({
       ...prev,
-      sdgs: prev.sdgs.includes(sdg)
-        ? prev.sdgs.filter(s => s !== sdg)
-        : [...prev.sdgs, sdg]
+      [field]: action === 'toggle' 
+        ? prev[field].includes(value)
+          ? prev[field].filter(item => item !== value)
+          : [...prev[field], value]
+        : action === 'add'
+        ? [...prev[field], value]
+        : prev[field].filter(item => item !== value)
+    }))
+  }
+
+  const handleFileChange = (e, field) => {
+    const file = e.target.files[0]
+    setFormData(prev => ({
+      ...prev,
+      [field]: file
     }))
   }
 
@@ -54,23 +105,7 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
     }
   }
 
-  const sdgOptions = [
-    { id: 1, name: 'No Poverty', color: 'bg-red-500', icon: '🏠' },
-    { id: 2, name: 'Zero Hunger', color: 'bg-orange-500', icon: '🍽️' },
-    { id: 3, name: 'Good Health', color: 'bg-green-500', icon: '🏥' },
-    { id: 4, name: 'Quality Education', color: 'bg-blue-500', icon: '📚' },
-    { id: 5, name: 'Gender Equality', color: 'bg-pink-500', icon: '⚖️' },
-    { id: 6, name: 'Clean Water', color: 'bg-cyan-500', icon: '💧' },
-    { id: 7, name: 'Clean Energy', color: 'bg-yellow-500', icon: '⚡' },
-    { id: 8, name: 'Decent Work', color: 'bg-purple-500', icon: '💼' },
-    { id: 13, name: 'Climate Action', color: 'bg-emerald-500', icon: '🌍' },
-    { id: 15, name: 'Life on Land', color: 'bg-teal-500', icon: '🌲' }
-  ]
 
-  const impactAreas = [
-    'Education', 'Healthcare', 'Environment', 'Poverty Alleviation',
-    'Women Empowerment', 'Clean Energy', 'Water & Sanitation', 'Agriculture'
-  ]
 
   const renderStep1 = () => (
     <motion.div
@@ -92,17 +127,18 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
+          className="md:col-span-2"
         >
           <label className="block text-sm font-medium text-slate-700 mb-2">
-            Project Name *
+            Project Title *
           </label>
           <input
             type="text"
-            name="projectName"
-            value={formData.projectName}
+            name="projectTitle"
+            value={formData.projectTitle}
             onChange={handleInputChange}
             className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
-            placeholder="Enter project name"
+            placeholder="Enter project title"
             required
           />
         </motion.div>
@@ -111,37 +147,37 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
+          className="md:col-span-2"
         >
           <label className="block text-sm font-medium text-slate-700 mb-2">
-            Organization *
+            Short Description (2-3 lines) *
           </label>
-          <input
-            type="text"
-            name="organization"
-            value={formData.organization}
+          <textarea
+            name="shortDescription"
+            value={formData.shortDescription}
             onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
-            placeholder="Your organization name"
+            rows={3}
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none"
+            placeholder="Brief description of your project and its impact..."
             required
           />
         </motion.div>
 
-        <motion.div 
-          className="md:col-span-2"
+        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
           <label className="block text-sm font-medium text-slate-700 mb-2">
-            Project Description *
+            NGO/Implementing Partner Name *
           </label>
-          <textarea
-            name="description"
-            value={formData.description}
+          <input
+            type="text"
+            name="ngoName"
+            value={formData.ngoName}
             onChange={handleInputChange}
-            rows={3}
-            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none"
-            placeholder="Describe your project and its impact..."
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+            placeholder="Your organization name"
             required
           />
         </motion.div>
@@ -152,29 +188,7 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
           transition={{ delay: 0.4 }}
         >
           <label className="block text-sm font-medium text-slate-700 mb-2">
-            Impact Area *
-          </label>
-          <select
-            name="impactArea"
-            value={formData.impactArea}
-            onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
-            required
-          >
-            <option value="">Select impact area</option>
-            {impactAreas.map(area => (
-              <option key={area} value={area}>{area}</option>
-            ))}
-          </select>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-        >
-          <label className="block text-sm font-medium text-slate-700 mb-2">
-            Location *
+            Location (City/Region/Country) *
           </label>
           <input
             type="text"
@@ -202,72 +216,29 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
         <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
           <span className="text-indigo-600 text-sm font-semibold">2</span>
         </div>
-        <h3 className="text-xl font-semibold text-slate-800">Project Details</h3>
+        <h3 className="text-xl font-semibold text-slate-800">Thematic Information</h3>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div className="space-y-6">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <label className="block text-sm font-medium text-slate-700 mb-2">
-            Budget (USD) *
-          </label>
-          <input
-            type="number"
-            name="budget"
-            value={formData.budget}
-            onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
-            placeholder="Enter budget amount"
-            required
-          />
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          <label className="block text-sm font-medium text-slate-700 mb-2">
-            Timeline *
-          </label>
-          <select
-            name="timeline"
-            value={formData.timeline}
-            onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
-            required
-          >
-            <option value="">Select timeline</option>
-            <option value="1-6 months">1-6 months</option>
-            <option value="6-12 months">6-12 months</option>
-            <option value="1-2 years">1-2 years</option>
-            <option value="2+ years">2+ years</option>
-          </select>
-        </motion.div>
-
-        <motion.div 
-          className="md:col-span-2"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
           <label className="block text-sm font-medium text-slate-700 mb-4">
-            Sustainable Development Goals (SDGs) *
+            SDG Goals (Select all that apply) *
           </label>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-            {sdgOptions.map((sdg, index) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {allSdgGoals.map((sdg, index) => (
               <motion.button
                 key={sdg.id}
                 type="button"
-                onClick={() => handleSdgToggle(sdg.name)}
+                onClick={() => handleArrayChange('sdgGoals', sdg.name)}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.05 }}
                 className={`p-3 rounded-xl border-2 transition-all duration-300 ${
-                  formData.sdgs.includes(sdg.name)
+                  formData.sdgGoals.includes(sdg.name)
                     ? `${sdg.color} border-${sdg.color} text-white shadow-lg`
                     : 'border-slate-200 bg-white/80 hover:border-blue-400 hover:shadow-md'
                 }`}
@@ -277,6 +248,68 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
                 <div className="text-lg mb-1">{sdg.icon}</div>
                 <div className="text-xs font-medium">{sdg.id}</div>
                 <div className="text-xs opacity-90">{sdg.name}</div>
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <label className="block text-sm font-medium text-slate-700 mb-4">
+            CSR Focus Areas (Select all that apply) *
+          </label>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {csrFocusAreas.map((area, index) => (
+              <motion.button
+                key={area}
+                type="button"
+                onClick={() => handleArrayChange('csrFocusAreas', area)}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.05 }}
+                className={`p-3 rounded-xl border-2 transition-all duration-300 ${
+                  formData.csrFocusAreas.includes(area)
+                    ? 'bg-green-500 border-green-500 text-white shadow-lg'
+                    : 'border-slate-200 bg-white/80 hover:border-green-400 hover:shadow-md'
+                }`}
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {area}
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <label className="block text-sm font-medium text-slate-700 mb-4">
+            Target Beneficiaries (Select all that apply) *
+          </label>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {targetBeneficiaries.map((beneficiary, index) => (
+              <motion.button
+                key={beneficiary}
+                type="button"
+                onClick={() => handleArrayChange('targetBeneficiaries', beneficiary)}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.05 }}
+                className={`p-3 rounded-xl border-2 transition-all duration-300 ${
+                  formData.targetBeneficiaries.includes(beneficiary)
+                    ? 'bg-purple-500 border-purple-500 text-white shadow-lg'
+                    : 'border-slate-200 bg-white/80 hover:border-purple-400 hover:shadow-md'
+                }`}
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {beneficiary}
               </motion.button>
             ))}
           </div>
@@ -294,10 +327,10 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
       className="space-y-5"
     >
       <div className="flex items-center space-x-3 mb-6">
-        <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-          <span className="text-purple-600 text-sm font-semibold">3</span>
+        <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+          <span className="text-green-600 text-sm font-semibold">3</span>
         </div>
-        <h3 className="text-xl font-semibold text-slate-800">Contact Information</h3>
+        <h3 className="text-xl font-semibold text-slate-800">Financial Information</h3>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -305,6 +338,447 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
+        >
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Total Project Cost (USD) *
+          </label>
+          <input
+            type="number"
+            name="totalProjectCost"
+            value={formData.totalProjectCost}
+            onChange={handleInputChange}
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+            placeholder="Enter total cost"
+            required
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Funding Required (Remaining Gap) *
+          </label>
+          <input
+            type="number"
+            name="fundingRequired"
+            value={formData.fundingRequired}
+            onChange={handleInputChange}
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+            placeholder="Enter funding needed"
+            required
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            CSR Eligibility (Schedule VII in India) *
+          </label>
+          <select
+            name="csrEligibility"
+            value={formData.csrEligibility}
+            onChange={handleInputChange}
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+            required
+          >
+            <option value="">Select eligibility</option>
+            <option value="Yes">Yes - Eligible under Schedule VII</option>
+            <option value="No">No - Not eligible under Schedule VII</option>
+            <option value="Under Review">Under Review</option>
+          </select>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Preferred Contribution Type *
+          </label>
+          <select
+            name="preferredContributionType"
+            value={formData.preferredContributionType}
+            onChange={handleInputChange}
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+            required
+          >
+            <option value="">Select contribution type</option>
+            {contributionTypes.map(type => (
+              <option key={type} value={type}>{type}</option>
+            ))}
+          </select>
+        </motion.div>
+      </div>
+    </motion.div>
+  )
+
+  const renderStep4 = () => (
+    <motion.div
+      initial={{ opacity: 0, x: 30 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -30 }}
+      transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      className="space-y-5"
+    >
+      <div className="flex items-center space-x-3 mb-6">
+        <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+          <span className="text-yellow-600 text-sm font-semibold">4</span>
+        </div>
+        <h3 className="text-xl font-semibold text-slate-800">Timeline & Milestones</h3>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Start Date *
+          </label>
+          <input
+            type="date"
+            name="startDate"
+            value={formData.startDate}
+            onChange={handleInputChange}
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+            required
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            End Date *
+          </label>
+          <input
+            type="date"
+            name="endDate"
+            value={formData.endDate}
+            onChange={handleInputChange}
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+            required
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Duration
+          </label>
+          <input
+            type="text"
+            name="duration"
+            value={formData.duration}
+            onChange={handleInputChange}
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+            placeholder="e.g., 6 months, 1 year"
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="md:col-span-2"
+        >
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Key Milestones (Optional)
+          </label>
+          <textarea
+            name="milestones"
+            value={formData.milestones}
+            onChange={handleInputChange}
+            rows={3}
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none"
+            placeholder="List key milestones for tracking progress..."
+          />
+        </motion.div>
+      </div>
+    </motion.div>
+  )
+
+  const renderStep5 = () => (
+    <motion.div
+      initial={{ opacity: 0, x: 30 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -30 }}
+      transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      className="space-y-5"
+    >
+      <div className="flex items-center space-x-3 mb-6">
+        <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+          <span className="text-purple-600 text-sm font-semibold">5</span>
+        </div>
+        <h3 className="text-xl font-semibold text-slate-800">Impact Metrics</h3>
+      </div>
+      
+      <div className="space-y-5">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Expected Outcomes *
+          </label>
+          <textarea
+            name="expectedOutcomes"
+            value={formData.expectedOutcomes}
+            onChange={handleInputChange}
+            rows={3}
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none"
+            placeholder="e.g., '500 students enrolled in digital literacy', '1000 trees planted'"
+            required
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Key Performance Indicators (KPIs) *
+          </label>
+          <textarea
+            name="kpis"
+            value={formData.kpis}
+            onChange={handleInputChange}
+            rows={3}
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none"
+            placeholder="e.g., 'Carbon reduced by X tons', 'People reached: X', 'Trees planted: X'"
+            required
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Past Impact (if recurring project)
+          </label>
+          <textarea
+            name="pastImpact"
+            value={formData.pastImpact}
+            onChange={handleInputChange}
+            rows={3}
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none"
+            placeholder="Describe previous impact if this is a recurring project..."
+          />
+        </motion.div>
+      </div>
+    </motion.div>
+  )
+
+  const renderStep6 = () => (
+    <motion.div
+      initial={{ opacity: 0, x: 30 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -30 }}
+      transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      className="space-y-5"
+    >
+      <div className="flex items-center space-x-3 mb-6">
+        <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+          <span className="text-red-600 text-sm font-semibold">6</span>
+        </div>
+        <h3 className="text-xl font-semibold text-slate-800">NGO Credibility</h3>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Registration Number *
+          </label>
+          <input
+            type="text"
+            name="registrationNumber"
+            value={formData.registrationNumber}
+            onChange={handleInputChange}
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+            placeholder="NGO registration number"
+            required
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            80G Status
+          </label>
+          <select
+            name="g80Status"
+            value={formData.g80Status}
+            onChange={handleInputChange}
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+          >
+            <option value="">Select 80G status</option>
+            <option value="Registered">Registered</option>
+            <option value="Not Registered">Not Registered</option>
+            <option value="Under Process">Under Process</option>
+          </select>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            FCRA Status
+          </label>
+          <select
+            name="fcraStatus"
+            value={formData.fcraStatus}
+            onChange={handleInputChange}
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+          >
+            <option value="">Select FCRA status</option>
+            <option value="Registered">Registered</option>
+            <option value="Not Registered">Not Registered</option>
+            <option value="Under Process">Under Process</option>
+          </select>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Past Projects Completed
+          </label>
+          <input
+            type="number"
+            name="pastProjectsCompleted"
+            value={formData.pastProjectsCompleted}
+            onChange={handleInputChange}
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+            placeholder="Number of projects"
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="md:col-span-2"
+        >
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            NGO Rating/Verification Badge
+          </label>
+          <select
+            name="ngoRating"
+            value={formData.ngoRating}
+            onChange={handleInputChange}
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+          >
+            <option value="">Select rating</option>
+            {ngoRatings.map(rating => (
+              <option key={rating} value={rating}>{rating}</option>
+            ))}
+          </select>
+        </motion.div>
+      </div>
+    </motion.div>
+  )
+
+  const renderStep7 = () => (
+    <motion.div
+      initial={{ opacity: 0, x: 30 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -30 }}
+      transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      className="space-y-5"
+    >
+      <div className="flex items-center space-x-3 mb-6">
+        <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
+          <span className="text-teal-600 text-sm font-semibold">7</span>
+        </div>
+        <h3 className="text-xl font-semibold text-slate-800">Media & Contact Information</h3>
+      </div>
+      
+      <div className="space-y-5">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Project Images (Preview Card Visuals)
+          </label>
+          <div className="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center hover:border-blue-400 transition-all duration-300 bg-white/50 backdrop-blur-sm">
+            <div className="text-slate-500">
+              <svg className="mx-auto h-10 w-10 mb-3 text-slate-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <p className="font-medium">Click to upload or drag and drop</p>
+              <p className="text-sm opacity-75">PNG, JPG, GIF up to 10MB</p>
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Proposal Document (PDF)
+          </label>
+          <input
+            type="file"
+            accept=".pdf"
+            onChange={(e) => handleFileChange(e, 'proposalDocument')}
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Video Link (Optional Pitch Video)
+          </label>
+          <input
+            type="url"
+            name="videoLink"
+            value={formData.videoLink}
+            onChange={handleInputChange}
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+            placeholder="https://youtube.com/watch?v=..."
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
         >
           <label className="block text-sm font-medium text-slate-700 mb-2">
             Contact Email *
@@ -323,7 +797,7 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          transition={{ delay: 0.5 }}
         >
           <label className="block text-sm font-medium text-slate-700 mb-2">
             Website
@@ -337,26 +811,6 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
             placeholder="https://your-website.com"
           />
         </motion.div>
-
-        <motion.div 
-          className="md:col-span-2"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <label className="block text-sm font-medium text-slate-700 mb-2">
-            Project Images
-          </label>
-          <div className="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center hover:border-blue-400 transition-all duration-300 bg-white/50 backdrop-blur-sm">
-            <div className="text-slate-500">
-              <svg className="mx-auto h-10 w-10 mb-3 text-slate-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <p className="font-medium">Click to upload or drag and drop</p>
-              <p className="text-sm opacity-75">PNG, JPG, GIF up to 10MB</p>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </motion.div>
   )
@@ -366,7 +820,7 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
       initial={{ opacity: 0, y: 30, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.7, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
-      className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/30 p-8 max-w-4xl mx-auto"
+      className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/30 p-8 max-w-5xl mx-auto"
     >
       {/* Enhanced Progress Bar */}
       <div className="mb-8">
@@ -393,6 +847,10 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
           {currentStep === 1 && renderStep1()}
           {currentStep === 2 && renderStep2()}
           {currentStep === 3 && renderStep3()}
+          {currentStep === 4 && renderStep4()}
+          {currentStep === 5 && renderStep5()}
+          {currentStep === 6 && renderStep6()}
+          {currentStep === 7 && renderStep7()}
         </AnimatePresence>
 
         {/* Enhanced Navigation Buttons */}

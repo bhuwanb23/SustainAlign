@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { requiredFields } from '../constants/index.js'
 
 export default function useProjectAdd() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -18,7 +19,6 @@ export default function useProjectAdd() {
       console.log('Adding project:', projectData)
       
       // Validate required fields
-      const requiredFields = ['projectName', 'organization', 'description', 'impactArea', 'location', 'budget', 'timeline', 'contactEmail']
       const missingFields = requiredFields.filter(field => !projectData[field])
       
       if (missingFields.length > 0) {
@@ -33,7 +33,11 @@ export default function useProjectAdd() {
         createdAt: new Date().toISOString(),
         views: 0,
         likes: 0,
-        sdgs: projectData.sdgs || []
+        // Map old field names for backward compatibility
+        projectName: projectData.projectTitle,
+        organization: projectData.ngoName,
+        description: projectData.shortDescription,
+        sdgs: projectData.sdgGoals || []
       }
       
       // Store in localStorage for demo purposes
