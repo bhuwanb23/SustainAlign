@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import useCompanyWizard from './hooks/useCompanyWizard.js'
@@ -53,30 +53,34 @@ export default function CompanyDetailsPage() {
 
   // Auto-show form when in form mode (not showcase mode)
   useEffect(() => {
-    if (!isShowcaseMode) {
+    if (!isShowcaseMode && !showForm) {
+      setShowForm(true)
+    }
+  }, [isShowcaseMode, showForm])
+
+  const handleAddNew = useCallback(() => {
+    console.log('handleAddNew called')
+    setShowForm(false) // First hide the form
+    setSelectedCompany(null) // Clear any selected company
+    // Use a small delay to ensure state updates complete before showing form again
+    setTimeout(() => {
       setShowForm(true)
       w.reset() // Reset wizard state for new company
-    }
-  }, [isShowcaseMode, w])
+    }, 100)
+  }, [w])
 
-  const handleAddNew = () => {
-    console.log('handleAddNew called')
-    setShowForm(true)
-    w.reset() // Reset wizard state for new company
-  }
-
-  const handleBackToList = () => {
+  const handleBackToList = useCallback(() => {
     console.log('handleBackToList called')
     setShowForm(false)
     setSelectedCompany(null)
-  }
+  }, [])
 
-  const handleViewDetails = (company) => {
+  const handleViewDetails = useCallback((company) => {
     console.log('handleViewDetails called with:', company)
     setSelectedCompany(company)
-  }
+  }, [])
 
-  const finish = () => {
+  const finish = useCallback(() => {
     const payload = w.getPayload()
     console.log('Company Profile Payload', payload)
     
@@ -89,7 +93,7 @@ export default function CompanyDetailsPage() {
     
     alert('Company profile saved!')
     setShowForm(false)
-  }
+  }, [w])
 
   // Show selected company details
   if (selectedCompany) {
@@ -108,7 +112,7 @@ export default function CompanyDetailsPage() {
   // If in showcase mode, always show the company list
   if (isShowcaseMode) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 relative overflow-hidden">
+      <div className="min-h-screen bg-white relative overflow-hidden">
         {/* Enhanced Animated Background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           {/* Floating Geometric Shapes */}
@@ -516,7 +520,7 @@ export default function CompanyDetailsPage() {
                   csrEmail={w.csrEmail} setCsrEmail={w.setCsrEmail}
                   csrPhone={w.csrPhone} setCsrPhone={w.setCsrPhone}
                   website={w.website} setWebsite={w.setWebsite}
-                  right={<div className="bg-white/80 backdrop-blur-xl rounded-2xl p-6 border border-white/30 shadow-lg"><div className="text-sm text-slate-600 mb-3">Preview</div><div className="space-y-2 text-slate-800"><div className="font-semibold">{w.companyName || 'Company Name'}</div><div className="text-sm">{w.industry || 'Industry'}</div><div className="text-xs text-slate-500">HQ: {[w.hqCity,w.hqState,w.hqCountry].filter(Boolean).join(', ') || '—'}</div><div className="text-xs text-slate-600">Contact: {w.csrContactName || '—'} ({w.csrContactRole || '—'})</div></div></div>}
+                  right={null}
                 />
               </motion.div>
             )}
@@ -561,7 +565,7 @@ export default function CompanyDetailsPage() {
                   ngoSize={w.ngoSize} setNgoSize={w.setNgoSize}
                   partnershipModel={w.partnershipModel} setPartnershipModel={w.setPartnershipModel}
                   regions={w.regions} setRegions={w.setRegions}
-                  right={<div className="bg-white/80 backdrop-blur-xl rounded-2xl p-6 border border-white/30 shadow-lg"><div className="text-sm text-slate-600 mb-3">Summary</div><div className="space-y-2"><div className="text-xs text-slate-600">Selected SDGs: {w.prioritySdgs.length || 0}</div><div className="text-xs text-slate-600">Files: {w.policyFiles.length + w.reportFiles.length + w.certFiles.length}</div><div className="text-xs text-slate-600">NGO: {w.ngoSize} • {w.partnershipModel}</div></div></div>}
+                  right={null}
                 />
               </motion.div>
             )}
@@ -579,7 +583,7 @@ export default function CompanyDetailsPage() {
                   alignmentMode={w.alignmentMode} setAlignmentMode={w.setAlignmentMode}
                   roles={w.roles} setRoles={w.setRoles}
                   integrations={w.integrations} setIntegrations={w.setIntegrations}
-                  right={<div className="bg-white/80 backdrop-blur-xl rounded-2xl p-6 border border-white/30 shadow-lg"><div className="text-sm text-slate-600 mb-3">Summary</div><div className="space-y-2"><div className="text-xs text-slate-600">AI Metrics: {w.optimizeFor.length || 0}</div><div className="text-xs text-slate-600">Risk: {w.riskAppetite}</div><div className="text-xs text-slate-600">Users: {w.roles.length}</div><div className="text-xs text-slate-600">Integrations: {w.integrations.length || 0}</div></div></div>}
+                  right={null}
                 />
               </motion.div>
             )}

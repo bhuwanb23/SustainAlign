@@ -285,12 +285,7 @@ export default function Step4Focus({
         </div>
       </section>
 
-      {/* Right Sidebar */}
-      {right && (
-        <div className="lg:col-span-1">
-          {right}
-        </div>
-      )}
+      {/* Right Sidebar - Removed */}
     </div>
   )
 }

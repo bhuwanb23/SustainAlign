@@ -305,12 +305,7 @@ export default function Step7AiInputs({
         </div>
       </div>
 
-      {/* Right Side Content */}
-      {right && (
-        <div className="mt-8">
-          {right}
-        </div>
-      )}
+      {/* Right Side Content - Removed */}
     </div>
   )
 }
