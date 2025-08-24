@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import useCompanyWizard from './hooks/useCompanyWizard.js'
 import Stepper from './components/Stepper.jsx'
 import CompanyList from './components/CompanyList.jsx'
@@ -58,9 +59,6 @@ export default function CompanyDetailsPage() {
     }
   }, [isShowcaseMode, w])
 
-  // Debug logging
-  console.log('CompanyDetailsPage rendering:', { showForm, companiesCount: companies.length, isShowcaseMode })
-
   const handleAddNew = () => {
     console.log('handleAddNew called')
     setShowForm(true)
@@ -110,29 +108,183 @@ export default function CompanyDetailsPage() {
   // If in showcase mode, always show the company list
   if (isShowcaseMode) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 relative overflow-hidden">
-        {/* Animated Background Shapes */}
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 relative overflow-hidden">
+        {/* Enhanced Animated Background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {/* Floating Circles */}
-          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-emerald-200/40 to-teal-300/40 rounded-full animate-float-slow blur-sm"></div>
-          <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-blue-200/30 to-cyan-300/30 rounded-full animate-float-medium blur-sm"></div>
-          <div className="absolute bottom-32 left-1/4 w-20 h-20 bg-gradient-to-br from-green-200/50 to-emerald-300/50 rounded-full animate-float-fast blur-sm"></div>
-          <div className="absolute bottom-20 right-1/3 w-28 h-28 bg-gradient-to-br from-teal-200/40 to-blue-300/40 rounded-full animate-float-slow blur-sm"></div>
+          {/* Floating Geometric Shapes */}
+          <motion.div
+            className="absolute top-16 left-8 w-3 h-3 bg-purple-400/40 rounded-full"
+            animate={{
+              y: [0, -30, 0],
+              x: [0, 15, 0],
+              opacity: [0.4, 0.8, 0.4],
+            }}
+            transition={{
+              duration: 6,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+          <motion.div
+            className="absolute top-32 right-16 w-4 h-4 bg-indigo-400/50 rounded-full"
+            animate={{
+              y: [0, -25, 0],
+              x: [0, -20, 0],
+              opacity: [0.5, 0.9, 0.5],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 2
+            }}
+          />
+          <motion.div
+            className="absolute bottom-24 left-1/3 w-2 h-2 bg-slate-400/60 rounded-full"
+            animate={{
+              y: [0, -20, 0],
+              x: [0, 25, 0],
+              opacity: [0.6, 1, 0.6],
+            }}
+            transition={{
+              duration: 7,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1
+            }}
+          />
           
-          {/* Geometric Shapes */}
-          <div className="absolute top-1/4 right-1/4 w-16 h-16 bg-gradient-to-br from-emerald-300/20 to-teal-400/20 rotate-45 animate-pulse"></div>
-          <div className="absolute bottom-1/4 left-1/3 w-12 h-12 bg-gradient-to-br from-blue-300/20 to-cyan-400/20 rotate-12 animate-bounce"></div>
+          {/* Additional Floating Elements */}
+          <motion.div
+            className="absolute top-1/3 left-1/4 w-2 h-2 bg-yellow-400/50 rounded-full"
+            animate={{
+              y: [0, -40, 0],
+              x: [0, 30, 0],
+              opacity: [0.3, 0.7, 0.3],
+            }}
+            transition={{
+              duration: 9,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 3
+            }}
+          />
+          <motion.div
+            className="absolute bottom-1/3 right-1/4 w-3 h-3 bg-pink-400/40 rounded-full"
+            animate={{
+              y: [0, -35, 0],
+              x: [0, -25, 0],
+              opacity: [0.4, 0.8, 0.4],
+            }}
+            transition={{
+              duration: 10,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1.5
+            }}
+          />
           
-          {/* Wavy Lines */}
-          <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-transparent via-emerald-100/30 to-transparent transform -skew-y-6 animate-slide-right"></div>
-          <div className="absolute bottom-0 right-0 w-full h-24 bg-gradient-to-l from-transparent via-teal-100/30 to-transparent transform skew-y-6 animate-slide-left"></div>
+          {/* Rotating Geometric Elements */}
+          <motion.div
+            className="absolute top-1/4 right-1/4 w-12 h-12 bg-gradient-to-br from-purple-300/30 to-indigo-400/30 rotate-45 rounded-lg"
+            animate={{
+              rotate: [45, 405],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: 12,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+          />
+          
+          <motion.div
+            className="absolute bottom-1/4 left-1/4 w-8 h-8 bg-gradient-to-br from-indigo-300/40 to-purple-400/40 rotate-12 rounded-lg"
+            animate={{
+              rotate: [12, 372],
+              scale: [1, 1.3, 1],
+            }}
+            transition={{
+              duration: 15,
+              repeat: Infinity,
+              ease: "linear",
+              delay: 2
+            }}
+          />
+          
+          {/* Subtle Wave Patterns */}
+          <motion.div
+            className="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-transparent via-purple-100/20 to-transparent transform -skew-y-3"
+            animate={{
+              x: ["-100%", "100%"],
+            }}
+            transition={{
+              duration: 25,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+          />
+          
+          <motion.div
+            className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-r from-transparent via-indigo-100/15 to-transparent transform -skew-y-6"
+            animate={{
+              x: ["100%", "-100%"],
+            }}
+            transition={{
+              duration: 30,
+              repeat: Infinity,
+              ease: "linear",
+              delay: 5
+            }}
+          />
           
           {/* Gradient Orbs */}
-          <div className="absolute top-1/2 left-0 w-64 h-64 bg-gradient-radial from-emerald-200/20 via-transparent to-transparent animate-pulse"></div>
-          <div className="absolute top-1/2 right-0 w-64 h-64 bg-gradient-radial from-teal-200/20 via-transparent to-transparent animate-pulse delay-1000"></div>
+          <motion.div
+            className="absolute top-1/2 right-8 w-16 h-16 bg-gradient-to-br from-purple-200/40 to-indigo-300/40 rounded-full blur-sm"
+            animate={{
+              scale: [1, 1.3, 1],
+              opacity: [0.4, 0.7, 0.4],
+            }}
+            transition={{
+              duration: 10,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+          
+          <motion.div
+            className="absolute top-1/3 left-8 w-12 h-12 bg-gradient-to-br from-indigo-200/30 to-purple-300/30 rounded-full blur-sm"
+            animate={{
+              scale: [1, 1.4, 1],
+              opacity: [0.3, 0.6, 0.3],
+            }}
+            transition={{
+              duration: 12,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 3
+            }}
+          />
+          
+          {/* Animated Grid Pattern */}
+          <motion.div
+            className="absolute inset-0 opacity-5"
+            style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, purple 1px, transparent 0)`,
+              backgroundSize: '40px 40px'
+            }}
+            animate={{
+              backgroundPosition: ['0px 0px', '40px 40px'],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+          />
         </div>
         
-        <div id="main-container" className="max-w-7xl mx-auto px-4 py-8 relative z-10">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 py-8">
           <CompanyList onAddNew={handleAddNew} companies={companies} isShowcaseMode={true} onViewDetails={handleViewDetails} />
         </div>
       </div>
@@ -143,95 +295,295 @@ export default function CompanyDetailsPage() {
   if (showForm) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 relative overflow-hidden">
-        {/* Animated Background Shapes for Form View */}
+        {/* Enhanced Animated Background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {/* Floating Elements */}
-          <div className="absolute top-16 left-8 w-20 h-20 bg-gradient-to-br from-emerald-200/30 to-teal-300/30 rounded-full animate-float-medium blur-sm"></div>
-          <div className="absolute top-32 right-12 w-16 h-16 bg-gradient-to-br from-blue-200/25 to-cyan-300/25 rounded-full animate-float-fast blur-sm"></div>
-          <div className="absolute bottom-24 left-16 w-24 h-24 bg-gradient-to-br from-green-200/35 to-emerald-300/35 rounded-full animate-float-slow blur-sm"></div>
+          {/* Floating Geometric Shapes */}
+          <motion.div
+            className="absolute top-16 left-8 w-3 h-3 bg-green-400/40 rounded-full"
+            animate={{
+              y: [0, -30, 0],
+              x: [0, 15, 0],
+              opacity: [0.4, 0.8, 0.4],
+            }}
+            transition={{
+              duration: 6,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+          <motion.div
+            className="absolute top-32 right-16 w-4 h-4 bg-emerald-400/50 rounded-full"
+            animate={{
+              y: [0, -25, 0],
+              x: [0, -20, 0],
+              opacity: [0.5, 0.9, 0.5],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 2
+            }}
+          />
+          <motion.div
+            className="absolute bottom-24 left-1/3 w-2 h-2 bg-teal-400/60 rounded-full"
+            animate={{
+              y: [0, -20, 0],
+              x: [0, 25, 0],
+              opacity: [0.6, 1, 0.6],
+            }}
+            transition={{
+              duration: 7,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1
+            }}
+          />
+          
+          {/* Additional Floating Elements */}
+          <motion.div
+            className="absolute top-1/3 left-1/4 w-2 h-2 bg-yellow-400/50 rounded-full"
+            animate={{
+              y: [0, -40, 0],
+              x: [0, 30, 0],
+              opacity: [0.3, 0.7, 0.3],
+            }}
+            transition={{
+              duration: 9,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 3
+            }}
+          />
+          <motion.div
+            className="absolute bottom-1/3 right-1/4 w-3 h-3 bg-purple-400/40 rounded-full"
+            animate={{
+              y: [0, -35, 0],
+              x: [0, -25, 0],
+              opacity: [0.4, 0.8, 0.4],
+            }}
+            transition={{
+              duration: 10,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1.5
+            }}
+          />
+          
+          {/* Rotating Geometric Elements */}
+          <motion.div
+            className="absolute top-1/4 right-1/4 w-12 h-12 bg-gradient-to-br from-green-300/30 to-emerald-400/30 rotate-45 rounded-lg"
+            animate={{
+              rotate: [45, 405],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: 12,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+          />
+          
+          <motion.div
+            className="absolute bottom-1/4 left-1/4 w-8 h-8 bg-gradient-to-br from-teal-300/40 to-cyan-400/40 rotate-12 rounded-lg"
+            animate={{
+              rotate: [12, 372],
+              scale: [1, 1.3, 1],
+            }}
+            transition={{
+              duration: 15,
+              repeat: Infinity,
+              ease: "linear",
+              delay: 2
+            }}
+          />
+          
+          {/* Subtle Wave Patterns */}
+          <motion.div
+            className="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-transparent via-green-100/20 to-transparent transform -skew-y-3"
+            animate={{
+              x: ["-100%", "100%"],
+            }}
+            transition={{
+              duration: 25,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+          />
+          
+          <motion.div
+            className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-r from-transparent via-emerald-100/15 to-transparent transform -skew-y-6"
+            animate={{
+              x: ["100%", "-100%"],
+            }}
+            transition={{
+              duration: 30,
+              repeat: Infinity,
+              ease: "linear",
+              delay: 5
+            }}
+          />
+          
+          {/* Gradient Orbs */}
+          <motion.div
+            className="absolute top-1/2 right-8 w-16 h-16 bg-gradient-to-br from-green-200/40 to-emerald-300/40 rounded-full blur-sm"
+            animate={{
+              scale: [1, 1.3, 1],
+              opacity: [0.4, 0.7, 0.4],
+            }}
+            transition={{
+              duration: 10,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+          
+          <motion.div
+            className="absolute top-1/3 left-8 w-12 h-12 bg-gradient-to-br from-teal-200/30 to-cyan-300/30 rounded-full blur-sm"
+            animate={{
+              scale: [1, 1.4, 1],
+              opacity: [0.3, 0.6, 0.3],
+            }}
+            transition={{
+              duration: 12,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 3
+            }}
+          />
           
           {/* Animated Grid Pattern */}
-          <div className="absolute inset-0 opacity-5">
-            <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_98%,rgba(34,197,94,0.1)_100%)] bg-[length:20px_20px] animate-slide-up"></div>
-            <div className="absolute inset-0 bg-[linear-gradient(0deg,transparent_98%,rgba(20,184,166,0.1)_100%)] bg-[length:20px_20px] animate-slide-right"></div>
-          </div>
-          
-          {/* Corner Accents */}
-          <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-emerald-200/20 to-transparent rounded-br-full"></div>
-          <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-teal-200/20 to-transparent rounded-tl-full"></div>
+          <motion.div
+            className="absolute inset-0 opacity-5"
+            style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, green 1px, transparent 0)`,
+              backgroundSize: '40px 40px'
+            }}
+            animate={{
+              backgroundPosition: ['0px 0px', '40px 40px'],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+          />
         </div>
 
         <Stepper step={w.step} goTo={w.goTo} mode="form" />
 
-        <div id="main-container" className="max-w-5xl mx-auto px-4 py-8 space-y-6 relative z-10">
+        <div className="relative z-10 max-w-5xl mx-auto px-6 py-8 space-y-8">
           {/* Back to List Button */}
-          <div className="flex justify-start">
+          <motion.div 
+            className="flex justify-start"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             <button
               onClick={handleBackToList}
-              className="group px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-all duration-300 flex items-center gap-2 hover:shadow-md transform hover:-translate-y-0.5"
+              className="group px-6 py-3 text-slate-600 hover:text-slate-800 hover:bg-white/80 rounded-xl transition-all duration-300 flex items-center gap-3 hover:shadow-lg backdrop-blur-sm"
             >
-              <i className="fas fa-arrow-left group-hover:-translate-x-1 transition-transform duration-200"></i>
+              <motion.i 
+                className="fas fa-arrow-left"
+                whileHover={{ x: -3 }}
+                transition={{ duration: 0.2 }}
+              />
               Back to Company List
             </button>
-          </div>
+          </motion.div>
 
-          {w.step === 1 && (
-            <Step1Basic
-              companyName={w.companyName} setCompanyName={w.setCompanyName}
-              logoFile={w.logoFile} setLogoFile={w.setLogoFile}
-              registrationId={w.registrationId} setRegistrationId={w.setRegistrationId}
-              industry={w.industry} setIndustry={w.setIndustry}
-              hqCountry={w.hqCountry} setHqCountry={w.setHqCountry}
-              hqState={w.hqState} setHqState={w.setHqState}
-              hqCity={w.hqCity} setHqCity={w.setHqCity}
-              branches={w.branches} setBranches={w.setBranches}
-              csrContactName={w.csrContactName} setCsrContactName={w.setCsrContactName}
-              csrContactRole={w.csrContactRole} setCsrContactRole={w.setCsrContactRole}
-              csrEmail={w.csrEmail} setCsrEmail={w.setCsrEmail}
-              csrPhone={w.csrPhone} setCsrPhone={w.setCsrPhone}
-              website={w.website} setWebsite={w.setWebsite}
-              right={<div className="bg-gray-50 rounded-2xl p-4 border border-gray-200"><div className="text-sm text-gray-600">Preview</div><div className="mt-2 text-gray-800"><div className="font-semibold">{w.companyName || 'Company Name'}</div><div className="text-sm">{w.industry || 'Industry'}</div><div className="text-xs text-gray-500">HQ: {[w.hqCity,w.hqState,w.hqCountry].filter(Boolean).join(', ') || '—'}</div><div className="mt-2 text-xs text-gray-600">Contact: {w.csrContactName || '—'} ({w.csrContactRole || '—'})</div></div></div>}
-            />
-          )}
-          {w.step === 2 && (
-            <Step3Budget
-              budget={w.budget} setBudget={w.setBudget}
-              currency={w.currency} setCurrency={w.setCurrency}
-              splits={w.splits} setSplits={w.setSplits}
-              projectSize={w.projectSize} setProjectSize={w.setProjectSize}
-              climatePercent={w.climatePercent}
-              educationPercent={w.educationPercent}
-              healthcarePercent={w.healthcarePercent}
-              right={<AllocationPreview totalBudget={w.budget} climatePercent={w.climatePercent} educationPercent={w.educationPercent} healthcarePercent={w.healthcarePercent} climateAmount={w.climateAmount} educationAmount={w.educationAmount} healthcareAmount={w.healthcareAmount} />}
-            />
-          )}
-          {w.step === 3 && (
-            <Step4Focus
-              prioritySdgs={w.prioritySdgs} setPrioritySdgs={w.setPrioritySdgs}
-              esgGoals={w.esgGoals} setEsgGoals={w.setEsgGoals}
-              themes={w.themes} setThemes={w.setThemes}
-              targetYear={w.targetYear} setTargetYear={w.setTargetYear}
-              reportingStandard={w.reportingStandard} setReportingStandard={w.setReportingStandard}
-              policyFiles={w.policyFiles} setPolicyFiles={w.setPolicyFiles}
-              reportFiles={w.reportFiles} setReportFiles={w.setReportFiles}
-              certFiles={w.certFiles} setCertFiles={w.setCertFiles}
-              spendHistory={w.spendHistory} setSpendHistory={w.setSpendHistory}
-              ngoSize={w.ngoSize} setNgoSize={w.setNgoSize}
-              partnershipModel={w.partnershipModel} setPartnershipModel={w.setPartnershipModel}
-              regions={w.regions} setRegions={w.setRegions}
-              right={<div className="bg-gray-50 rounded-2xl p-4 border border-gray-200"><div className="text-sm text-gray-600">Summary</div><div className="mt-2 space-y-2"><div className="text-xs text-gray-600">Selected SDGs: {w.prioritySdgs.length || 0}</div><div className="text-xs text-gray-600">Files: {w.policyFiles.length + w.reportFiles.length + w.certFiles.length}</div><div className="text-xs text-gray-600">NGO: {w.ngoSize} • {w.partnershipModel}</div></div></div>}
-            />
-          )}
-          {w.step === 4 && (
-            <Step7AiInputs
-              optimizeFor={w.optimizeFor} setOptimizeFor={w.setOptimizeFor}
-              riskAppetite={w.riskAppetite} setRiskAppetite={w.setRiskAppetite}
-              alignmentMode={w.alignmentMode} setAlignmentMode={w.setAlignmentMode}
-              roles={w.roles} setRoles={w.setRoles}
-              integrations={w.integrations} setIntegrations={w.setIntegrations}
-              right={<div className="bg-gray-50 rounded-2xl p-4 border border-gray-200"><div className="text-sm text-gray-600">Summary</div><div className="mt-2 space-y-2"><div className="text-xs text-gray-600">AI Metrics: {w.optimizeFor.length || 0}</div><div className="text-xs text-gray-600">Risk: {w.riskAppetite}</div><div className="text-xs text-gray-600">Users: {w.roles.length}</div><div className="text-xs text-gray-600">Integrations: {w.integrations.length || 0}</div></div></div>}
-            />
-          )}
+          <AnimatePresence mode="wait">
+            {w.step === 1 && (
+              <motion.div
+                key="step1"
+                initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -30, scale: 0.95 }}
+                transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+              >
+                <Step1Basic
+                  companyName={w.companyName} setCompanyName={w.setCompanyName}
+                  logoFile={w.logoFile} setLogoFile={w.setLogoFile}
+                  registrationId={w.registrationId} setRegistrationId={w.setRegistrationId}
+                  industry={w.industry} setIndustry={w.setIndustry}
+                  hqCountry={w.hqCountry} setHqCountry={w.setHqCountry}
+                  hqState={w.hqState} setHqState={w.setHqState}
+                  hqCity={w.hqCity} setHqCity={w.setHqCity}
+                  branches={w.branches} setBranches={w.setBranches}
+                  csrContactName={w.csrContactName} setCsrContactName={w.setCsrContactName}
+                  csrContactRole={w.csrContactRole} setCsrContactRole={w.setCsrContactRole}
+                  csrEmail={w.csrEmail} setCsrEmail={w.setCsrEmail}
+                  csrPhone={w.csrPhone} setCsrPhone={w.setCsrPhone}
+                  website={w.website} setWebsite={w.setWebsite}
+                  right={<div className="bg-white/80 backdrop-blur-xl rounded-2xl p-6 border border-white/30 shadow-lg"><div className="text-sm text-slate-600 mb-3">Preview</div><div className="space-y-2 text-slate-800"><div className="font-semibold">{w.companyName || 'Company Name'}</div><div className="text-sm">{w.industry || 'Industry'}</div><div className="text-xs text-slate-500">HQ: {[w.hqCity,w.hqState,w.hqCountry].filter(Boolean).join(', ') || '—'}</div><div className="text-xs text-slate-600">Contact: {w.csrContactName || '—'} ({w.csrContactRole || '—'})</div></div></div>}
+                />
+              </motion.div>
+            )}
+            {w.step === 2 && (
+              <motion.div
+                key="step2"
+                initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -30, scale: 0.95 }}
+                transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+              >
+                <Step3Budget
+                  budget={w.budget} setBudget={w.setBudget}
+                  currency={w.currency} setCurrency={w.setCurrency}
+                  splits={w.splits} setSplits={w.setSplits}
+                  projectSize={w.projectSize} setProjectSize={w.setProjectSize}
+                  climatePercent={w.climatePercent}
+                  educationPercent={w.educationPercent}
+                  healthcarePercent={w.healthcarePercent}
+                  right={<AllocationPreview totalBudget={w.budget} climatePercent={w.climatePercent} educationPercent={w.educationPercent} healthcarePercent={w.healthcarePercent} climateAmount={w.climateAmount} educationAmount={w.educationAmount} healthcareAmount={w.healthcareAmount} />}
+                />
+              </motion.div>
+            )}
+            {w.step === 3 && (
+              <motion.div
+                key="step3"
+                initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -30, scale: 0.95 }}
+                transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+              >
+                <Step4Focus
+                  prioritySdgs={w.prioritySdgs} setPrioritySdgs={w.setPrioritySdgs}
+                  esgGoals={w.esgGoals} setEsgGoals={w.setEsgGoals}
+                  themes={w.themes} setThemes={w.setThemes}
+                  targetYear={w.targetYear} setTargetYear={w.setTargetYear}
+                  reportingStandard={w.reportingStandard} setReportingStandard={w.setReportingStandard}
+                  policyFiles={w.policyFiles} setPolicyFiles={w.setPolicyFiles}
+                  reportFiles={w.reportFiles} setReportFiles={w.setReportFiles}
+                  certFiles={w.certFiles} setCertFiles={w.setCertFiles}
+                  spendHistory={w.spendHistory} setSpendHistory={w.setSpendHistory}
+                  ngoSize={w.ngoSize} setNgoSize={w.setNgoSize}
+                  partnershipModel={w.partnershipModel} setPartnershipModel={w.setPartnershipModel}
+                  regions={w.regions} setRegions={w.setRegions}
+                  right={<div className="bg-white/80 backdrop-blur-xl rounded-2xl p-6 border border-white/30 shadow-lg"><div className="text-sm text-slate-600 mb-3">Summary</div><div className="space-y-2"><div className="text-xs text-slate-600">Selected SDGs: {w.prioritySdgs.length || 0}</div><div className="text-xs text-slate-600">Files: {w.policyFiles.length + w.reportFiles.length + w.certFiles.length}</div><div className="text-xs text-slate-600">NGO: {w.ngoSize} • {w.partnershipModel}</div></div></div>}
+                />
+              </motion.div>
+            )}
+            {w.step === 4 && (
+              <motion.div
+                key="step4"
+                initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -30, scale: 0.95 }}
+                transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+              >
+                <Step7AiInputs
+                  optimizeFor={w.optimizeFor} setOptimizeFor={w.setOptimizeFor}
+                  riskAppetite={w.riskAppetite} setRiskAppetite={w.setRiskAppetite}
+                  alignmentMode={w.alignmentMode} setAlignmentMode={w.setAlignmentMode}
+                  roles={w.roles} setRoles={w.setRoles}
+                  integrations={w.integrations} setIntegrations={w.setIntegrations}
+                  right={<div className="bg-white/80 backdrop-blur-xl rounded-2xl p-6 border border-white/30 shadow-lg"><div className="text-sm text-slate-600 mb-3">Summary</div><div className="space-y-2"><div className="text-xs text-slate-600">AI Metrics: {w.optimizeFor.length || 0}</div><div className="text-xs text-slate-600">Risk: {w.riskAppetite}</div><div className="text-xs text-slate-600">Users: {w.roles.length}</div><div className="text-xs text-slate-600">Integrations: {w.integrations.length || 0}</div></div></div>}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <WizardActions step={w.step} back={w.back} next={w.next} canProceed={w.canProceed} onFinish={finish} />
         </div>
@@ -242,33 +594,182 @@ export default function CompanyDetailsPage() {
   // Fallback - should not reach here in form mode, but just in case
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 relative overflow-hidden">
-      {/* Animated Background Shapes */}
+      {/* Enhanced Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Floating Circles */}
-        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-emerald-200/40 to-teal-300/40 rounded-full animate-float-slow blur-sm"></div>
-        <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-blue-200/30 to-cyan-300/30 rounded-full animate-float-medium blur-sm"></div>
-        <div className="absolute bottom-32 left-1/4 w-20 h-20 bg-gradient-to-br from-green-200/50 to-emerald-300/50 rounded-full animate-float-fast blur-sm"></div>
-        <div className="absolute bottom-20 right-1/3 w-28 h-28 bg-gradient-to-br from-teal-200/40 to-blue-300/40 rounded-full animate-float-slow blur-sm"></div>
+        {/* Floating Geometric Shapes */}
+        <motion.div
+          className="absolute top-16 left-8 w-3 h-3 bg-green-400/40 rounded-full"
+          animate={{
+            y: [0, -30, 0],
+            x: [0, 15, 0],
+            opacity: [0.4, 0.8, 0.4],
+          }}
+          transition={{
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        <motion.div
+          className="absolute top-32 right-16 w-4 h-4 bg-emerald-400/50 rounded-full"
+          animate={{
+            y: [0, -25, 0],
+            x: [0, -20, 0],
+            opacity: [0.5, 0.9, 0.5],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2
+          }}
+        />
+        <motion.div
+          className="absolute bottom-24 left-1/3 w-2 h-2 bg-teal-400/60 rounded-full"
+          animate={{
+            y: [0, -20, 0],
+            x: [0, 25, 0],
+            opacity: [0.6, 1, 0.6],
+          }}
+          transition={{
+            duration: 7,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1
+          }}
+        />
         
-        {/* Geometric Shapes */}
-        <div className="absolute top-1/4 right-1/4 w-16 h-16 bg-gradient-to-br from-emerald-300/20 to-teal-400/20 rotate-45 animate-pulse"></div>
-        <div className="absolute bottom-1/4 left-1/3 w-12 h-12 bg-gradient-to-br from-blue-300/20 to-cyan-400/20 rotate-12 animate-bounce"></div>
+        {/* Additional Floating Elements */}
+        <motion.div
+          className="absolute top-1/3 left-1/4 w-2 h-2 bg-yellow-400/50 rounded-full"
+          animate={{
+            y: [0, -40, 0],
+            x: [0, 30, 0],
+            opacity: [0.3, 0.7, 0.3],
+          }}
+          transition={{
+            duration: 9,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 3
+          }}
+        />
+        <motion.div
+          className="absolute bottom-1/3 right-1/4 w-3 h-3 bg-purple-400/40 rounded-full"
+          animate={{
+            y: [0, -35, 0],
+            x: [0, -25, 0],
+            opacity: [0.4, 0.8, 0.4],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1.5
+          }}
+        />
         
-        {/* Wavy Lines */}
-        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-transparent via-emerald-100/30 to-transparent transform -skew-y-6 animate-slide-right"></div>
-        <div className="absolute bottom-0 right-0 w-full h-24 bg-gradient-to-l from-transparent via-teal-100/30 to-transparent transform skew-y-6 animate-slide-left"></div>
+        {/* Rotating Geometric Elements */}
+        <motion.div
+          className="absolute top-1/4 right-1/4 w-12 h-12 bg-gradient-to-br from-green-300/30 to-emerald-400/30 rotate-45 rounded-lg"
+          animate={{
+            rotate: [45, 405],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
+        
+        <motion.div
+          className="absolute bottom-1/4 left-1/4 w-8 h-8 bg-gradient-to-br from-teal-300/40 to-cyan-400/40 rotate-12 rounded-lg"
+          animate={{
+            rotate: [12, 372],
+            scale: [1, 1.3, 1],
+          }}
+          transition={{
+            duration: 15,
+            repeat: Infinity,
+            ease: "linear",
+            delay: 2
+          }}
+        />
+        
+        {/* Subtle Wave Patterns */}
+        <motion.div
+          className="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-transparent via-green-100/20 to-transparent transform -skew-y-3"
+          animate={{
+            x: ["-100%", "100%"],
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
+        
+        <motion.div
+          className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-r from-transparent via-emerald-100/15 to-transparent transform -skew-y-6"
+          animate={{
+            x: ["100%", "-100%"],
+          }}
+          transition={{
+            duration: 30,
+            repeat: Infinity,
+            ease: "linear",
+            delay: 5
+          }}
+        />
         
         {/* Gradient Orbs */}
-        <div className="absolute top-1/2 left-0 w-64 h-64 bg-gradient-radial from-emerald-200/20 via-transparent to-transparent animate-pulse"></div>
-        <div className="absolute top-1/2 right-0 w-64 h-64 bg-gradient-radial from-teal-200/20 via-transparent to-transparent animate-pulse delay-1000"></div>
-      </div>
-
-      {/* Debug test div */}
-      <div className="fixed top-4 right-4 bg-red-500 text-white p-2 rounded text-xs z-50">
-        Debug: showForm={showForm.toString()}, companies={companies.length}
+        <motion.div
+          className="absolute top-1/2 right-8 w-16 h-16 bg-gradient-to-br from-green-200/40 to-emerald-300/40 rounded-full blur-sm"
+          animate={{
+            scale: [1, 1.3, 1],
+            opacity: [0.4, 0.7, 0.4],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        
+        <motion.div
+          className="absolute top-1/3 left-8 w-12 h-12 bg-gradient-to-br from-teal-200/30 to-cyan-300/30 rounded-full blur-sm"
+          animate={{
+            scale: [1, 1.4, 1],
+            opacity: [0.3, 0.6, 0.3],
+          }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 3
+          }}
+        />
+        
+        {/* Animated Grid Pattern */}
+        <motion.div
+          className="absolute inset-0 opacity-5"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, green 1px, transparent 0)`,
+            backgroundSize: '40px 40px'
+          }}
+          animate={{
+            backgroundPosition: ['0px 0px', '40px 40px'],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
       </div>
       
-      <div id="main-container" className="max-w-7xl mx-auto px-4 py-8 relative z-10">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-8">
         <CompanyList onAddNew={handleAddNew} companies={companies} isShowcaseMode={false} />
       </div>
     </div>

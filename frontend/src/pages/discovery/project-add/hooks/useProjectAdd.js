@@ -2,16 +2,28 @@ import { useState } from 'react'
 
 export default function useProjectAdd() {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState(null)
+  const [success, setSuccess] = useState(false)
 
   const addProject = async (projectData) => {
     setIsSubmitting(true)
+    setError(null)
+    setSuccess(false)
     
     try {
-      // Simulate API call
+      // Simulate API call with realistic delay
       await new Promise(resolve => setTimeout(resolve, 2000))
       
       // Here you would typically make an API call to save the project
       console.log('Adding project:', projectData)
+      
+      // Validate required fields
+      const requiredFields = ['projectName', 'organization', 'description', 'impactArea', 'location', 'budget', 'timeline', 'contactEmail']
+      const missingFields = requiredFields.filter(field => !projectData[field])
+      
+      if (missingFields.length > 0) {
+        throw new Error(`Missing required fields: ${missingFields.join(', ')}`)
+      }
       
       // For now, we'll just log the data and simulate success
       const newProject = {
@@ -20,25 +32,36 @@ export default function useProjectAdd() {
         status: 'pending',
         createdAt: new Date().toISOString(),
         views: 0,
-        likes: 0
+        likes: 0,
+        sdgs: projectData.sdgs || []
       }
       
-      // You could store this in localStorage for demo purposes
+      // Store in localStorage for demo purposes
       const existingProjects = JSON.parse(localStorage.getItem('projects') || '[]')
       existingProjects.push(newProject)
       localStorage.setItem('projects', JSON.stringify(existingProjects))
       
+      setSuccess(true)
       return newProject
     } catch (error) {
       console.error('Error adding project:', error)
+      setError(error.message || 'Failed to add project. Please try again.')
       throw error
     } finally {
       setIsSubmitting(false)
     }
   }
 
+  const resetState = () => {
+    setError(null)
+    setSuccess(false)
+  }
+
   return {
     addProject,
-    isSubmitting
+    isSubmitting,
+    error,
+    success,
+    resetState
   }
 }
