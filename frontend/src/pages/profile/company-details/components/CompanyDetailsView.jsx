@@ -3,6 +3,58 @@ import { useState } from 'react'
 export default function CompanyDetailsView({ company, onBack, onEdit }) {
   const [activeTab, setActiveTab] = useState('overview')
 
+  // Define the tabs array
+  const tabs = [
+    { id: 'overview', label: 'Overview', icon: 'fas fa-home' },
+    { id: 'strategy', label: 'Strategy', icon: 'fas fa-bullseye' },
+    { id: 'financials', label: 'Financials', icon: 'fas fa-coins' },
+    { id: 'documents', label: 'Documents', icon: 'fas fa-file-alt' },
+    { id: 'team', label: 'Team', icon: 'fas fa-users' }
+  ]
+
+  // SDG names array
+  const SDG_NAMES = [
+    'No Poverty', 'Zero Hunger', 'Good Health', 'Quality Education', 'Gender Equality',
+    'Clean Water', 'Affordable Energy', 'Decent Work', 'Industry & Innovation', 'Reduced Inequalities',
+    'Sustainable Cities', 'Responsible Consumption', 'Climate Action', 'Life Below Water', 'Life On Land',
+    'Peace & Justice', 'Partnerships'
+  ]
+
+  // Helper function to get SDG color
+  const getSdgColor = (index) => {
+    const colors = [
+      'bg-red-500', 'bg-orange-500', 'bg-green-500', 'bg-blue-500', 'bg-purple-500',
+      'bg-cyan-500', 'bg-yellow-500', 'bg-pink-500', 'bg-indigo-500', 'bg-teal-500',
+      'bg-emerald-500', 'bg-lime-500', 'bg-rose-500', 'bg-sky-500', 'bg-violet-500',
+      'bg-amber-500', 'bg-fuchsia-500'
+    ]
+    return colors[index % colors.length] || 'bg-gray-500'
+  }
+
+  // Helper function to get SDG icon
+  const getSdgIcon = (sdgName) => {
+    const iconMap = {
+      'No Poverty': '🏠',
+      'Zero Hunger': '🍽️',
+      'Good Health': '🏥',
+      'Quality Education': '🎓',
+      'Gender Equality': '⚖️',
+      'Clean Water': '💧',
+      'Affordable Energy': '⚡',
+      'Decent Work': '💼',
+      'Industry & Innovation': '🏭',
+      'Reduced Inequalities': '🤝',
+      'Sustainable Cities': '🏙️',
+      'Responsible Consumption': '🔄',
+      'Climate Action': '🌍',
+      'Life Below Water': '🐠',
+      'Life On Land': '🌳',
+      'Peace & Justice': '⚖️',
+      'Partnerships': '🤝'
+    }
+    return iconMap[sdgName] || '🎯'
+  }
+
   if (!company) return null
 
   return (
