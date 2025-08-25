@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 export default function Step7AiInputs({ 
   optimizeFor = [], setOptimizeFor, 
   riskAppetite = 'Medium', setRiskAppetite, 
@@ -6,15 +8,37 @@ export default function Step7AiInputs({
   integrations = [], setIntegrations,
   right 
 }) {
+  // Local state fallbacks so the form is always editable even if parent doesn't pass setters
+  const [optimizeForLocal, setOptimizeForLocal] = useState(optimizeFor || [])
+  const [riskAppetiteLocal, setRiskAppetiteLocal] = useState(riskAppetite || 'Medium')
+  const [alignmentModeLocal, setAlignmentModeLocal] = useState(alignmentMode || 'Strict compliance')
+  const [rolesLocal, setRolesLocal] = useState(roles || [])
+  const [integrationsLocal, setIntegrationsLocal] = useState(integrations || [])
+
+  const currentOptimizeFor = (setOptimizeFor ? optimizeFor : optimizeForLocal) || []
+  const setOptimizeForSafe = setOptimizeFor || setOptimizeForLocal
+
+  const currentRiskAppetite = setRiskAppetite ? riskAppetite : riskAppetiteLocal
+  const setRiskAppetiteSafe = setRiskAppetite || setRiskAppetiteLocal
+
+  const currentAlignmentMode = setAlignmentMode ? alignmentMode : alignmentModeLocal
+  const setAlignmentModeSafe = setAlignmentMode || setAlignmentModeLocal
+
+  const currentRoles = (setRoles ? roles : rolesLocal) || []
+  const setRolesSafe = setRoles || setRolesLocal
+
+  const currentIntegrations = (setIntegrations ? integrations : integrationsLocal) || []
+  const setIntegrationsSafe = setIntegrations || setIntegrationsLocal
+
   const METRICS = ['Impact', 'Budget efficiency', 'Long-term sustainability', 'Employee volunteering']
-  const toggle = (m) => setOptimizeFor((optimizeFor || []).includes(m) ? (optimizeFor || []).filter((x) => x !== m) : [...(optimizeFor || []), m])
+  const toggle = (m) => setOptimizeForSafe((currentOptimizeFor || []).includes(m) ? (currentOptimizeFor || []).filter((x) => x !== m) : [...(currentOptimizeFor || []), m])
   
-  const addUser = () => setRoles([...(roles || []), { email: '', role: 'CSR Manager' }])
-  const updateUser = (i, key, val) => setRoles((roles || []).map((r, idx) => (idx === i ? { ...r, [key]: val } : r)))
-  const removeUser = (i) => setRoles((roles || []).filter((_, idx) => idx !== i))
+  const addUser = () => setRolesSafe([...(currentRoles || []), { email: '', role: 'CSR Manager' }])
+  const updateUser = (i, key, val) => setRolesSafe((currentRoles || []).map((r, idx) => (idx === i ? { ...r, [key]: val } : r)))
+  const removeUser = (i) => setRolesSafe((currentRoles || []).filter((_, idx) => idx !== i))
 
   const INTEGRATIONS = ['SAP', 'Workday', 'Microsoft Sustainability Cloud']
-  const toggleIntegration = (x) => setIntegrations((integrations || []).includes(x) ? (integrations || []).filter((i) => i !== x) : [...(integrations || []), x])
+  const toggleIntegration = (x) => setIntegrationsSafe((currentIntegrations || []).includes(x) ? (currentIntegrations || []).filter((i) => i !== x) : [...(currentIntegrations || []), x])
 
   return (
     <div className="space-y-8">
@@ -36,13 +60,13 @@ export default function Step7AiInputs({
                 type="range" 
                 min="0" 
                 max="100" 
-                value={riskAppetite === 'Low' ? 25 : riskAppetite === 'Medium' ? 65 : 85}
+                value={currentRiskAppetite === 'Low' ? 25 : currentRiskAppetite === 'Medium' ? 65 : 85}
                 className="w-full h-2 bg-gradient-to-r from-emerald-200 to-blue-200 rounded-lg appearance-none cursor-pointer"
                 onChange={(e) => {
                   const val = parseInt(e.target.value)
-                  if (val < 40) setRiskAppetite('Low')
-                  else if (val < 75) setRiskAppetite('Medium')
-                  else setRiskAppetite('High')
+                  if (val < 40) setRiskAppetiteSafe('Low')
+                  else if (val < 75) setRiskAppetiteSafe('Medium')
+                  else setRiskAppetiteSafe('High')
                 }}
               />
               <div className="flex justify-between text-xs text-slate-500 mt-2">
@@ -55,19 +79,19 @@ export default function Step7AiInputs({
             <div className="grid grid-cols-3 gap-3">
               <div className="text-center p-3 bg-emerald-50 rounded-lg border border-emerald-200">
                 <div className="text-2xl font-bold text-emerald-600">
-                  {riskAppetite === 'Low' ? '25%' : riskAppetite === 'Medium' ? '65%' : '85%'}
+                  {currentRiskAppetite === 'Low' ? '25%' : currentRiskAppetite === 'Medium' ? '65%' : '85%'}
                 </div>
                 <div className="text-xs text-slate-600">Current Level</div>
               </div>
               <div className="text-center p-3 bg-blue-50 rounded-lg border border-blue-200">
                 <div className="text-2xl font-bold text-blue-600">
-                  {riskAppetite === 'Low' ? '$1.2M' : riskAppetite === 'Medium' ? '$2.4M' : '$3.8M'}
+                  {currentRiskAppetite === 'Low' ? '$1.2M' : currentRiskAppetite === 'Medium' ? '$2.4M' : '$3.8M'}
                 </div>
                 <div className="text-xs text-slate-600">Max Exposure</div>
               </div>
               <div className="text-center p-3 bg-teal-50 rounded-lg border border-teal-200">
                 <div className="text-2xl font-bold text-teal-600">
-                  {riskAppetite === 'Low' ? '5.2%' : riskAppetite === 'Medium' ? '8.2%' : '12.5%'}
+                  {currentRiskAppetite === 'Low' ? '5.2%' : currentRiskAppetite === 'Medium' ? '8.2%' : '12.5%'}
                 </div>
                 <div className="text-xs text-slate-600">Expected ROI</div>
               </div>
@@ -93,8 +117,8 @@ export default function Step7AiInputs({
               <label className="relative inline-flex items-center cursor-pointer">
                 <input 
                   type="checkbox" 
-                  checked={alignmentMode === 'Strict compliance'} 
-                  onChange={() => setAlignmentMode(alignmentMode === 'Strict compliance' ? 'Flexible innovation' : 'Strict compliance')}
+                  checked={currentAlignmentMode === 'Strict compliance'} 
+                  onChange={() => setAlignmentModeSafe(currentAlignmentMode === 'Strict compliance' ? 'Flexible innovation' : 'Strict compliance')}
                   className="sr-only peer"
                 />
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500">
@@ -147,6 +171,30 @@ export default function Step7AiInputs({
           </div>
           <h3 className="text-xl font-semibold text-slate-800">Key Metrics Priority</h3>
         </div>
+
+        {/* Editable selection for Optimize For */}
+        <div className="mb-6">
+          <div className="text-sm text-slate-600 mb-3">Select what to optimize for</div>
+          <div className="flex flex-wrap gap-2">
+            {METRICS.map((metric) => {
+              const selected = (optimizeFor || []).includes(metric)
+              return (
+                <button
+                  key={metric}
+                  type="button"
+                  onClick={() => toggle(metric)}
+                  className={`px-3 py-1 rounded-lg text-sm border transition-colors ${
+                    selected
+                      ? 'bg-emerald-100 text-emerald-700 border-emerald-300'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  {metric}
+                </button>
+              )
+            })}
+          </div>
+        </div>
         
         <div className="grid md:grid-cols-3 gap-6">
           {METRICS.map((metric, index) => (
@@ -171,6 +219,16 @@ export default function Step7AiInputs({
                 </i>
               </div>
               <h4 className="font-semibold text-slate-800 mb-2">{metric}</h4>
+              {/* Quick toggle inline for convenience */}
+              <label className="inline-flex items-center gap-2 mb-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={(optimizeFor || []).includes(metric)}
+                  onChange={() => toggle(metric)}
+                  className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                />
+                <span className="text-sm text-slate-600">Optimize</span>
+              </label>
               <div className={`text-3xl font-bold mb-2 ${
                 index === 0 ? 'text-emerald-600' :
                 index === 1 ? 'text-blue-600' :
@@ -226,7 +284,7 @@ export default function Step7AiInputs({
             </div>
             
             <div className="space-y-3">
-              {(roles || []).map((r, i) => (
+              {(currentRoles || []).map((r, i) => (
                 <div key={i} className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
                   <input 
                     placeholder="Email" 

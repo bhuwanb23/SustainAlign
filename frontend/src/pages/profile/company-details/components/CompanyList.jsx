@@ -78,7 +78,9 @@ export default function CompanyList({ onAddNew, companies = [], isShowcaseMode =
     }
   ]
 
-  const displayCompanies = isShowcaseMode ? sampleCompanies : filteredCompanies
+  const displayCompanies = (companies && companies.length > 0)
+    ? filteredCompanies
+    : (isShowcaseMode ? sampleCompanies : filteredCompanies)
 
   return (
     <div className="min-h-screen bg-white ">

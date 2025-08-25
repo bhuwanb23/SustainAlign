@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import useCompanyWizard from './hooks/useCompanyWizard.js'
+import { apiPost, apiGet } from '../../../lib/api'
 import Stepper from './components/Stepper.jsx'
 import CompanyList from './components/CompanyList.jsx'
 import CompanyDetailsView from './components/CompanyDetailsView.jsx'
@@ -17,39 +18,67 @@ export default function CompanyDetailsPage() {
   const isShowcaseMode = location.pathname === '/profile/company-showcase'
   const [showForm, setShowForm] = useState(false)
   const [selectedCompany, setSelectedCompany] = useState(null)
-  const [companies, setCompanies] = useState([
-    {
-      id: 1,
-      companyName: 'TechCorp Solutions',
-      industry: 'Technology',
-      hqCity: 'Bangalore',
-      hqState: 'Karnataka',
-      hqCountry: 'India',
-      csrContactName: 'Priya Sharma',
-      csrContactRole: 'CSR Manager',
-      budget: 5000000,
-      currency: 'INR',
-      prioritySdgs: ['Quality Education', 'Climate Action', 'Industry & Innovation'],
-      policyFiles: ['policy1.pdf'],
-      reportFiles: ['report2023.pdf', 'report2022.pdf']
-    },
-    {
-      id: 2,
-      companyName: 'GreenEnergy Ltd',
-      industry: 'Renewable Energy',
-      hqCity: 'Mumbai',
-      hqState: 'Maharashtra',
-      hqCountry: 'India',
-      csrContactName: 'Rajesh Patel',
-      csrContactRole: 'Sustainability Director',
-      budget: 8000000,
-      currency: 'INR',
-      prioritySdgs: ['Affordable Energy', 'Climate Action', 'Life On Land'],
-      policyFiles: ['green-policy.pdf'],
-      reportFiles: ['sustainability-report.pdf']
-    }
-  ])
+  const [companies, setCompanies] = useState([])
   const w = useCompanyWizard()
+
+  // load companies from API on mount (dev allows unauthenticated)
+  useEffect(() => {
+    (async () => {
+      try {
+        const data = await apiGet('/api/profile/companies')
+        const mapped = (data.companies || []).map(mapCompanyFromApi)
+        setCompanies(mapped)
+      } catch (e) {
+        console.warn('Failed to load companies', e)
+      }
+    })()
+  }, [])
+
+  function mapCompanyFromApi(api) {
+    // backend returns company.to_dict() with nested structures
+    return {
+      id: api.id,
+      companyName: api.company_name,
+      industry: api.industry,
+      hqCity: api.hq_city,
+      hqState: api.hq_state,
+      hqCountry: api.hq_country,
+      website: api.website,
+      // csr contact
+      csrContactName: api.csr_contact?.contact_name,
+      csrContactRole: api.csr_contact?.contact_role,
+      csrEmail: api.csr_contact?.email,
+      csrPhone: api.csr_contact?.phone,
+      // budget
+      budget: api.budget?.amount,
+      currency: api.budget?.currency,
+      projectSize: api.budget?.project_size,
+      splits: api.budget?.splits || {},
+      // focus
+      prioritySdgs: api.focus_area?.priority_sdgs || [],
+      esgGoals: api.focus_area?.esg_goals,
+      themes: api.focus_area?.themes,
+      targetYear: api.focus_area?.target_year,
+      reportingStandard: api.focus_area?.reporting_standard,
+      // ngo prefs
+      ngoSize: api.ngo_preferences?.ngo_size,
+      partnershipModel: api.ngo_preferences?.partnership_model,
+      regions: api.ngo_preferences?.regions || [],
+      // ai config
+      optimizeFor: api.ai_config?.optimize_for || [],
+      riskAppetite: api.ai_config?.risk_appetite,
+      alignmentMode: api.ai_config?.alignment_mode,
+      integrations: api.ai_config?.integrations || [],
+      // roles
+      roles: (api.user_roles || []).map(r => ({ email: r.email, role: r.role })),
+      // branches
+      branches: (api.branches || []).map(b => ({ country: b.country, state: b.state, city: b.city })),
+      // docs
+      policyFiles: (api.compliance_documents || []).filter(d => d.document_type === 'policy').map(d => ({ name: d.file_name })),
+      reportFiles: (api.compliance_documents || []).filter(d => d.document_type === 'report').map(d => ({ name: d.file_name })),
+      certFiles: (api.compliance_documents || []).filter(d => d.document_type === 'certificate').map(d => ({ name: d.file_name })),
+    }
+  }
 
   // Auto-show form when in form mode (not showcase mode)
   useEffect(() => {
@@ -80,19 +109,20 @@ export default function CompanyDetailsPage() {
     setSelectedCompany(company)
   }, [])
 
-  const finish = useCallback(() => {
+  const finish = useCallback(async () => {
     const payload = w.getPayload()
     console.log('Company Profile Payload', payload)
-    
-    // Add the new company to the list
-    const newCompany = {
-      id: Date.now(), // Simple ID generation
-      ...payload
+    try {
+      const res = await apiPost('/api/profile/companies', payload)
+      console.log('Company created:', res)
+      const mapped = mapCompanyFromApi(res.company)
+      setCompanies(prev => [...prev, mapped])
+      alert('Company profile saved to database!')
+      setShowForm(false)
+    } catch (e) {
+      console.error('Failed to save company profile', e)
+      alert(`Failed to save company profile: ${e.message}`)
     }
-    setCompanies(prev => [...prev, newCompany])
-    
-    alert('Company profile saved!')
-    setShowForm(false)
   }, [w])
 
   // Show selected company details

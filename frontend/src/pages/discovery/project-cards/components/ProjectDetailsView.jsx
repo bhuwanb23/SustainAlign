@@ -214,7 +214,7 @@ export default function ProjectDetailsView({ project, onBack, onEdit }) {
 
               {/* Quick Stats */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white p-6 rounded-2xl text-center">
+                <div className="bg-emerald-600 bg-gradient-to-br from-emerald-500 to-emerald-600 text-white p-6 rounded-2xl text-center">
                   <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <i className="fas fa-bullseye text-2xl"></i>
                   </div>
@@ -222,7 +222,7 @@ export default function ProjectDetailsView({ project, onBack, onEdit }) {
                   <div className="text-emerald-100">SDGs Covered</div>
                 </div>
 
-                <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-2xl text-center">
+                <div className="bg-blue-600 bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-2xl text-center">
                   <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <i className="fas fa-coins text-2xl"></i>
                   </div>
@@ -232,7 +232,7 @@ export default function ProjectDetailsView({ project, onBack, onEdit }) {
                   <div className="text-blue-100">Funding Needed</div>
                 </div>
 
-                <div className="bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 rounded-2xl text-center">
+                <div className="bg-purple-600 bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 rounded-2xl text-center">
                   <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <i className="fas fa-users text-2xl"></i>
                   </div>
@@ -240,7 +240,7 @@ export default function ProjectDetailsView({ project, onBack, onEdit }) {
                   <div className="text-purple-100">Target Groups</div>
                 </div>
 
-                <div className="bg-gradient-to-br from-orange-500 to-orange-600 text-white p-6 rounded-2xl text-center">
+                <div className="bg-orange-600 bg-gradient-to-br from-orange-500 to-orange-600 text-white p-6 rounded-2xl text-center">
                   <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <i className="fas fa-check-circle text-2xl"></i>
                   </div>
@@ -334,7 +334,7 @@ export default function ProjectDetailsView({ project, onBack, onEdit }) {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Budget Overview */}
                 <div className="space-y-6">
-                  <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-6 rounded-2xl">
+                  <div className="bg-emerald-600 bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-6 rounded-2xl">
                     <h4 className="text-xl font-bold mb-4">Project Cost Overview</h4>
                     <div className="text-4xl font-bold mb-2">
                       {project.totalProjectCost ? `$${(project.totalProjectCost / 1000).toFixed(1)}K` : 'Not set'}
@@ -395,7 +395,7 @@ export default function ProjectDetailsView({ project, onBack, onEdit }) {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Timeline */}
                 <div className="space-y-6">
-                  <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-6 rounded-2xl">
+                  <div className="bg-blue-600 bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-6 rounded-2xl">
                     <h4 className="text-xl font-bold mb-4">Project Timeline</h4>
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
