@@ -1,6 +1,6 @@
 export default function HeroStats({ stats }) {
   return (
-    <header className="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white relative overflow-hidden rounded-2xl">
+    <header className="bg-emerald-700 bg-gradient-to-br from-emerald-600 to-emerald-700 text-white relative overflow-hidden rounded-2xl">
       <div className="absolute inset-0 bg-black/10" />
       <div className="relative z-10 px-6 py-12">
         <div className="text-center max-w-5xl mx-auto">

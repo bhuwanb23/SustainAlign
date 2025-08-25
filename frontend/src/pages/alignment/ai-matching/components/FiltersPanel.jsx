@@ -13,7 +13,7 @@ export default function FiltersPanel({ onApply }) {
 
   return (
     <aside className="w-full lg:w-80">
-      <div className="bg-white rounded-2xl shadow p-6 border border-gray-100 sticky top-8">
+      <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 sticky top-8">
         <h3 className="text-lg font-semibold text-gray-900 mb-6">Refine Results</h3>
 
         <div className="mb-6">
@@ -31,7 +31,7 @@ export default function FiltersPanel({ onApply }) {
 
         <div className="mb-6">
           <label className="text-sm font-medium text-gray-700 mb-3 block">Investment Range</label>
-          <select className="w-full border border-gray-300 rounded-xl px-3 py-2">
+          <select className="w-full border border-gray-200 rounded-xl px-3 py-2 bg-white shadow-sm focus:ring-2 focus:ring-emerald-300 focus:border-emerald-300">
             {INVESTMENT_RANGES.map((r) => (
               <option key={r}>{r}</option>
             ))}
@@ -70,7 +70,7 @@ export default function FiltersPanel({ onApply }) {
           </div>
         </div>
 
-        <button onClick={onApply} className="w-full bg-emerald-600 text-white py-2 rounded-xl hover:bg-emerald-700 transition-colors">
+        <button onClick={onApply} className="w-full bg-emerald-600 text-white py-2 rounded-xl shadow hover:bg-emerald-700 transition-colors">
           Apply Filters
         </button>
       </div>
