@@ -82,7 +82,8 @@ export default function ProjectDetailsView({ project, onBack, onEdit }) {
 
         {/* Project Hero Section */}
         <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden mb-8">
-          <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-8 text-white shadow-2xl">
+          {/* Add a solid fallback color to ensure contrast even if gradients are purged */}
+          <div className="bg-emerald-600 bg-gradient-to-r from-emerald-600 to-teal-600 p-8 text-white shadow-2xl">
             <div className="flex items-center gap-6">
               <div className="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center text-white text-4xl font-bold backdrop-blur-sm border border-white/30 shadow-lg">
                 {project.projectTitle?.charAt(0) || 'P'}

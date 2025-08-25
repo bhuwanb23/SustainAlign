@@ -88,22 +88,63 @@ export default function useProjectAdd() {
       // Make API call to backend using the utility function (no auth)
       const newProject = await createProject(transformedData)
       
-      // Store in localStorage for demo purposes (can be removed later)
+      // Store full details in localStorage so ProjectDetailsView has all fields
       const existingProjects = JSON.parse(localStorage.getItem('projects') || '[]')
-      existingProjects.push({
-        id: newProject.project.id || `created-${Date.now()}`,
-        projectTitle: newProject.project.title,
-        shortDescription: newProject.project.short_description,
-        ngoName: newProject.project.ngo_name,
-        location: newProject.project.location?.city || newProject.project.location_city || '',
-        sdgGoals: newProject.project.sdg_goals || [],
-        csrFocusAreas: newProject.project.csr_focus_areas || [],
-        targetBeneficiaries: newProject.project.target_beneficiaries || [],
-        totalProjectCost: newProject.project.financials?.total_project_cost || 0,
-        fundingRequired: newProject.project.financials?.funding_required || 0,
-        status: newProject.project.status,
-        createdAt: newProject.project.created_at || new Date().toISOString()
-      })
+      const storedId = newProject.project.id || `created-${Date.now()}`
+      const createdAt = newProject.project.created_at || new Date().toISOString()
+
+      const fullRecord = {
+        // Identity/metadata
+        id: storedId,
+        createdAt,
+        status: projectData.status || 'draft',
+        visibility: projectData.visibility || 'public',
+
+        // Card fields
+        projectName: projectData.projectTitle || newProject.project.title || 'Untitled Project',
+        organization: projectData.ngoName || newProject.project.ngo_name || 'NGO',
+        description: projectData.shortDescription || newProject.project.short_description || '',
+        impactArea: 'Environment',
+        location: projectData.location?.city || newProject.project.location_city || '',
+        budget: Number(projectData.totalProjectCost) || Number(newProject.project.total_project_cost) || 0,
+        timeline: `${projectData.startDate || ''} - ${projectData.endDate || ''}`,
+        sdgs: projectData.sdgGoals || newProject.project.sdg_goals || [],
+
+        // Details view fields (store the whole form data shape)
+        projectTitle: projectData.projectTitle,
+        shortDescription: projectData.shortDescription,
+        ngoName: projectData.ngoName,
+        locationObj: projectData.location, // keep original object separately
+        location: projectData.location,    // for backwards compatibility
+        sdgGoals: projectData.sdgGoals,
+        csrFocusAreas: projectData.csrFocusAreas,
+        targetBeneficiaries: projectData.targetBeneficiaries,
+        totalProjectCost: Number(projectData.totalProjectCost) || 0,
+        fundingRequired: Number(projectData.fundingRequired) || 0,
+        currency: projectData.currency || 'INR',
+        csrEligibility: projectData.csrEligibility,
+        preferredContributionType: projectData.preferredContributionType,
+        startDate: projectData.startDate,
+        endDate: projectData.endDate,
+        duration: projectData.duration,
+        milestones: projectData.milestones,
+        expectedOutcomes: projectData.expectedOutcomes,
+        kpis: projectData.kpis,
+        pastImpact: projectData.pastImpact,
+        registrationNumber: projectData.registrationNumber,
+        g80Status: projectData.g80Status,
+        fcraStatus: projectData.fcraStatus,
+        pastProjectsCompleted: projectData.pastProjectsCompleted,
+        ngoRating: projectData.ngoRating,
+        ngoVerificationBadge: projectData.ngoVerificationBadge,
+        projectImages: projectData.projectImages,
+        proposalDocument: projectData.proposalDocument,
+        videoLink: projectData.videoLink,
+        contactEmail: projectData.contactEmail,
+        website: projectData.website
+      }
+
+      existingProjects.push(fullRecord)
       localStorage.setItem('projects', JSON.stringify(existingProjects))
       
       setSuccess(true)

@@ -24,7 +24,7 @@ export default function ProjectCardsPage() {
   if (selectedProject) {
     return (
       <ProjectDetailsView
-        project={selectedProject}
+        project={selectedProject.__full || selectedProject}
         onBack={() => setSelectedProject(null)}
         onEdit={(project) => {
           // Handle edit functionality - you can implement this later

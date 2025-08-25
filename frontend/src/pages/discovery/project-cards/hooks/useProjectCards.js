@@ -13,18 +13,20 @@ export default function useProjectCards() {
         // Normalize stored projects to card schema and ensure unique IDs
         const normalizedStored = storedProjects.map((p, idx) => ({
           id: p.id || `stored-${p.createdAt || Date.now()}-${idx}`,
-          projectName: p.projectTitle || p.title || 'Untitled Project',
+          projectName: p.projectName || p.projectTitle || p.title || 'Untitled Project',
           organization: p.organization || p.ngoName || p.ngo_name || 'NGO',
-          description: p.shortDescription || p.short_description || '',
+          description: p.description || p.shortDescription || p.short_description || '',
           impactArea: p.impactArea || 'Environment',
           location: typeof p.location === 'string' ? p.location : (p.location?.city || p.location_city || ''),
-          budget: p.totalProjectCost || p.financials?.total_project_cost || p.budget || 0,
-          timeline: p.timeline || `${p.timeline?.start || p.start_date || ''} - ${p.timeline?.end || p.end_date || ''}`,
+          budget: p.budget || p.totalProjectCost || p.financials?.total_project_cost || 0,
+          timeline: p.timeline || `${p.startDate || p.timeline?.start || p.start_date || ''} - ${p.endDate || p.timeline?.end || p.end_date || ''}`,
           sdgs: p.sdgs || p.sdgGoals || p.sdg_goals || [],
           status: p.status || 'active',
           createdAt: p.createdAt || p.created_at || new Date().toISOString(),
           views: p.views || 0,
-          likes: p.likes || 0
+          likes: p.likes || 0,
+          // Attach the full object for details view to consume without lossy mapping
+          __full: p
         }))
         
         // Combine with default projects
