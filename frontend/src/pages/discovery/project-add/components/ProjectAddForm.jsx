@@ -6,7 +6,9 @@ import {
   csrFocusAreas, 
   targetBeneficiaries, 
   contributionTypes, 
-  ngoRatings 
+  ngoRatings,
+  g80Statuses,
+  fcraStatuses
 } from '../constants/index.js'
 
 export default function ProjectAddForm({ onSubmit, isSubmitting }) {
@@ -15,7 +17,11 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
     projectTitle: '',
     shortDescription: '',
     ngoName: '',
-    location: '',
+    location: {
+      city: '',
+      region: '',
+      country: 'India'
+    },
     
     // Thematic Info
     sdgGoals: [],
@@ -25,7 +31,8 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
     // Financials
     totalProjectCost: '',
     fundingRequired: '',
-    csrEligibility: '',
+    currency: 'INR',
+    csrEligibility: 'Yes',
     preferredContributionType: '',
     
     // Timeline
@@ -41,10 +48,11 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
     
     // NGO Credibility
     registrationNumber: '',
-    g80Status: '',
-    fcraStatus: '',
+    g80Status: 'Valid',
+    fcraStatus: 'Valid',
     pastProjectsCompleted: '',
-    ngoRating: '',
+    ngoRating: 4,
+    ngoVerificationBadge: 'Verified',
     
     // Media & Supporting Files
     projectImages: [],
@@ -53,7 +61,11 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
     
     // Contact Info
     contactEmail: '',
-    website: ''
+    website: '',
+    
+    // Status & Metadata
+    status: 'draft',
+    visibility: 'public'
   })
 
   const [currentStep, setCurrentStep] = useState(1)
@@ -68,16 +80,22 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
   }
 
   const handleArrayChange = (field, value, action = 'toggle') => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: action === 'toggle' 
+    console.log(`handleArrayChange called: field=${field}, value=${value}, action=${action}`)
+    setFormData(prev => {
+      const newValue = action === 'toggle' 
         ? prev[field].includes(value)
           ? prev[field].filter(item => item !== value)
           : [...prev[field], value]
         : action === 'add'
         ? [...prev[field], value]
         : prev[field].filter(item => item !== value)
-    }))
+      
+      console.log(`Updated ${field}:`, newValue)
+      return {
+        ...prev,
+        [field]: newValue
+      }
+    })
   }
 
   const handleFileChange = (e, field) => {
@@ -85,6 +103,16 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
     setFormData(prev => ({
       ...prev,
       [field]: file
+    }))
+  }
+
+  const handleLocationChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      location: {
+        ...prev.location,
+        [field]: value
+      }
     }))
   }
 
@@ -188,17 +216,42 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
           transition={{ delay: 0.4 }}
         >
           <label className="block text-sm font-medium text-slate-700 mb-2">
-            Location (City/Region/Country) *
+            Location *
           </label>
-          <input
-            type="text"
-            name="location"
-            value={formData.location}
-            onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
-            placeholder="City, State, Country"
-            required
-          />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <input
+              type="text"
+              name="city"
+              value={formData.location.city}
+              onChange={(e) => handleLocationChange('city', e.target.value)}
+              className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+              placeholder="City"
+              required
+            />
+            <input
+              type="text"
+              name="region"
+              value={formData.location.region}
+              onChange={(e) => handleLocationChange('region', e.target.value)}
+              className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+              placeholder="State/Region"
+            />
+            <select
+              name="country"
+              value={formData.location.country}
+              onChange={(e) => handleLocationChange('country', e.target.value)}
+              className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+              required
+            >
+              <option value="India">India</option>
+              <option value="Nepal">Nepal</option>
+              <option value="Bangladesh">Bangladesh</option>
+              <option value="Sri Lanka">Sri Lanka</option>
+              <option value="Pakistan">Pakistan</option>
+              <option value="Bhutan">Bhutan</option>
+              <option value="Maldives">Maldives</option>
+            </select>
+          </div>
         </motion.div>
       </div>
     </motion.div>
@@ -226,20 +279,20 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
           transition={{ delay: 0.1 }}
         >
           <label className="block text-sm font-medium text-slate-700 mb-4">
-            SDG Goals (Select all that apply) *
+            SDG Goals (Select all that apply) * - Selected: [{formData.sdgGoals.join(', ')}]
           </label>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {allSdgGoals.map((sdg, index) => (
               <motion.button
                 key={sdg.id}
                 type="button"
-                onClick={() => handleArrayChange('sdgGoals', sdg.name)}
+                onClick={() => handleArrayChange('sdgGoals', sdg.id)}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.05 }}
                 className={`p-3 rounded-xl border-2 transition-all duration-300 ${
-                  formData.sdgGoals.includes(sdg.name)
-                    ? `${sdg.color} border-${sdg.color} text-white shadow-lg`
+                  formData.sdgGoals.includes(sdg.id)
+                    ? 'bg-blue-500 border-blue-500 text-white shadow-lg'
                     : 'border-slate-200 bg-white/80 hover:border-blue-400 hover:shadow-md'
                 }`}
                 whileHover={{ scale: 1.05, y: -2 }}
@@ -636,9 +689,9 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
             className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
           >
             <option value="">Select 80G status</option>
-            <option value="Registered">Registered</option>
-            <option value="Not Registered">Not Registered</option>
-            <option value="Under Process">Under Process</option>
+            {g80Statuses.map(status => (
+              <option key={status} value={status}>{status}</option>
+            ))}
           </select>
         </motion.div>
 
@@ -657,9 +710,9 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
             className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm"
           >
             <option value="">Select FCRA status</option>
-            <option value="Registered">Registered</option>
-            <option value="Not Registered">Not Registered</option>
-            <option value="Under Process">Under Process</option>
+            {fcraStatuses.map(status => (
+              <option key={status} value={status}>{status}</option>
+            ))}
           </select>
         </motion.div>
 
@@ -698,7 +751,9 @@ export default function ProjectAddForm({ onSubmit, isSubmitting }) {
           >
             <option value="">Select rating</option>
             {ngoRatings.map(rating => (
-              <option key={rating} value={rating}>{rating}</option>
+              <option key={rating.value} value={rating.value}>
+                {rating.label} - {rating.description}
+              </option>
             ))}
           </select>
         </motion.div>

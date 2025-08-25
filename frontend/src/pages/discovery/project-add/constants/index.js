@@ -22,23 +22,79 @@ export const csrFocusAreas = [
   'Education', 'Healthcare', 'Environment', 'Poverty Alleviation',
   'Women Empowerment', 'Clean Energy', 'Water & Sanitation', 'Agriculture',
   'Rural Development', 'Skill Development', 'Digital Literacy', 'Mental Health',
-  'Disaster Relief', 'Cultural Preservation', 'Sports & Recreation', 'Technology Access'
+  'Disaster Relief', 'Cultural Preservation', 'Sports & Recreation', 'Technology Access',
+  'Financial Inclusion', 'Housing', 'Transportation', 'Waste Management',
+  'Biodiversity Conservation', 'Climate Adaptation', 'Social Enterprise', 'Community Development'
 ]
 
 export const targetBeneficiaries = [
   'Children', 'Women', 'Rural Communities', 'Urban Poor', 'Tribal Communities',
   'Senior Citizens', 'Persons with Disabilities', 'Migrant Workers', 'Street Children',
-  'Farmers', 'Artisans', 'Small Business Owners', 'Students', 'Unemployed Youth'
+  'Farmers', 'Artisans', 'Small Business Owners', 'Students', 'Unemployed Youth',
+  'LGBTQ+ Community', 'Refugees', 'Victims of Violence', 'Minority Groups',
+  'Low-income Families', 'Single Parents', 'Orphans', 'Homeless People'
 ]
 
 export const contributionTypes = [
   'Cash Donation', 'In-kind Support', 'Volunteer Hours', 'Technical Expertise',
-  'Equipment & Materials', 'Training & Capacity Building', 'Mentoring', 'Partnership'
+  'Equipment & Materials', 'Training & Capacity Building', 'Mentoring', 'Partnership',
+  'Infrastructure Support', 'Research & Development', 'Marketing & Promotion',
+  'Legal Support', 'Financial Advisory', 'Network Access', 'Brand Partnership'
 ]
 
 export const ngoRatings = [
-  'Platinum (90-100%)', 'Gold (80-89%)', 'Silver (70-79%)', 'Bronze (60-69%)',
-  'Verified (50-59%)', 'Under Review'
+  { value: 5, label: '5 Stars - Excellent', description: 'Exceptional track record and impact' },
+  { value: 4, label: '4 Stars - Very Good', description: 'Strong performance and reliability' },
+  { value: 3, label: '3 Stars - Good', description: 'Satisfactory performance' },
+  { value: 2, label: '2 Stars - Fair', description: 'Basic compliance met' },
+  { value: 1, label: '1 Star - Poor', description: 'Needs improvement' }
+]
+
+export const ngoVerificationStatuses = [
+  'Verified',
+  'Pending',
+  'Unverified',
+  'Under Review',
+  'Suspended'
+]
+
+export const g80Statuses = [
+  'Valid',
+  'Expired',
+  'Not Available',
+  'Applied',
+  'Under Process'
+]
+
+export const fcraStatuses = [
+  'Valid',
+  'Expired',
+  'Not Required',
+  'Applied',
+  'Under Process',
+  'Suspended'
+]
+
+export const projectStatuses = [
+  'draft',
+  'published',
+  'funded',
+  'in_progress',
+  'completed',
+  'cancelled'
+]
+
+export const projectVisibility = [
+  'public',
+  'private',
+  'restricted'
+]
+
+export const currencies = [
+  { code: 'INR', name: 'Indian Rupee', symbol: '₹' },
+  { code: 'USD', name: 'US Dollar', symbol: '$' },
+  { code: 'EUR', name: 'Euro', symbol: '€' },
+  { code: 'GBP', name: 'British Pound', symbol: '£' }
 ]
 
 export const formSteps = [
@@ -58,3 +114,17 @@ export const requiredFields = [
   'startDate', 'endDate', 'expectedOutcomes', 'kpis',
   'registrationNumber', 'contactEmail'
 ]
+
+export const locationOptions = {
+  countries: ['India', 'Nepal', 'Bangladesh', 'Sri Lanka', 'Pakistan', 'Bhutan', 'Maldives'],
+  states: {
+    'India': [
+      'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
+      'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand',
+      'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur',
+      'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab',
+      'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura',
+      'Uttar Pradesh', 'Uttarakhand', 'West Bengal'
+    ]
+  }
+}

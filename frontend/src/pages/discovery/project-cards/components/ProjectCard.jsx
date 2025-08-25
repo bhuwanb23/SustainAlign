@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 
-export default function ProjectCard({ project }) {
+export default function ProjectCard({ project, onClick }) {
   const getSdgColor = (sdgName) => {
     const colorMap = {
       'No Poverty': 'bg-red-500',
@@ -37,9 +37,10 @@ export default function ProjectCard({ project }) {
 
   return (
     <motion.div
+      onClick={() => onClick && onClick(project)}
       whileHover={{ y: -8 }}
       transition={{ duration: 0.3 }}
-      className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100"
+      className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 cursor-pointer"
     >
       {/* Header */}
       <div className="relative h-48 bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center">
@@ -139,6 +140,10 @@ export default function ProjectCard({ project }) {
         {/* Action Buttons */}
         <div className="flex gap-2">
           <motion.button
+            onClick={(e) => {
+              e.stopPropagation()
+              onClick && onClick(project)
+            }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-medium py-2 px-4 rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all duration-200"
@@ -146,6 +151,7 @@ export default function ProjectCard({ project }) {
             View Details
           </motion.button>
           <motion.button
+            onClick={(e) => e.stopPropagation()}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="px-4 py-2 border border-emerald-500 text-emerald-600 text-sm font-medium rounded-lg hover:bg-emerald-50 transition-all duration-200"

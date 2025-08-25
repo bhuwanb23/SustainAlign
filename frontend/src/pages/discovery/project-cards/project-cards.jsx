@@ -1,9 +1,12 @@
 import { motion } from 'framer-motion'
+import { useState } from 'react'
 import ProjectCard from './components/ProjectCard.jsx'
+import ProjectDetailsView from './components/ProjectDetailsView.jsx'
 import useProjectCards from './hooks/useProjectCards.js'
 
 export default function ProjectCardsPage() {
   const { projects, loading } = useProjectCards()
+  const [selectedProject, setSelectedProject] = useState(null)
 
   if (loading) {
     return (
@@ -14,6 +17,20 @@ export default function ProjectCardsPage() {
           className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full"
         />
       </div>
+    )
+  }
+
+  // If a project is selected, show the details view
+  if (selectedProject) {
+    return (
+      <ProjectDetailsView
+        project={selectedProject}
+        onBack={() => setSelectedProject(null)}
+        onEdit={(project) => {
+          // Handle edit functionality - you can implement this later
+          console.log('Edit project:', project)
+        }}
+      />
     )
   }
 
@@ -158,7 +175,10 @@ export default function ProjectCardsPage() {
                 transition={{ duration: 0.5, delay: 1.2 + index * 0.1 }}
                 whileHover={{ y: -5 }}
               >
-                <ProjectCard project={project} />
+                <ProjectCard 
+                  project={project} 
+                  onClick={(project) => setSelectedProject(project)}
+                />
               </motion.div>
             ))}
           </motion.div>
