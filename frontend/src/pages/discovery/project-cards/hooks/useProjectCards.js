@@ -9,6 +9,23 @@ export default function useProjectCards() {
       try {
         // Load projects from localStorage (added via project-add)
         const storedProjects = JSON.parse(localStorage.getItem('projects') || '[]')
+
+        // Normalize stored projects to card schema and ensure unique IDs
+        const normalizedStored = storedProjects.map((p, idx) => ({
+          id: p.id || `stored-${p.createdAt || Date.now()}-${idx}`,
+          projectName: p.projectTitle || p.title || 'Untitled Project',
+          organization: p.organization || p.ngoName || p.ngo_name || 'NGO',
+          description: p.shortDescription || p.short_description || '',
+          impactArea: p.impactArea || 'Environment',
+          location: typeof p.location === 'string' ? p.location : (p.location?.city || p.location_city || ''),
+          budget: p.totalProjectCost || p.financials?.total_project_cost || p.budget || 0,
+          timeline: p.timeline || `${p.timeline?.start || p.start_date || ''} - ${p.timeline?.end || p.end_date || ''}`,
+          sdgs: p.sdgs || p.sdgGoals || p.sdg_goals || [],
+          status: p.status || 'active',
+          createdAt: p.createdAt || p.created_at || new Date().toISOString(),
+          views: p.views || 0,
+          likes: p.likes || 0
+        }))
         
         // Combine with default projects
         const defaultProjects = [
@@ -116,7 +133,7 @@ export default function useProjectCards() {
           }
         ]
 
-        const allProjects = [...defaultProjects, ...storedProjects]
+        const allProjects = [...defaultProjects, ...normalizedStored]
         
         // Sort by creation date (newest first)
         allProjects.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))

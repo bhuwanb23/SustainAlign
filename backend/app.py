@@ -13,7 +13,13 @@ def create_app() -> Flask:
 	load_dotenv()
 	app = Flask(__name__, template_folder='templates')
 	app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-secret")
-	app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///sustainalign.db")
+	# Ensure SQLite default path is absolute to avoid multiple DB files when running from different CWDs
+	if os.environ.get("DATABASE_URL"):
+		app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["DATABASE_URL"]
+	else:
+		base_dir = os.path.abspath(os.path.dirname(__file__))
+		sqlite_path = os.path.join(base_dir, "sustainalign.db")
+		app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{sqlite_path}"
 	app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 	CORS(app, resources={r"/api/*": {"origins": os.environ.get("CORS_ORIGIN", "*")}})
 

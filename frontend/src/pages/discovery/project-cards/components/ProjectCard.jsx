@@ -105,7 +105,7 @@ export default function ProjectCard({ project, onClick }) {
         <div className="mb-4">
           <div className="text-xs text-gray-500 mb-2">Sustainable Development Goals</div>
           <div className="flex flex-wrap gap-1">
-            {project.sdgs.slice(0, 3).map((sdg, index) => (
+            {(project.sdgs || []).slice(0, 3).map((sdg, index) => (
               <span
                 key={index}
                 className={`${getSdgColor(sdg)} text-white text-xs px-2 py-1 rounded-full`}
@@ -113,7 +113,7 @@ export default function ProjectCard({ project, onClick }) {
                 {sdg}
               </span>
             ))}
-            {project.sdgs.length > 3 && (
+            {Array.isArray(project.sdgs) && project.sdgs.length > 3 && (
               <span className="bg-gray-300 text-gray-700 text-xs px-2 py-1 rounded-full">
                 +{project.sdgs.length - 3} more
               </span>

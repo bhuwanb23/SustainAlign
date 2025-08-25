@@ -23,10 +23,7 @@ def get_current_user():
 
 @projects_bp.get('/projects')
 def list_projects():
-    """Get all projects with optional filtering"""
-    user = get_current_user()
-    if not user:
-        return jsonify({'error': 'Unauthorized'}), 401
+    """Get all projects with optional filtering (public)"""
     
     # Get query parameters for filtering
     status = request.args.get('status')
@@ -68,10 +65,7 @@ def list_projects():
 
 @projects_bp.get('/projects/<int:project_id>')
 def get_project(project_id):
-    """Get specific project details"""
-    user = get_current_user()
-    if not user:
-        return jsonify({'error': 'Unauthorized'}), 401
+    """Get specific project details (public)"""
     
     project = Project.query.get(project_id)
     if not project:
@@ -82,10 +76,8 @@ def get_project(project_id):
 
 @projects_bp.post('/projects')
 def create_project():
-    """Create a new project"""
+    """Create a new project (no auth required)"""
     user = get_current_user()
-    if not user:
-        return jsonify({'error': 'Unauthorized'}), 401
     
     data = request.get_json()
     if not data:
@@ -96,6 +88,16 @@ def create_project():
         start_date = datetime.strptime(data.get('start_date'), '%Y-%m-%d').date() if data.get('start_date') else None
         end_date = datetime.strptime(data.get('end_date'), '%Y-%m-%d').date() if data.get('end_date') else None
         
+        # Fallback to a guest user if unauthenticated
+        if not user:
+            guest = User.query.filter_by(email='guest@sustainalign.local').first()
+            if not guest:
+                from utils import hash_password
+                guest = User(email='guest@sustainalign.local', password_hash=hash_password('guest'), role='guest')
+                db.session.add(guest)
+                db.session.flush()
+            user = guest
+
         # Create project
         project = Project(
             title=data.get('title'),

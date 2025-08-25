@@ -91,18 +91,18 @@ export default function useProjectAdd() {
       // Store in localStorage for demo purposes (can be removed later)
       const existingProjects = JSON.parse(localStorage.getItem('projects') || '[]')
       existingProjects.push({
-        id: newProject.project.id,
+        id: newProject.project.id || `created-${Date.now()}`,
         projectTitle: newProject.project.title,
         shortDescription: newProject.project.short_description,
         ngoName: newProject.project.ngo_name,
-        location: newProject.project.location,
-        sdgGoals: newProject.project.sdg_goals,
-        csrFocusAreas: newProject.project.csr_focus_areas,
-        targetBeneficiaries: newProject.project.target_beneficiaries,
-        totalProjectCost: newProject.project.financials.total_project_cost,
-        fundingRequired: newProject.project.financials.funding_required,
+        location: newProject.project.location?.city || newProject.project.location_city || '',
+        sdgGoals: newProject.project.sdg_goals || [],
+        csrFocusAreas: newProject.project.csr_focus_areas || [],
+        targetBeneficiaries: newProject.project.target_beneficiaries || [],
+        totalProjectCost: newProject.project.financials?.total_project_cost || 0,
+        fundingRequired: newProject.project.financials?.funding_required || 0,
         status: newProject.project.status,
-        createdAt: newProject.project.created_at
+        createdAt: newProject.project.created_at || new Date().toISOString()
       })
       localStorage.setItem('projects', JSON.stringify(existingProjects))
       
