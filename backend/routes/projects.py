@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, current_app
-from models import db, User, Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, Company, NGORiskAssessment, ApprovalRequest, ApprovalStep, ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal, ProjectTrackingInfo, ProjectTimelineEntry
+from models import db, User, Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, Company, NGORiskAssessment, ApprovalRequest, ApprovalStep, ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal, ProjectTrackingInfo, ProjectTimelineEntry, ReportJob, ReportArtifact
 from utils import decode_token
 import json
 from datetime import datetime
@@ -239,6 +239,41 @@ def tracker_projects():
 def tracker_timeline():
     items = ProjectTimelineEntry.query.order_by(ProjectTimelineEntry.created_at.asc()).limit(50).all()
     return jsonify([i.to_item() for i in items])
+
+
+# Reporting generator endpoints (public)
+@projects_bp.post('/reports')
+def create_report_job():
+    data = request.get_json() or {}
+    job = ReportJob(
+        company_id=data.get('company_id'),
+        period=data.get('period') or 'Q4 2024',
+        report_type=data.get('report_type') or 'CSR Compliance',
+        metrics=data.get('metrics') or {},
+        status='queued',
+        last_updated_human='just now'
+    )
+    db.session.add(job)
+    db.session.commit()
+    return jsonify(job.to_dict()), 201
+
+
+@projects_bp.get('/reports')
+def list_report_jobs():
+    company_id = request.args.get('company_id', type=int)
+    q = ReportJob.query.order_by(ReportJob.created_at.desc())
+    if company_id:
+        q = q.filter(ReportJob.company_id == company_id)
+    jobs = [j.to_dict() for j in q.limit(50).all()]
+    return jsonify(jobs)
+
+
+@projects_bp.get('/reports/<int:job_id>')
+def get_report_job(job_id: int):
+    j = ReportJob.query.get(job_id)
+    if not j:
+        return jsonify({'error': 'Not found'}), 404
+    return jsonify(j.to_dict())
 
 
 @projects_bp.get('/projects/<int:project_id>')

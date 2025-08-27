@@ -23,6 +23,7 @@ from .risk import NGORiskAssessment
 from .approval import ApprovalRequest, ApprovalStep
 from .impact import ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal
 from .tracker import ProjectTrackingInfo, ProjectTimelineEntry
+from .reporting import ReportJob, ReportArtifact
 
 __all__ = [
     'db',
@@ -53,3 +54,5 @@ __all__.append('ImpactRegionStat')
 __all__.append('ImpactGoal')
 __all__.append('ProjectTrackingInfo')
 __all__.append('ProjectTimelineEntry')
+__all__.append('ReportJob')
+__all__.append('ReportArtifact')

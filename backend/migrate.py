@@ -16,7 +16,7 @@ from models import (
     db, User, Company, CompanyBranch, CSRContact, Budget, FocusArea, 
     ComplianceDocument, NGOPreference, AIConfig, UserRole,
     Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, NGORiskAssessment, ApprovalRequest, ApprovalStep,
-    ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal, ProjectTrackingInfo, ProjectTimelineEntry
+    ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal, ProjectTrackingInfo, ProjectTimelineEntry, ReportJob, ReportArtifact
 )
 
 def get_table_names():
@@ -74,7 +74,9 @@ def add_new_tables():
             'impact_region_stats',
             'impact_goals',
             'project_tracking_info',
-            'project_timeline_entries'
+            'project_timeline_entries',
+            'report_jobs',
+            'report_artifacts'
         ]
         
         # Find missing tables
@@ -415,7 +417,9 @@ def show_database_info():
             'impact_region_stats': ImpactRegionStat,
             'impact_goals': ImpactGoal,
             'project_tracking_info': ProjectTrackingInfo,
-            'project_timeline_entries': ProjectTimelineEntry
+            'project_timeline_entries': ProjectTimelineEntry,
+            'report_jobs': ReportJob,
+            'report_artifacts': ReportArtifact
         }
         
         for table_name, model in tables.items():
