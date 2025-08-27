@@ -35,6 +35,90 @@ Design-first CSR/ESG platform aligning projects, stakeholders, and outcomes.
 
 ---
 
+## 🏗️ Architecture
+
+```mermaid
+flowchart LR
+  %% Frontend
+  subgraph FE[Frontend · React 19 + Vite]
+    FE_Routes[Routes\n- Auth\n- Discovery\n- Alignment\n- Decision\n- Monitoring\n- Reporting\n- Profile\n- Marketplace]
+    FE_Components[UI Components\nCards · Tables · Forms · Charts]
+    FE_TopNav[Role-aware TopNav]
+    FE_API[API Client (fetch wrappers)]
+    FE_Auth[JWT Utils\ngetToken() · parseJwt()]
+  end
+
+  %% Backend
+  subgraph BE[Backend · Flask 3]
+    BE_App[App Factory\nCORS · Config · Health]
+    subgraph BP[Blueprints]
+      BP_Auth[auth]
+      BP_Projects[projects]
+      BP_Profile[profile]
+      BP_Reports[reports]
+      BP_Views[views (admin HTML)]
+    end
+    subgraph Models[SQLAlchemy Models]
+      M_User[User · UserRole]
+      M_Company[Company · Branch · CSRContact]
+      M_Config[Budget · FocusArea · NGOPref · AIConfig]
+      M_Project[Project · Milestone · Application · ImpactReport]
+      M_NGO[NGOProfile]
+      M_Match[AIMatch]
+    end
+  end
+
+  %% Data Stores
+  DB[(Relational DB\nSQLite by default)]
+
+  %% Edges
+  FE_TopNav --> FE_Routes
+  FE_Routes --> FE_Components
+  FE_Components --> FE_API
+  FE_Auth <-->|Bearer JWT| FE_API
+
+  FE_API --> BP_Auth
+  FE_API --> BP_Projects
+  FE_API --> BP_Profile
+  FE_API --> BP_Reports
+
+  BP_Auth --- BE_App
+  BP_Projects --- BE_App
+  BP_Profile --- BE_App
+  BP_Reports --- BE_App
+
+  BP_Projects <-->|ORM| M_Project
+  BP_Profile  <-->|ORM| M_Company
+  BP_Profile  <-->|ORM| M_Config
+  BP_Reports  <-->|ORM| M_Project
+  BP_Reports  <-->|ORM| M_NGO
+  BP_Projects <-->|ORM| M_Match
+  BP_Auth     <-->|ORM| M_User
+
+  Models --> DB
+
+  %% Notable Flows
+  classDef note fill:#ecfdf5,stroke:#10b981,color:#065f46
+  subgraph Flows[]
+    F1[Project Add (public)\nFE → POST /api/projects\nGuest fallback user created if unauthenticated]:::note
+    F2[AI Matching\nFE → GET /api/ai-matches\nFilters: company_id, min_score]:::note
+    F3[NGO Directory\nFE → GET /api/ngos (auth)]:::note
+    F4[Monitoring & Reports\nFE → GET /api/... (authz by role)]:::note
+  end
+
+  FE_API --> F1
+  FE_API --> F2
+  FE_API --> F3
+  FE_API --> F4
+```
+
+### Roles & Navigation
+- Admin: full Dashboard + Monitoring/Reporting suite
+- Corporate: Discovery, Alignment, Impact Dashboard; Company Profile (form + showcase)
+- NGO: Marketplace and Company Showcase view
+
+---
+
 ## 🧭 Project Structure
 ```text
 sustainalign/
@@ -180,38 +264,6 @@ http://localhost:5000/api/health
 - Charts: keep options data-driven and themable
 
 ---
-
-## 🏗️ Architecture
-
-```mermaid
-flowchart LR
-  subgraph Client[Frontend – React 19 + Vite]
-    UI[Pages & Components]
-    Charts[Highcharts]
-    Auth[JWT utils]
-  end
-
-  subgraph API[Backend – Flask 3]
-    BPAuth[Blueprint: auth]
-    BPProjects[Blueprint: projects]
-    BPProfile[Blueprint: profile]
-    BPReports[Blueprint: reports]
-    DB[(SQLAlchemy Models)]
-  end
-
-  UI -->|fetch| BPProjects
-  UI -->|fetch| BPProfile
-  UI -->|fetch| BPReports
-  Auth <-->|Bearer| BPAuth
-  BPProjects <-->|ORM| DB
-  BPProfile  <-->|ORM| DB
-  BPReports  <-->|ORM| DB
-```
-
-### Roles & Navigation
-- Admin: full Dashboard + Monitoring/Reporting suite
-- Corporate: Discovery, Alignment, Impact Dashboard; limited Monitoring; Company Profile (form + showcase)
-- NGO: Marketplace + Company Showcase view
 
 ### UX Notes
 - Soft, accessible color scheme; consistent spacing; shadow hierarchy
