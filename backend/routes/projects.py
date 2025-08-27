@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, current_app
-from models import db, User, Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, Company
+from models import db, User, Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, Company, NGORiskAssessment, ApprovalRequest, ApprovalStep
 from utils import decode_token
 import json
 from datetime import datetime
@@ -77,6 +77,103 @@ def list_ai_matches():
 
     matches = query.order_by(AIMatch.alignment_score.desc()).limit(100).all()
     return jsonify([m.to_dict() for m in matches])
+
+
+@projects_bp.get('/ngo-risk')
+def list_ngo_risk():
+    """Summaries for NGO risk scoring page (public)"""
+    # Optional filters
+    q = request.args.get('q', type=str)
+    risk = request.args.get('risk', type=str)
+
+    query = NGORiskAssessment.query.join(NGOProfile, NGORiskAssessment.ngo_id == NGOProfile.id)
+    if q:
+        like = f"%{q.lower()}%"
+        query = query.filter(db.func.lower(NGOProfile.name).like(like))
+    if risk and risk in ('Low', 'Medium', 'High'):
+        query = query.filter(NGORiskAssessment.risk_level == risk)
+
+    items = query.order_by(NGORiskAssessment.updated_at.desc()).limit(200).all()
+    ngos = [i.to_summary() for i in items]
+
+    # Headline counts
+    total = len(ngos)
+    low = sum(1 for n in ngos if n['risk'] == 'Low')
+    medium = sum(1 for n in ngos if n['risk'] == 'Medium')
+    high = sum(1 for n in ngos if n['risk'] == 'High')
+
+    return jsonify({
+        'ngos': ngos,
+        'metrics': { 'total': total, 'low': low, 'medium': medium, 'high': high }
+    })
+
+
+@projects_bp.get('/ngo-risk/<int:ngo_id>')
+def get_ngo_risk_detail(ngo_id: int):
+    item = NGORiskAssessment.query.filter_by(ngo_id=ngo_id).order_by(NGORiskAssessment.updated_at.desc()).first()
+    if not item:
+        return jsonify({'error': 'Risk assessment not found'}), 404
+    return jsonify(item.to_detail())
+
+
+# Approval workflow endpoints (public for dev)
+@projects_bp.post('/approvals')
+def create_approval():
+    data = request.get_json() or {}
+    req = ApprovalRequest(
+        project_id=data.get('project_id'),
+        company_id=data.get('company_id'),
+        title=data.get('title') or 'Approval Request',
+        summary=data.get('summary'),
+        status=data.get('status', 'pending'),
+        created_by=None,
+    )
+    db.session.add(req)
+    db.session.flush()
+
+    for idx, step in enumerate(data.get('steps') or []):
+        db.session.add(ApprovalStep(
+            request_id=req.id,
+            name=step.get('name') or f'Step {idx+1}',
+            order_index=step.get('order', idx),
+            assignee_user_id=step.get('assignee_user_id'),
+            assignee_role=step.get('assignee_role'),
+            status=step.get('status', 'pending'),
+            decision_notes=step.get('decision_notes')
+        ))
+
+    db.session.commit()
+    return jsonify({'message': 'created', 'approval': req.to_dict()}), 201
+
+
+@projects_bp.get('/approvals')
+def list_approvals():
+    q = ApprovalRequest.query.order_by(ApprovalRequest.created_at.desc()).limit(200).all()
+    return jsonify([r.to_dict() for r in q])
+
+
+@projects_bp.get('/approvals/<int:approval_id>')
+def get_approval(approval_id: int):
+    r = ApprovalRequest.query.get(approval_id)
+    if not r:
+        return jsonify({'error': 'Not found'}), 404
+    return jsonify(r.to_dict())
+
+
+@projects_bp.put('/approvals/<int:approval_id>/steps/<int:step_id>')
+def update_approval_step(approval_id: int, step_id: int):
+    step = ApprovalStep.query.filter_by(id=step_id, request_id=approval_id).first()
+    if not step:
+        return jsonify({'error': 'Not found'}), 404
+    data = request.get_json() or {}
+    if 'status' in data:
+        step.status = data['status']
+        if data['status'] in ('approved', 'rejected'):
+            step.decided_at = datetime.utcnow()
+    if 'decision_notes' in data:
+        step.decision_notes = data['decision_notes']
+    db.session.commit()
+    return jsonify(step.to_dict())
 
 
 @projects_bp.get('/projects/<int:project_id>')

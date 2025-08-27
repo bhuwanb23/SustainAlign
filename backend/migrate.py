@@ -15,7 +15,7 @@ from app import create_app
 from models import (
     db, User, Company, CompanyBranch, CSRContact, Budget, FocusArea, 
     ComplianceDocument, NGOPreference, AIConfig, UserRole,
-    Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch
+    Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, NGORiskAssessment, ApprovalRequest, ApprovalStep
 )
 
 def get_table_names():
@@ -64,7 +64,10 @@ def add_new_tables():
             'project_applications',
             'project_impact_reports',
             'ngo_profiles',
-            'ai_matches'
+            'ai_matches',
+            'ngo_risk_assessments',
+            'approval_requests',
+            'approval_steps'
         ]
         
         # Find missing tables
@@ -340,6 +343,31 @@ def create_sample_data():
         except Exception as e:
             db.session.rollback()
             print(f"⚠️  Skipped AI match seed: {e}")
+
+        # Seed NGO risk assessment for the sample NGO
+        try:
+            risk = NGORiskAssessment(
+                ngo_id=ngo_profile.id,
+                risk_level='Low',
+                highlight_metric_label='Financial Stability',
+                highlight_metric_value_pct=92,
+                financial_stability_pct=92,
+                compliance_score_pct=88,
+                execution_track_pct=95,
+                transparency_pct=90,
+                legal_standing_pct=85,
+                radar_categories=['Financial', 'Compliance', 'Execution', 'Transparency', 'Legal'],
+                radar_values=[92, 88, 95, 90, 85],
+                trend_categories=['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                trend_avg=[75, 78, 82, 85, 88, 90],
+                trend_bench=[70, 72, 75, 78, 80, 82]
+            )
+            db.session.add(risk)
+            db.session.commit()
+            print("✨ Seeded NGO risk assessment for demo NGO")
+        except Exception as e:
+            db.session.rollback()
+            print(f"⚠️  Skipped risk seed: {e}")
         print("✅ Sample data created successfully!")
         print("📧 Demo user: demo@techcorp.com")
         print("🔑 Demo password: demo123")
@@ -371,7 +399,10 @@ def show_database_info():
             'project_applications': ProjectApplication,
             'project_impact_reports': ProjectImpactReport,
             'ngo_profiles': NGOProfile,
-            'ai_matches': AIMatch
+            'ai_matches': AIMatch,
+            'ngo_risk_assessments': NGORiskAssessment,
+            'approval_requests': ApprovalRequest,
+            'approval_steps': ApprovalStep
         }
         
         for table_name, model in tables.items():

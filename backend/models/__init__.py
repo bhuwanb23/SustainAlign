@@ -19,6 +19,8 @@ from .projects import (
     NGOProfile
 )
 from .ai_matching import AIMatch
+from .risk import NGORiskAssessment
+from .approval import ApprovalRequest, ApprovalStep
 
 __all__ = [
     'db',
@@ -40,3 +42,6 @@ __all__ = [
 ]
 
 __all__.append('AIMatch')
+__all__.append('NGORiskAssessment')
+__all__.append('ApprovalRequest')
+__all__.append('ApprovalStep')
