@@ -41,16 +41,16 @@ Design-first CSR/ESG platform aligning projects, stakeholders, and outcomes.
 flowchart LR
   %% Frontend
   subgraph FE[Frontend · React 19 + Vite]
-    FE_Routes[Routes\n- Auth\n- Discovery\n- Alignment\n- Decision\n- Monitoring\n- Reporting\n- Profile\n- Marketplace]
-    FE_Components[UI Components\nCards · Tables · Forms · Charts]
-    FE_TopNav[Role-aware TopNav]
-    FE_API[API Client (fetch wrappers)]
-    FE_Auth[JWT Utils\ngetToken() · parseJwt()]
+    FE_Routes["Routes<br/>- Auth<br/>- Discovery<br/>- Alignment<br/>- Decision<br/>- Monitoring<br/>- Reporting<br/>- Profile<br/>- Marketplace"]
+    FE_Components["UI Components<br/>Cards · Tables · Forms · Charts"]
+    FE_TopNav["Role-aware TopNav"]
+    FE_API["API Client"]
+    FE_Auth["JWT Utils<br/>getToken() · parseJwt()"]
   end
 
   %% Backend
   subgraph BE[Backend · Flask 3]
-    BE_App[App Factory\nCORS · Config · Health]
+    BE_App["App Factory<br/>CORS · Config · Health"]
     subgraph BP[Blueprints]
       BP_Auth[auth]
       BP_Projects[projects]
@@ -59,12 +59,12 @@ flowchart LR
       BP_Views[views (admin HTML)]
     end
     subgraph Models[SQLAlchemy Models]
-      M_User[User · UserRole]
-      M_Company[Company · Branch · CSRContact]
-      M_Config[Budget · FocusArea · NGOPref · AIConfig]
-      M_Project[Project · Milestone · Application · ImpactReport]
-      M_NGO[NGOProfile]
-      M_Match[AIMatch]
+      M_User["User · UserRole"]
+      M_Company["Company · Branch · CSRContact"]
+      M_Config["Budget · FocusArea · NGOPref · AIConfig"]
+      M_Project["Project · Milestone · Application · ImpactReport"]
+      M_NGO["NGOProfile"]
+      M_Match["AIMatch"]
     end
   end
 
@@ -100,10 +100,10 @@ flowchart LR
   %% Notable Flows
   classDef note fill:#ecfdf5,stroke:#10b981,color:#065f46
   subgraph Flows[]
-    F1[Project Add (public)\nFE → POST /api/projects\nGuest fallback user created if unauthenticated]:::note
-    F2[AI Matching\nFE → GET /api/ai-matches\nFilters: company_id, min_score]:::note
-    F3[NGO Directory\nFE → GET /api/ngos (auth)]:::note
-    F4[Monitoring & Reports\nFE → GET /api/... (authz by role)]:::note
+    F1["Project Add (public)<br/>FE → POST /api/projects<br/>Guest fallback if unauthenticated"]:::note
+    F2["AI Matching<br/>FE → GET /api/ai-matches<br/>Filters: company_id, min_score"]:::note
+    F3["NGO Directory<br/>FE → GET /api/ngos (auth)"]:::note
+    F4["Monitoring & Reports<br/>FE → GET /api/... (role-based)"]:::note
   end
 
   FE_API --> F1
