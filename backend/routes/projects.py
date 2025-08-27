@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, current_app
-from models import db, User, Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, Company, NGORiskAssessment, ApprovalRequest, ApprovalStep, ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal
+from models import db, User, Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, Company, NGORiskAssessment, ApprovalRequest, ApprovalStep, ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal, ProjectTrackingInfo, ProjectTimelineEntry
 from utils import decode_token
 import json
 from datetime import datetime
@@ -222,6 +222,23 @@ def impact_goals():
         q = q.filter(ImpactGoal.company_id == company_id)
     goals = [g.to_dict() for g in q.order_by(ImpactGoal.period_month.asc()).limit(100).all()]
     return jsonify({ 'goals': goals })
+
+
+# Project tracker endpoints (public)
+@projects_bp.get('/tracker/projects')
+def tracker_projects():
+    status = request.args.get('status')  # all | on-track | delayed | completed
+    q = db.session.query(ProjectTrackingInfo).join(Project, ProjectTrackingInfo.project_id == Project.id)
+    if status and status != 'all':
+        q = q.filter(ProjectTrackingInfo.status == status)
+    items = q.order_by(ProjectTrackingInfo.updated_at.desc()).limit(200).all()
+    return jsonify([i.to_card() for i in items])
+
+
+@projects_bp.get('/tracker/timeline')
+def tracker_timeline():
+    items = ProjectTimelineEntry.query.order_by(ProjectTimelineEntry.created_at.asc()).limit(50).all()
+    return jsonify([i.to_item() for i in items])
 
 
 @projects_bp.get('/projects/<int:project_id>')

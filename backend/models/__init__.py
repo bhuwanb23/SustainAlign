@@ -22,6 +22,7 @@ from .ai_matching import AIMatch
 from .risk import NGORiskAssessment
 from .approval import ApprovalRequest, ApprovalStep
 from .impact import ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal
+from .tracker import ProjectTrackingInfo, ProjectTimelineEntry
 
 __all__ = [
     'db',
@@ -50,3 +51,5 @@ __all__.append('ImpactMetricSnapshot')
 __all__.append('ImpactTimeSeries')
 __all__.append('ImpactRegionStat')
 __all__.append('ImpactGoal')
+__all__.append('ProjectTrackingInfo')
+__all__.append('ProjectTimelineEntry')
