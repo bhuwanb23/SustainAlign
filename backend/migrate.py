@@ -15,7 +15,7 @@ from app import create_app
 from models import (
     db, User, Company, CompanyBranch, CSRContact, Budget, FocusArea, 
     ComplianceDocument, NGOPreference, AIConfig, UserRole,
-    Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile
+    Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch
 )
 
 def get_table_names():
@@ -63,7 +63,8 @@ def add_new_tables():
             'project_milestones',
             'project_applications',
             'project_impact_reports',
-            'ngo_profiles'
+            'ngo_profiles',
+            'ai_matches'
         ]
         
         # Find missing tables
@@ -314,6 +315,31 @@ def create_sample_data():
         db.session.add(application)
         
         db.session.commit()
+
+        # Optional: seed one AI match linking the sample project and company
+        try:
+            from models import AIMatch
+            sample_match = AIMatch(
+                project_id=project.id,
+                company_id=company.id,
+                alignment_score=94,
+                investment_min=500000,
+                investment_max=1200000,
+                investment_currency='INR',
+                timeline_months=18,
+                location_text=f"{project.location_country}",
+                tags=[
+                    {"icon": "🎓", "bg": "bg-blue-100", "fg": "text-blue-600"},
+                    {"icon": "🍃", "bg": "bg-green-100", "fg": "text-green-600"}
+                ],
+                rationale='High overlap with education and digital literacy priorities.'
+            )
+            db.session.add(sample_match)
+            db.session.commit()
+            print("✨ Seeded 1 AI match for demo")
+        except Exception as e:
+            db.session.rollback()
+            print(f"⚠️  Skipped AI match seed: {e}")
         print("✅ Sample data created successfully!")
         print("📧 Demo user: demo@techcorp.com")
         print("🔑 Demo password: demo123")
@@ -344,7 +370,8 @@ def show_database_info():
             'project_milestones': ProjectMilestone,
             'project_applications': ProjectApplication,
             'project_impact_reports': ProjectImpactReport,
-            'ngo_profiles': NGOProfile
+            'ngo_profiles': NGOProfile,
+            'ai_matches': AIMatch
         }
         
         for table_name, model in tables.items():

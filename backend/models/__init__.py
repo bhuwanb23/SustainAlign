@@ -18,6 +18,7 @@ from .projects import (
     ProjectImpactReport,
     NGOProfile
 )
+from .ai_matching import AIMatch
 
 __all__ = [
     'db',
@@ -37,3 +38,5 @@ __all__ = [
     'ProjectImpactReport',
     'NGOProfile'
 ]
+
+__all__.append('AIMatch')

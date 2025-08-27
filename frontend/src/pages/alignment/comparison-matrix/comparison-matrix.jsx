@@ -1,7 +1,5 @@
 import { useState } from 'react'
 import useComparison from './hooks/useComparison.js'
-import Toolbar from './components/Toolbar.jsx'
-import KpiStrip from './components/KpiStrip.jsx'
 import ProjectRow from './components/ProjectRow.jsx'
 import { CostImpactChart, EsgScoreChart } from './components/Charts.jsx'
 
@@ -10,22 +8,45 @@ export default function ComparisonMatrixPage() {
   const [mode, setMode] = useState('table')
   return (
     <div className="p-8 max-w-7xl mx-auto">
+      {/* Hero with visual context and quick actions */}
       <header className="mb-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-sky-500 rounded-lg flex items-center justify-center text-white">🌿</div>
-            <h1 className="text-2xl font-bold text-gray-900">Project Comparison Matrix</h1>
-          </div>
-          <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-600">{selectedCount} Projects Selected</span>
-            <button className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors">Export Report</button>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="bg-emerald-600 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-8">
+            <div className="flex items-start justify-between gap-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-white text-xl font-bold ring-1 ring-white/30">📊</div>
+                <div>
+                  <h1 className="text-3xl font-bold leading-tight">Project Comparison Matrix</h1>
+                  <p className="text-emerald-100">Evaluate shortlisted projects across cost, impact, ESG and risk.</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-emerald-100">{selectedCount} Projects Selected</span>
+                <button className="px-4 py-2 bg-white text-emerald-700 font-medium rounded-lg shadow-sm hover:bg-emerald-50">Export Report</button>
+                <button onClick={() => setMode(mode === 'table' ? 'visual' : 'table')} className="px-4 py-2 bg-white/10 text-white font-medium rounded-lg ring-1 ring-white/30 hover:bg-white/15 transition">
+                  {mode === 'table' ? 'Visual Graphs' : 'Table View'}
+                </button>
+              </div>
+            </div>
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="bg-white/10 rounded-xl p-4">
+                <div className="text-sm text-emerald-100">Avg Impact Score</div>
+                <div className="text-2xl font-bold">8.9</div>
+              </div>
+              <div className="bg-white/10 rounded-xl p-4">
+                <div className="text-sm text-emerald-100">Median Cost</div>
+                <div className="text-2xl font-bold">$560K</div>
+              </div>
+              <div className="bg-white/10 rounded-xl p-4">
+                <div className="text-sm text-emerald-100">ESG Rating Spread</div>
+                <div className="text-2xl font-bold">A to A+</div>
+              </div>
+            </div>
           </div>
         </div>
       </header>
-      <section className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-6">
-        <Toolbar mode={mode} onMode={setMode} selectedCount={selectedCount} />
-        <KpiStrip />
-      </section>
+
+      
 
       {mode === 'table' ? (
         <section className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">

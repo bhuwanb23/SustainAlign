@@ -8,13 +8,9 @@ export default function KpiStrip() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
       {items.map((k) => (
-        <div key={k.label} className={`bg-gradient-to-r ${k.gradient} rounded-xl p-4 text-white`}>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-white/80 text-sm">{k.label}</p>
-              <p className="text-2xl font-bold">{k.value}</p>
-            </div>
-          </div>
+        <div key={k.label} className={`bg-gradient-to-r ${k.gradient} rounded-xl p-4 text-white shadow`}>
+          <p className="text-white/80 text-sm">{k.label}</p>
+          <p className="text-2xl font-bold">{k.value}</p>
         </div>
       ))}
     </div>

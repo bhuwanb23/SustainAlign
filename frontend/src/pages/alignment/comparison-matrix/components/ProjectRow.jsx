@@ -4,7 +4,7 @@ export default function ProjectRow({ project }) {
   return (
     <div className="grid grid-cols-8 gap-4 p-6 border-b border-gray-100 bg-gradient-to-r from-emerald-50/20 to-sky-50/20 hover:from-emerald-100/30 hover:to-sky-100/30 transition-colors">
       <div className="col-span-2 flex items-center space-x-4">
-        <div className="w-12 h-12 rounded-lg flex items-center justify-center text-white font-bold"
+        <div className="w-12 h-12 rounded-lg flex items-center justify-center text-white font-bold shadow"
              style={{ backgroundColor: '#10B981' }}>{project.icon}</div>
         <div>
           <h3 className="font-semibold text-gray-900">{project.name}</h3>

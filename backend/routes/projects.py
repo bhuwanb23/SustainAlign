@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, current_app
-from models import db, User, Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile
+from models import db, User, Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, Company
 from utils import decode_token
 import json
 from datetime import datetime
@@ -61,6 +61,22 @@ def list_projects():
         'projects': [project.to_dict() for project in projects],
         'total': len(projects)
     })
+
+
+@projects_bp.get('/ai-matches')
+def list_ai_matches():
+    """Get AI matches combining company and project data (public)"""
+    company_id = request.args.get('company_id', type=int)
+    min_score = request.args.get('min_score', default=0, type=int)
+
+    query = AIMatch.query
+    if company_id:
+        query = query.filter(AIMatch.company_id == company_id)
+    if min_score:
+        query = query.filter(AIMatch.alignment_score >= min_score)
+
+    matches = query.order_by(AIMatch.alignment_score.desc()).limit(100).all()
+    return jsonify([m.to_dict() for m in matches])
 
 
 @projects_bp.get('/projects/<int:project_id>')

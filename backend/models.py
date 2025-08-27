@@ -10,7 +10,13 @@ from models import (
     ComplianceDocument,
     NGOPreference,
     AIConfig,
-    UserRole
+    UserRole,
+    Project,
+    ProjectMilestone,
+    ProjectApplication,
+    ProjectImpactReport,
+    NGOProfile,
+    AIMatch
 )
 
 # Re-export for backward compatibility
@@ -25,7 +31,13 @@ __all__ = [
     'ComplianceDocument',
     'NGOPreference',
     'AIConfig',
-    'UserRole'
+    'UserRole',
+    'Project',
+    'ProjectMilestone',
+    'ProjectApplication',
+    'ProjectImpactReport',
+    'NGOProfile',
+    'AIMatch'
 ]
 
 

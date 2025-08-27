@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import ProjectAddForm from './components/ProjectAddForm.jsx'
 import ProjectAddHeader from './components/ProjectAddHeader.jsx'
 import ProjectAddSuccess from './components/ProjectAddSuccess.jsx'
-import AuthStatus from './components/AuthStatus.jsx'
 import useProjectAdd from './hooks/useProjectAdd.js'
 
 export default function ProjectAddPage() {
@@ -25,8 +24,7 @@ export default function ProjectAddPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 relative overflow-hidden">
-      {/* Authentication Status Component */}
-      <AuthStatus />
+      
       
       {/* Enhanced Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

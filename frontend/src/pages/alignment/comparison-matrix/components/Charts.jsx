@@ -3,7 +3,7 @@ import HighchartsReact from 'highcharts-react-official'
 
 export function CostImpactChart() {
   const options = {
-    chart: { type: 'scatter', height: 300 },
+    chart: { type: 'scatter', height: 300, backgroundColor: 'transparent' },
     title: { text: undefined },
     xAxis: { title: { text: 'Cost ($K)' } },
     yAxis: { title: { text: 'Impact Score' } },
@@ -20,7 +20,7 @@ export function CostImpactChart() {
 
 export function EsgScoreChart() {
   const options = {
-    chart: { type: 'column', height: 300 },
+    chart: { type: 'column', height: 300, backgroundColor: 'transparent' },
     title: { text: undefined },
     xAxis: { categories: ['Solar Village', 'Education', 'Clean Water', 'Healthcare', 'Agriculture'] },
     yAxis: { title: { text: 'ESG Score' }, max: 10 },
