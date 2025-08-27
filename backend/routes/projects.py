@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, current_app
-from models import db, User, Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, Company, NGORiskAssessment, ApprovalRequest, ApprovalStep
+from models import db, User, Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, Company, NGORiskAssessment, ApprovalRequest, ApprovalStep, ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal
 from utils import decode_token
 import json
 from datetime import datetime
@@ -174,6 +174,54 @@ def update_approval_step(approval_id: int, step_id: int):
         step.decision_notes = data['decision_notes']
     db.session.commit()
     return jsonify(step.to_dict())
+
+
+# Impact dashboard endpoints (public)
+@projects_bp.get('/impact/overview')
+def impact_overview():
+    # latest snapshot (optionally scope by company_id)
+    company_id = request.args.get('company_id', type=int)
+    q = ImpactMetricSnapshot.query
+    if company_id:
+        q = q.filter(ImpactMetricSnapshot.company_id == company_id)
+    snap = q.order_by(ImpactMetricSnapshot.as_of_date.desc()).first()
+    cards = snap.to_cards() if snap else []
+    return jsonify({ 'cards': cards })
+
+
+@projects_bp.get('/impact/trends')
+def impact_trends():
+    metric = request.args.get('metric', default='co2_reduced_tons', type=str)
+    company_id = request.args.get('company_id', type=int)
+    q = ImpactTimeSeries.query.filter(ImpactTimeSeries.metric_name == metric).order_by(ImpactTimeSeries.ts_date.asc())
+    if company_id:
+        q = q.filter(ImpactTimeSeries.company_id == company_id)
+    points = [r.to_point() for r in q.limit(365).all()]
+    return jsonify({ 'metric': metric, 'series': points })
+
+
+@projects_bp.get('/impact/regions')
+def impact_regions():
+    metric = request.args.get('metric', default='co2_reduced_tons', type=str)
+    period = request.args.get('period', type=str)
+    company_id = request.args.get('company_id', type=int)
+    q = ImpactRegionStat.query.filter(ImpactRegionStat.metric_name == metric)
+    if period:
+        q = q.filter(ImpactRegionStat.period_month == period)
+    if company_id:
+        q = q.filter(ImpactRegionStat.company_id == company_id)
+    rows = [r.to_row() for r in q.limit(1000).all()]
+    return jsonify({ 'metric': metric, 'rows': rows })
+
+
+@projects_bp.get('/impact/goals')
+def impact_goals():
+    company_id = request.args.get('company_id', type=int)
+    q = ImpactGoal.query
+    if company_id:
+        q = q.filter(ImpactGoal.company_id == company_id)
+    goals = [g.to_dict() for g in q.order_by(ImpactGoal.period_month.asc()).limit(100).all()]
+    return jsonify({ 'goals': goals })
 
 
 @projects_bp.get('/projects/<int:project_id>')

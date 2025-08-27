@@ -21,6 +21,7 @@ from .projects import (
 from .ai_matching import AIMatch
 from .risk import NGORiskAssessment
 from .approval import ApprovalRequest, ApprovalStep
+from .impact import ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal
 
 __all__ = [
     'db',
@@ -45,3 +46,7 @@ __all__.append('AIMatch')
 __all__.append('NGORiskAssessment')
 __all__.append('ApprovalRequest')
 __all__.append('ApprovalStep')
+__all__.append('ImpactMetricSnapshot')
+__all__.append('ImpactTimeSeries')
+__all__.append('ImpactRegionStat')
+__all__.append('ImpactGoal')

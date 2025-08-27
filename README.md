@@ -14,16 +14,17 @@ Design-first CSR/ESG platform aligning projects, stakeholders, and outcomes.
 
 </div>
 
-> Eco-green + corporate blue. Executive clarity + data depth. Built for hackathons; ready to evolve.
+> Eco‑green + corporate blue. Executive clarity + data depth. Built fast; engineered to grow.
 
 ---
 
 ## ✨ Highlights
 - 🎨 Elegant UI: React 19 + Tailwind v4 with soft gradients, rounded cards, and subtle motion
-- 📈 Insightful charts: Highcharts-powered dashboards (allocation, trends, ESG, SDG)
-- 🧭 App shell: Global TopNav and modular routes (Dashboard, Discovery, Alignment, Monitoring, Reporting, …)
-- 🔐 Auth-ready: Polished login, signup, forgot password flows using a shared AuthLayout
-- ⚙️ API-ready backend: Flask 3, CORS, JWT scaffold, env-driven config
+- 📈 Insightful charts: Highcharts dashboards (allocation, trends, ESG, SDG); transparent cards for dark-on-light clarity
+- 🧭 App shell: Role-aware TopNav and modular routes (Discovery, Alignment, Decision, Monitoring, Reporting)
+- 🔐 Auth-ready: Login / Signup / Forgot / Profile Setup + JWT parsing helper
+- ⚙️ API-first backend: Flask 3, SQLAlchemy, CORS; clean blueprints per domain
+- 🧩 Extensible: Componentized pages (cards, tables, charts) + sensible aliases (`@pages`, `@components`)
 
 ---
 
@@ -39,7 +40,7 @@ Design-first CSR/ESG platform aligning projects, stakeholders, and outcomes.
 sustainalign/
 ├─ backend/                  # Flask API + admin HTML views
 │  ├─ app.py                 # App factory, CORS, health, blueprints
-│  ├─ models.py              # SQLAlchemy models (User, ...)
+│  ├─ models/                # SQLAlchemy models (users, companies, projects, ai matching, ...)
 │  ├─ routes/                # auth, projects, profile, reports, views
 │  ├─ templates/             # Minimal admin HTML (Tailwind)
 │  └─ requirements.txt       # Flask, CORS, SQLAlchemy, PyJWT, etc.
@@ -98,7 +99,7 @@ Health check: `GET /api/health` → `{ "status": "ok" }`
 | Area | Routes |
 |---|---|
 | **Auth** | `/login`, `/signup`, `/forgot-password`, `/profile-setup` |
-| **Dashboard** | `/dashboard` |
+| **Dashboard** | `/dashboard` (admin) |
 | **Discovery** | `/discovery/search`, `/discovery/cards` |
 | **Alignment** | `/alignment/matching`, `/alignment/comparison`, `/alignment/risk` |
 | **Monitoring** | `/monitoring/impact`, `/monitoring/tracker`, `/monitoring/alerts` |
@@ -139,6 +140,19 @@ npm run preview   # Preview production build
 - Minimal admin HTML views under `/` for quick inspection
 - Configure via env: `SECRET_KEY`, `CORS_ORIGIN`, `PORT`, etc.
 
+### Data Model (high-level)
+- Users (roles: admin, corporate, ngo)
+- Company, CompanyBranch, CSRContact, Budget, FocusArea, NGOPreference, AIConfig, UserRole
+- Projects, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile
+- AI Match (company ↔ project alignment)
+
+### API Endpoints (selected)
+- `GET /api/projects` — List/filter projects (public)
+- `POST /api/projects` — Create project (guest fallback enabled)
+- `PUT /api/projects/:id` — Update project (authZ: owner/admin)
+- `GET /api/ngos` — List NGO profiles (auth)
+- `GET /api/ai-matches` — Ranked matches (public)
+
 ---
 
 ## 🧪 Smoke Test
@@ -164,6 +178,44 @@ http://localhost:5000/api/health
 - Small, focused PRs welcome
 - Keep components modular and accessible
 - Charts: keep options data-driven and themable
+
+---
+
+## 🏗️ Architecture
+
+```mermaid
+flowchart LR
+  subgraph Client[Frontend – React 19 + Vite]
+    UI[Pages & Components]
+    Charts[Highcharts]
+    Auth[JWT utils]
+  end
+
+  subgraph API[Backend – Flask 3]
+    BPAuth[Blueprint: auth]
+    BPProjects[Blueprint: projects]
+    BPProfile[Blueprint: profile]
+    BPReports[Blueprint: reports]
+    DB[(SQLAlchemy Models)]
+  end
+
+  UI -->|fetch| BPProjects
+  UI -->|fetch| BPProfile
+  UI -->|fetch| BPReports
+  Auth <-->|Bearer| BPAuth
+  BPProjects <-->|ORM| DB
+  BPProfile  <-->|ORM| DB
+  BPReports  <-->|ORM| DB
+```
+
+### Roles & Navigation
+- Admin: full Dashboard + Monitoring/Reporting suite
+- Corporate: Discovery, Alignment, Impact Dashboard; limited Monitoring; Company Profile (form + showcase)
+- NGO: Marketplace + Company Showcase view
+
+### UX Notes
+- Soft, accessible color scheme; consistent spacing; shadow hierarchy
+- Mobile-friendly grids; sticky table headers; animated hero sections
 
 ---
 

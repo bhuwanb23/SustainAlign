@@ -15,7 +15,8 @@ from app import create_app
 from models import (
     db, User, Company, CompanyBranch, CSRContact, Budget, FocusArea, 
     ComplianceDocument, NGOPreference, AIConfig, UserRole,
-    Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, NGORiskAssessment, ApprovalRequest, ApprovalStep
+    Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, NGORiskAssessment, ApprovalRequest, ApprovalStep,
+    ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal
 )
 
 def get_table_names():
@@ -67,7 +68,11 @@ def add_new_tables():
             'ai_matches',
             'ngo_risk_assessments',
             'approval_requests',
-            'approval_steps'
+            'approval_steps',
+            'impact_metric_snapshots',
+            'impact_time_series',
+            'impact_region_stats',
+            'impact_goals'
         ]
         
         # Find missing tables
@@ -402,7 +407,11 @@ def show_database_info():
             'ai_matches': AIMatch,
             'ngo_risk_assessments': NGORiskAssessment,
             'approval_requests': ApprovalRequest,
-            'approval_steps': ApprovalStep
+            'approval_steps': ApprovalStep,
+            'impact_metric_snapshots': ImpactMetricSnapshot,
+            'impact_time_series': ImpactTimeSeries,
+            'impact_region_stats': ImpactRegionStat,
+            'impact_goals': ImpactGoal
         }
         
         for table_name, model in tables.items():
