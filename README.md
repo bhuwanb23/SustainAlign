@@ -2,7 +2,7 @@
 
 # 🌱 SustainAlign
 
-Design-first CSR/ESG platform aligning projects, stakeholders, and outcomes.
+**End-to-End CSR/ESG Management & Alignment Platform with AI Agents**
 
 [![Status](https://img.shields.io/badge/Status-Active-2ea44f)](#)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#)
@@ -14,17 +14,54 @@ Design-first CSR/ESG platform aligning projects, stakeholders, and outcomes.
 
 </div>
 
-> Eco‑green + corporate blue. Executive clarity + data depth. Built fast; engineered to grow.
+> **AI-Powered CSR/ESG Platform**: Aligning corporates, NGOs, and regulators through intelligent project discovery, evaluation, and impact tracking.
 
 ---
 
-## ✨ Highlights
-- 🎨 Elegant UI: React 19 + Tailwind v4 with soft gradients, rounded cards, and subtle motion
-- 📈 Insightful charts: Highcharts dashboards (allocation, trends, ESG, SDG); transparent cards for dark-on-light clarity
-- 🧭 App shell: Role-aware TopNav and modular routes (Discovery, Alignment, Decision, Monitoring, Reporting)
-- 🔐 Auth-ready: Login / Signup / Forgot / Profile Setup + JWT parsing helper
-- ⚙️ API-first backend: Flask 3, SQLAlchemy, CORS; clean blueprints per domain
-- 🧩 Extensible: Componentized pages (cards, tables, charts) + sensible aliases (`@pages`, `@components`)
+## 🎯 Problem Statement
+
+**Corporates** must spend on CSR (mandatory in India) but struggle to:
+- Find the right NGOs/projects aligned to their goals
+- Manage scattered, manual reporting processes
+- Ensure compliance and transparency
+
+**NGOs** want visibility and connections with corporates for funding opportunities.
+
+**Regulators & Government** need transparency in CSR funds allocation and impact measurement.
+
+---
+
+## 🚀 Solution: AI-Agent Powered Platform
+
+SustainAlign uses **6 specialized AI agents** to automate and optimize the entire CSR/ESG lifecycle:
+
+### 🤖 AI Agent Architecture
+
+| Agent | Purpose | Functionality |
+|-------|---------|---------------|
+| **Agent 1** | **Discovery** | Fetches potential NGO projects from multiple sources |
+| **Agent 2 & 3** | **Alignment & Evaluation** | Matches projects to corporate priorities, scores credibility |
+| **Agent 4** | **Decision Support** | Summarizes and explains best-fit projects for decision-makers |
+| **Agent 5** | **Monitoring** | Tracks approved projects with real-time impact & alerts |
+| **Agent 6** | **Reporting** | Auto-generates compliance & ESG reports |
+
+---
+
+## 👥 Target Users
+
+- **Corporate Users** – Admins, sustainability officers, CSR managers
+- **NGOs** – Project proposal submission, updates, impact reporting
+- **Regulators/Government** – Compliance oversight, CSR data auditing
+
+---
+
+## ✨ Platform Highlights
+- 🎨 **Elegant UI**: React 19 + Tailwind v4 with soft gradients, rounded cards, and subtle motion
+- 📈 **Insightful Charts**: Highcharts dashboards (allocation, trends, ESG, SDG); transparent cards for dark-on-light clarity
+- 🧭 **App Shell**: Role-aware TopNav and modular routes (Discovery, Alignment, Decision, Monitoring, Reporting)
+- 🔐 **Auth-ready**: Login / Signup / Forgot / Profile Setup + JWT parsing helper
+- ⚙️ **API-first backend**: Flask 3, SQLAlchemy, CORS; clean blueprints per domain
+- 🧩 **Extensible**: Componentized pages (cards, tables, charts) + sensible aliases (`@pages`, `@components`)
 
 ---
 
@@ -69,7 +106,7 @@ flowchart LR
   end
 
   %% Data Stores
-  DB[(Relational DB\nSQLite by default)]
+  DB[(Relational DB<br/>SQLite by default)]
 
   %% Edges
   FE_TopNav --> FE_Routes
@@ -113,9 +150,9 @@ flowchart LR
 ```
 
 ### Roles & Navigation
-- Admin: full Dashboard + Monitoring/Reporting suite
-- Corporate: Discovery, Alignment, Impact Dashboard; Company Profile (form + showcase)
-- NGO: Marketplace and Company Showcase view
+- **Admin**: Full Dashboard + Monitoring/Reporting suite
+- **Corporate**: Discovery, Alignment, Impact Dashboard; Company Profile (form + showcase)
+- **NGO**: Marketplace and Company Showcase view
 
 ---
 
@@ -180,18 +217,18 @@ Health check: `GET /api/health` → `{ "status": "ok" }`
 ---
 
 ## 🖼️ Key Screens and Routes
-| Area | Routes |
-|---|---|
-| **Auth** | `/login`, `/signup`, `/forgot-password`, `/profile-setup` |
-| **Dashboard** | `/dashboard` (admin) |
-| **Discovery** | `/discovery/search`, `/discovery/cards` |
-| **Alignment** | `/alignment/matching`, `/alignment/comparison`, `/alignment/risk` |
-| **Monitoring** | `/monitoring/impact`, `/monitoring/tracker`, `/monitoring/alerts` |
-| **Reporting** | `/reporting/generator`, `/reporting/audit-trail` |
-| **Marketplace** | `/marketplace/ngo`, `/marketplace/matching`, `/marketplace/collaboration` |
-| **Settings** | `/settings/users`, `/settings/agents`, `/settings/apis`, `/settings/integrations` |
-| **Profile** | `/profile/company-details`, `/profile/csr-history`, `/profile/sdg-selector` |
-| **Support** | `/support/chat`, `/support/faq`, `/support/feedback` |
+| Area | Routes | AI Agent |
+|---|---|---|
+| **Auth** | `/login`, `/signup`, `/forgot-password`, `/profile-setup` | - |
+| **Dashboard** | `/dashboard` (admin) | - |
+| **Discovery** | `/discovery/search`, `/discovery/cards` | **Agent 1** |
+| **Alignment** | `/alignment/matching`, `/alignment/comparison`, `/alignment/risk` | **Agent 2 & 3** |
+| **Monitoring** | `/monitoring/impact`, `/monitoring/tracker`, `/monitoring/alerts` | **Agent 5** |
+| **Reporting** | `/reporting/generator`, `/reporting/audit-trail` | **Agent 6** |
+| **Marketplace** | `/marketplace/ngo`, `/marketplace/matching`, `/marketplace/collaboration` | - |
+| **Settings** | `/settings/users`, `/settings/agents`, `/settings/apis`, `/settings/integrations` | - |
+| **Profile** | `/profile/company-details`, `/profile/csr-history`, `/profile/sdg-selector` | - |
+| **Support** | `/support/chat`, `/support/faq`, `/support/feedback` | - |
 
 > Prototypes in `html/` mirror many routes (open in browser for quick reference).
 
@@ -239,6 +276,38 @@ npm run preview   # Preview production build
 
 ---
 
+## 📋 Example Walkthrough: Infosys CSR Management
+
+### 1. Profile Setup
+- **Budget**: ₹50 Cr
+- **Focus Areas**: Education (SDG 4), Climate (SDG 13)
+- **Past Reports**: Upload previous CSR activities
+
+### 2. Project Discovery (Agent 1)
+AI fetches projects from NGOs:
+- **GreenFuture NGO**: "Plant 1M trees in rural Karnataka"
+- **EduBridge NGO**: "Digital literacy in rural schools"
+
+### 3. Alignment & Evaluation (Agent 2 & 3)
+AI scoring results:
+- **GreenFuture Trees**: 92% aligned (SDG 13, climate focus)
+- **EduBridge Education**: 87% aligned (SDG 4, education focus)
+
+### 4. Decision Support (Agent 4)
+Infosys Board sees AI's top 3 projects with "Why" explanations and approves 2 projects.
+
+### 5. Monitoring & Tracking (Agent 5)
+Real-time updates:
+- **300K trees planted** (progress tracking)
+- **5,000 students educated**
+- **₹20 Cr utilized**
+- **Alerts**: "Tree project delayed by 1 month due to rains"
+
+### 6. Reporting (Agent 6)
+End of year → Auto-generated CSR compliance report for government submission with full audit trail.
+
+---
+
 ## 🧪 Smoke Test
 ```bash
 # Frontend
@@ -268,6 +337,14 @@ http://localhost:5000/api/health
 ### UX Notes
 - Soft, accessible color scheme; consistent spacing; shadow hierarchy
 - Mobile-friendly grids; sticky table headers; animated hero sections
+
+---
+
+## ✅ End Results
+
+- **Corporates** → Smarter CSR spend, no compliance headache
+- **NGOs** → More visibility, fair funding opportunities  
+- **Regulators** → Transparent, AI-audited CSR tracking
 
 ---
 
