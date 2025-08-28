@@ -118,6 +118,11 @@ export default function SignupPage() {
       const data = await apiPost('/api/auth/signup', { email: form.email, password: form.password, role: form.role })
       localStorage.setItem('token', data.token)
       stopLoadingAnimation()
+      // If NGO role, send to onboarding first
+      if ((form.role || '').toLowerCase() === 'ngo') {
+        window.location.href = '/ngo-onboarding'
+        return
+      }
       setSuccess(true)
     } catch (err) {
       setError(err.message)

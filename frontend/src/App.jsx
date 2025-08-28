@@ -35,6 +35,7 @@ import AuditTrailPage from './pages/reporting/audit-trail/audit-trail.jsx'
 import NgoDashboardPage from './pages/marketplace/ngo/ngo.jsx'
 import MatchingEnginePage from './pages/marketplace/matching/matching.jsx'
 import CollaborationToolsPage from './pages/marketplace/collaboration/collaboration.jsx'
+import NgoOnboardingPage from './pages/marketplace/ngo-add/ngo-onboarding.jsx'
 
 // Settings & Admin
 import UserManagementPage from './pages/settings/users/users.jsx'
@@ -66,6 +67,8 @@ export default function App() {
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/profile-setup" element={<ProfileSetupPage />} />
+      {/* NGO onboarding (pre-access) */}
+      <Route path="/ngo-onboarding" element={<NgoOnboardingPage />} />
 
       {/* App routes with universal sidebar */}
       <Route element={<RequireAuth />}>
