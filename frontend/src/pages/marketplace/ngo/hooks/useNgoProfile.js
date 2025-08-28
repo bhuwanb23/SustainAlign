@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 
 export default function useNgoProfile() {
   const [activeTab, setActiveTab] = useState('impact')
+  const [selectedNgo, setSelectedNgo] = useState(null)
 
   const header = {
     logo: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/c7ce476191-96e2094d5a9cd6b9ed7a.png',
@@ -98,7 +99,25 @@ export default function useNgoProfile() {
     },
   ]
 
-  return { activeTab, setActiveTab, header, hero, impactTimeline, documents, transparency, certificates, testimonials }
+  const list = [
+    {
+      id: 'n1', icon: '🌱', name: 'GreenEarth Foundation', sector: 'Environment', location: 'Bangalore, IN', rating: 4.7,
+      focus: ['Climate', 'Reforestation', 'Water'],
+      summary: 'Driving climate resilience through reforestation, water conservation, and community programs.'
+    },
+    {
+      id: 'n2', icon: '🎓', name: 'EduCare Trust', sector: 'Education', location: 'Pune, IN', rating: 4.5,
+      focus: ['Digital Literacy', 'Girl Child', 'Skilling'],
+      summary: 'Improving education outcomes via digital access and teacher training.'
+    },
+    {
+      id: 'n3', icon: '💧', name: 'JalSeva', sector: 'Water & Sanitation', location: 'Hyderabad, IN', rating: 4.3,
+      focus: ['WASH', 'Rural'],
+      summary: 'Ensuring safe drinking water and sanitation for rural communities.'
+    }
+  ]
+
+  return { activeTab, setActiveTab, selectedNgo, setSelectedNgo, list, header, hero, impactTimeline, documents, transparency, certificates, testimonials }
 }
 
 
