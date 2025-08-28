@@ -24,6 +24,7 @@ from .approval import ApprovalRequest, ApprovalStep
 from .impact import ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal
 from .tracker import ProjectTrackingInfo, ProjectTimelineEntry
 from .reporting import ReportJob, ReportArtifact
+from .rationale import DecisionRationale, RationaleNote
 
 __all__ = [
     'db',
@@ -56,3 +57,5 @@ __all__.append('ProjectTrackingInfo')
 __all__.append('ProjectTimelineEntry')
 __all__.append('ReportJob')
 __all__.append('ReportArtifact')
+__all__.append('DecisionRationale')
+__all__.append('RationaleNote')

@@ -56,7 +56,7 @@ flowchart LR
       BP_Projects[projects]
       BP_Profile[profile]
       BP_Reports[reports]
-      BP_Views[views (admin HTML)]
+      BP_Views["views (admin HTML)"]
     end
     subgraph Models[SQLAlchemy Models]
       M_User["User · UserRole"]

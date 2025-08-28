@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, current_app
-from models import db, User, Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, Company, NGORiskAssessment, ApprovalRequest, ApprovalStep, ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal, ProjectTrackingInfo, ProjectTimelineEntry, ReportJob, ReportArtifact
+from models import db, User, Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, Company, NGORiskAssessment, ApprovalRequest, ApprovalStep, ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal, ProjectTrackingInfo, ProjectTimelineEntry, ReportJob, ReportArtifact, DecisionRationale, RationaleNote
 from utils import decode_token
 import json
 from datetime import datetime
@@ -274,6 +274,63 @@ def get_report_job(job_id: int):
     if not j:
         return jsonify({'error': 'Not found'}), 404
     return jsonify(j.to_dict())
+
+
+# Decision rationale endpoints (public)
+@projects_bp.post('/rationales')
+def create_rationale():
+    data = request.get_json() or {}
+    r = DecisionRationale(
+        project_id=data.get('project_id'),
+        company_id=data.get('company_id'),
+        title=data.get('title') or 'Decision Rationale',
+        context=data.get('context') or {},
+        criteria=data.get('criteria') or {},
+        options=data.get('options') or [],
+        selected_option=data.get('selected_option'),
+        pros=data.get('pros') or [],
+        cons=data.get('cons') or [],
+        reasoning_steps=data.get('reasoning_steps') or [],
+        score_breakdown=data.get('score_breakdown') or {},
+        attachments=data.get('attachments') or [],
+    )
+    db.session.add(r)
+    db.session.commit()
+    return jsonify(r.to_dict()), 201
+
+
+@projects_bp.get('/rationales')
+def list_rationales():
+    project_id = request.args.get('project_id', type=int)
+    q = DecisionRationale.query.order_by(DecisionRationale.created_at.desc())
+    if project_id:
+        q = q.filter(DecisionRationale.project_id == project_id)
+    items = [i.to_dict() for i in q.limit(50).all()]
+    return jsonify(items)
+
+
+@projects_bp.get('/rationales/<int:rid>')
+def get_rationale(rid: int):
+    r = DecisionRationale.query.get(rid)
+    if not r:
+        return jsonify({'error': 'Not found'}), 404
+    return jsonify(r.to_dict())
+
+
+@projects_bp.post('/rationales/<int:rid>/notes')
+def add_rationale_note(rid: int):
+    r = DecisionRationale.query.get(rid)
+    if not r:
+        return jsonify({'error': 'Not found'}), 404
+    data = request.get_json() or {}
+    n = RationaleNote(
+        rationale_id=r.id,
+        author=data.get('author'),
+        content=data.get('content') or ''
+    )
+    db.session.add(n)
+    db.session.commit()
+    return jsonify(n.to_dict()), 201
 
 
 @projects_bp.get('/projects/<int:project_id>')
