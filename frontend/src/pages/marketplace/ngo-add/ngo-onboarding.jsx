@@ -1,4 +1,28 @@
 import { useState } from 'react'
+import { apiPost } from '../../../lib/api'
+
+function Section({ title, children }) {
+  return (
+    <div className="bg-white rounded-2xl border border-emerald-100 shadow-sm p-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">{children}</div>
+    </div>
+  )
+}
+
+function Input({ label, value, onChange, ...props }) {
+  return (
+    <label className="block">
+      <span className="block text-sm text-gray-700 mb-1">{label}</span>
+      <input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-300"
+        {...props}
+      />
+    </label>
+  )
+}
 
 export default function NgoOnboardingPage() {
   const [form, setForm] = useState({
@@ -18,25 +42,18 @@ export default function NgoOnboardingPage() {
 
   const update = (k, v) => setForm((s) => ({ ...s, [k]: v }))
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault()
-    // In a real app, POST to backend then route to marketplace/ngo
-    window.location.href = '/marketplace/ngo'
+    try {
+      const response = await apiPost('/api/profile/ngo-onboarding', form)
+      console.log('NGO Onboarding saved:', response)
+      localStorage.setItem('ngoOnboardingComplete', 'true')
+      window.location.href = '/marketplace/ngo'
+    } catch (error) {
+      console.error('Failed to save NGO onboarding:', error)
+      alert('Failed to save NGO onboarding. Please try again.')
+    }
   }
-
-  const Section = ({ title, children }) => (
-    <div className="bg-white rounded-2xl border border-emerald-100 shadow-sm p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">{children}</div>
-    </div>
-  )
-
-  const Input = ({ label, k, ...props }) => (
-    <label className="block">
-      <span className="block text-sm text-gray-700 mb-1">{label}</span>
-      <input value={form[k] || ''} onChange={(e) => update(k, e.target.value)} className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-300" {...props} />
-    </label>
-  )
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-amber-50">
@@ -48,47 +65,47 @@ export default function NgoOnboardingPage() {
 
         <form className="space-y-6" onSubmit={onSubmit}>
           <Section title="1. Project Basics">
-            <Input label="Project Title" k="title" placeholder="e.g., Clean Water Initiative" />
-            <Input label="NGO / Implementing Partner" k="ngo" placeholder="Your NGO name" />
-            <Input label="Sector" k="sector" placeholder="e.g., Water & Sanitation" />
-            <Input label="SDG(s) linked" k="sdgs" placeholder="e.g., Clean Water; Good Health" />
-            <Input label="Location / Region" k="region" placeholder="City, State / Country" />
+            <Input label="Project Title" value={form.title} onChange={(v) => update('title', v)} placeholder="e.g., Clean Water Initiative" />
+            <Input label="NGO / Implementing Partner" value={form.ngo} onChange={(v) => update('ngo', v)} placeholder="Your NGO name" />
+            <Input label="Sector" value={form.sector} onChange={(v) => update('sector', v)} placeholder="e.g., Water & Sanitation" />
+            <Input label="SDG(s) linked" value={form.sdgs} onChange={(v) => update('sdgs', v)} placeholder="e.g., Clean Water; Good Health" />
+            <Input label="Location / Region" value={form.region} onChange={(v) => update('region', v)} placeholder="City, State / Country" />
           </Section>
 
           <Section title="2. Timeline & Milestones">
-            <Input label="Start Date" k="start" type="date" />
-            <Input label="End Date" k="end" type="date" />
-            <Input label="Current Phase" k="phase" placeholder="Planning / Execution / Reporting" />
-            <Input label="Completed Milestones" k="completed" type="number" min="0" />
-            <Input label="Total Milestones" k="total" type="number" min="0" />
-            <Input label="Next Milestone" k="nextMilestone" placeholder="What’s next" />
-            <Input label="Next Due Date" k="nextDue" type="date" />
+            <Input label="Start Date" value={form.start} onChange={(v) => update('start', v)} type="date" />
+            <Input label="End Date" value={form.end} onChange={(v) => update('end', v)} type="date" />
+            <Input label="Current Phase" value={form.phase} onChange={(v) => update('phase', v)} placeholder="Planning / Execution / Reporting" />
+            <Input label="Completed Milestones" value={form.completed} onChange={(v) => update('completed', v)} type="number" min="0" />
+            <Input label="Total Milestones" value={form.total} onChange={(v) => update('total', v)} type="number" min="0" />
+            <Input label="Next Milestone" value={form.nextMilestone} onChange={(v) => update('nextMilestone', v)} placeholder="What’s next" />
+            <Input label="Next Due Date" value={form.nextDue} onChange={(v) => update('nextDue', v)} type="date" />
           </Section>
 
           <Section title="3. Budget & Financials">
-            <Input label="Allocated Budget" k="allocated" placeholder="$" />
-            <Input label="Amount Spent" k="spent" placeholder="$" />
-            <Input label="Remaining Budget" k="remaining" placeholder="$" />
-            <Input label="% Utilized" k="utilizedPct" type="number" min="0" max="100" placeholder="0-100" />
+            <Input label="Allocated Budget" value={form.allocated} onChange={(v) => update('allocated', v)} placeholder="$" />
+            <Input label="Amount Spent" value={form.spent} onChange={(v) => update('spent', v)} placeholder="$" />
+            <Input label="Remaining Budget" value={form.remaining} onChange={(v) => update('remaining', v)} placeholder="$" />
+            <Input label="% Utilized" value={form.utilizedPct} onChange={(v) => update('utilizedPct', v)} type="number" min="0" max="100" placeholder="0-100" />
           </Section>
 
           <Section title="4. Impact Metrics (Dynamic KPIs)">
-            <Input label="KPI 1" k="kpi1" placeholder="Students Educated / Households Benefited" />
-            <Input label="KPI 2" k="kpi2" placeholder="CO₂ Reduced / Trees Planted" />
-            <Input label="KPI 3" k="kpi3" placeholder="Liters of Water Conserved" />
-            <Input label="KPI 4" k="kpi4" placeholder="Employment Generated" />
+            <Input label="KPI 1" value={form.kpi1} onChange={(v) => update('kpi1', v)} placeholder="Students Educated / Households Benefited" />
+            <Input label="KPI 2" value={form.kpi2} onChange={(v) => update('kpi2', v)} placeholder="CO₂ Reduced / Trees Planted" />
+            <Input label="KPI 3" value={form.kpi3} onChange={(v) => update('kpi3', v)} placeholder="Liters of Water Conserved" />
+            <Input label="KPI 4" value={form.kpi4} onChange={(v) => update('kpi4', v)} placeholder="Employment Generated" />
           </Section>
 
           <Section title="5. Status & Alerts">
-            <Input label="Current Status" k="statusText" placeholder="On Track / Delayed / At Risk" />
-            <Input label="Issues Raised" k="issues" placeholder="fund delays, low impact reports" />
-            <Input label="AI Suggestions (optional)" k="ai" placeholder="auto-generated flags or notes" />
+            <Input label="Current Status" value={form.statusText} onChange={(v) => update('statusText', v)} placeholder="On Track / Delayed / At Risk" />
+            <Input label="Issues Raised" value={form.issues} onChange={(v) => update('issues', v)} placeholder="fund delays, low impact reports" />
+            <Input label="AI Suggestions (optional)" value={form.ai} onChange={(v) => update('ai', v)} placeholder="auto-generated flags or notes" />
           </Section>
 
           <Section title="6. Supporting Data">
-            <Input label="Latest NGO Report" k="report" placeholder="filename or link" />
-            <Input label="Evidence Links" k="evidence" placeholder="comma-separated links" />
-            <Input label="Verification Status" k="verification" placeholder="corporate / third-party verified" />
+            <Input label="Latest NGO Report" value={form.report} onChange={(v) => update('report', v)} placeholder="filename or link" />
+            <Input label="Evidence Links" value={form.evidence} onChange={(v) => update('evidence', v)} placeholder="comma-separated links" />
+            <Input label="Verification Status" value={form.verification} onChange={(v) => update('verification', v)} placeholder="corporate / third-party verified" />
           </Section>
 
           <div className="flex items-center justify-end gap-2">

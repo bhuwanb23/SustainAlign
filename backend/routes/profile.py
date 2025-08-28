@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request, current_app
-from models import db, User, Company, CompanyBranch, CSRContact, Budget, FocusArea, ComplianceDocument, NGOPreference, AIConfig, UserRole
+import os
+from models import db, User, Company, CompanyBranch, CSRContact, Budget, FocusArea, ComplianceDocument, NGOPreference, AIConfig, UserRole, Project, NGOProfile
 from utils import decode_token, hash_password
 import json
 
@@ -18,6 +19,133 @@ def get_current_user():
         return None
     
     return User.query.get(payload['user_id'])
+
+
+@profile_bp.get('/test-dev')
+def test_dev_mode():
+    """Test endpoint to verify development mode detection"""
+    is_dev = (
+        current_app.config.get('ENV') == 'development' or
+        current_app.config.get('FLASK_ENV') == 'development' or
+        current_app.debug or
+        os.environ.get('FLASK_ENV') == 'development' or
+        os.environ.get('FLASK_DEBUG') == '1' or
+        str(os.environ.get('DEV_NO_AUTH', '')).lower() in ('1', 'true', 'yes')
+    )
+    
+    return jsonify({
+        'debug_mode': current_app.debug,
+        'env': current_app.config.get('ENV'),
+        'flask_env': os.environ.get('FLASK_ENV'),
+        'flask_debug': os.environ.get('FLASK_DEBUG'),
+        'dev_no_auth': os.environ.get('DEV_NO_AUTH'),
+        'is_development': is_dev
+    })
+
+@profile_bp.post('/ngo-onboarding')
+def save_ngo_onboarding():
+    """Save NGO onboarding data by creating/updating NGOProfile and a starter Project."""
+    user = get_current_user()
+    # Always allow fallback to guest NGO user if unauthenticated
+    if not user:
+        guest_email = 'guest-ngo@sustainalign.local'
+        user = User.query.filter_by(email=guest_email).first()
+        if not user:
+            try:
+                user = User(email=guest_email, password_hash=hash_password('guest'), role='ngo')
+                db.session.add(user)
+                db.session.flush()
+            except Exception:
+                db.session.rollback()
+                return jsonify({'error': 'Failed to initialize guest user'}), 500
+
+    data = request.get_json() or {}
+
+    try:
+        # Create or fetch NGO profile by name
+        ngo_name = (data.get('ngo') or '').strip() or 'NGO'
+        ngo = NGOProfile.query.filter_by(name=ngo_name).first()
+        if not ngo:
+            ngo = NGOProfile(name=ngo_name, country='India')
+            db.session.add(ngo)
+        if data.get('region'):
+            ngo.city = data.get('region')
+        if data.get('verification'):
+            ngo.verification_badge = data.get('verification')
+        # Enrich NGOProfile from onboarding data
+        if data.get('sector'):
+            ngo.primary_sectors = data.get('sector')
+        if data.get('sdgs'):
+            ngo.sdg_focus = data.get('sdgs')  # store as semicolon- or comma-separated string
+        if data.get('region'):
+            ngo.geographic_focus = data.get('region')
+        try:
+            ngo.annual_budget = float(data.get('allocated') or 0)
+        except Exception:
+            ngo.annual_budget = 0
+        ngo.currency = 'INR'
+        ngo.status = 'active'
+        db.session.flush()
+
+        # Build a starter project from onboarding
+        from datetime import datetime, date
+        def parse_date(s):
+            try:
+                return datetime.strptime(s, '%Y-%m-%d').date()
+            except Exception:
+                return date.today()
+
+        title = (data.get('title') or 'Untitled Project').strip()
+        start_date = parse_date(data.get('start') or '')
+        end_date = parse_date(data.get('end') or '')
+
+        project = Project(
+            title=title,
+            short_description=f"{data.get('sector') or ''} · {data.get('region') or ''}",
+            ngo_name=ngo_name,
+            location_city='',
+            location_region=data.get('region') or '',
+            location_country='India',
+            total_project_cost=float(data.get('allocated') or 0),
+            funding_required=float(data.get('remaining') or 0),
+            currency='INR',
+            csr_eligibility=True,
+            preferred_contribution_type='cash',
+            start_date=start_date,
+            end_date=end_date,
+            ngo_registration_number=None,
+            ngo_80g_status=None,
+            ngo_fcra_status=None,
+            ngo_rating=None,
+            ngo_verification_badge=data.get('verification') or 'Pending',
+            past_projects_completed=0,
+            status='draft',
+            visibility='public',
+            created_by=(user.id if user else None)
+        )
+
+        sdgs = [s.strip() for s in (data.get('sdgs') or '').split(';') if s.strip()]
+        if sdgs:
+            project.set_sdg_goals(sdgs)
+        if data.get('sector'):
+            project.set_csr_focus_areas([data.get('sector')])
+
+        kpis = {}
+        if data.get('kpi1'): kpis['kpi1'] = data.get('kpi1')
+        if data.get('kpi2'): kpis['kpi2'] = data.get('kpi2')
+        if data.get('kpi3'): kpis['kpi3'] = data.get('kpi3')
+        if data.get('kpi4'): kpis['kpi4'] = data.get('kpi4')
+        if kpis:
+            project.set_kpis(kpis)
+
+        db.session.add(project)
+        db.session.commit()
+
+        return jsonify({'message': 'Onboarding saved', 'ngo': ngo.to_dict(), 'project': project.to_dict()}), 201
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"NGO onboarding save failed: {str(e)}")
+        return jsonify({'error': 'Failed to save onboarding'}), 500
 
 
 @profile_bp.get('/me')

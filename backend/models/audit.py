@@ -14,7 +14,8 @@ class AuditEvent(db.Model):
     source = db.Column(db.String(64), nullable=True)  # ui | api | system | scheduler
 
     message = db.Column(db.String(255), nullable=True)
-    metadata = db.Column(db.JSON, nullable=True)  # arbitrary structured details for the event
+    # 'metadata' attribute name is reserved by SQLAlchemy Declarative; use 'meta' attribute but keep column name 'metadata'
+    meta = db.Column('metadata', db.JSON, nullable=True)  # arbitrary structured details for the event
 
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
@@ -28,7 +29,7 @@ class AuditEvent(db.Model):
             'actorRole': self.actor_role,
             'source': self.source,
             'message': self.message,
-            'metadata': self.metadata or {},
+            'metadata': self.meta or {},
             'createdAt': self.created_at.isoformat() if self.created_at else None,
         }
 
