@@ -25,6 +25,7 @@ from .impact import ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, Im
 from .tracker import ProjectTrackingInfo, ProjectTimelineEntry
 from .reporting import ReportJob, ReportArtifact
 from .rationale import DecisionRationale, RationaleNote
+from .audit import AuditEvent
 
 __all__ = [
     'db',
@@ -59,3 +60,4 @@ __all__.append('ReportJob')
 __all__.append('ReportArtifact')
 __all__.append('DecisionRationale')
 __all__.append('RationaleNote')
+__all__.append('AuditEvent')

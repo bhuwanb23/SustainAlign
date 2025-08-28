@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, current_app
-from models import db, User, Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, Company, NGORiskAssessment, ApprovalRequest, ApprovalStep, ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal, ProjectTrackingInfo, ProjectTimelineEntry, ReportJob, ReportArtifact, DecisionRationale, RationaleNote
+from models import db, User, Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, Company, NGORiskAssessment, ApprovalRequest, ApprovalStep, ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal, ProjectTrackingInfo, ProjectTimelineEntry, ReportJob, ReportArtifact, DecisionRationale, RationaleNote, AuditEvent
 from utils import decode_token
 import json
 from datetime import datetime
@@ -261,6 +261,46 @@ def tracker_projects():
 def tracker_timeline():
     items = ProjectTimelineEntry.query.order_by(ProjectTimelineEntry.created_at.asc()).limit(50).all()
     return jsonify([i.to_item() for i in items])
+
+
+@projects_bp.get('/tracker/projects/<int:project_id>')
+def tracker_project_detail(project_id: int):
+    rec = ProjectTrackingInfo.query.filter_by(project_id=project_id).first()
+    if not rec:
+        return jsonify({'error': 'Not found'}), 404
+    return jsonify(rec.to_detail())
+
+
+# Audit trail endpoints (public)
+@projects_bp.get('/audit-events')
+def list_audit_events():
+    entity_type = request.args.get('entity_type')
+    entity_id = request.args.get('entity_id', type=int)
+    q = AuditEvent.query.order_by(AuditEvent.created_at.desc())
+    if entity_type:
+        q = q.filter(AuditEvent.entity_type == entity_type)
+    if entity_id:
+        q = q.filter(AuditEvent.entity_id == entity_id)
+    rows = [e.to_dict() for e in q.limit(500).all()]
+    return jsonify(rows)
+
+
+@projects_bp.post('/audit-events')
+def create_audit_event():
+    data = request.get_json() or {}
+    evt = AuditEvent(
+        entity_type=data.get('entity_type') or 'system',
+        entity_id=data.get('entity_id'),
+        action=data.get('action') or 'updated',
+        actor_user_id=data.get('actor_user_id'),
+        actor_role=data.get('actor_role'),
+        source=data.get('source') or 'api',
+        message=data.get('message'),
+        metadata=data.get('metadata') or {},
+    )
+    db.session.add(evt)
+    db.session.commit()
+    return jsonify(evt.to_dict()), 201
 
 
 # Reporting generator endpoints (public)

@@ -26,6 +26,9 @@ class ProjectTrackingInfo(db.Model):
     cta_label = db.Column(db.String(64), nullable=True)
     cta_color = db.Column(db.String(16), nullable=True)
 
+    # Flexible details blob for the side panel in tracker UI
+    details = db.Column(db.JSON, nullable=True)
+
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -50,6 +53,47 @@ class ProjectTrackingInfo(db.Model):
             'tooltip': self.tooltip,
             'team': self.team_user_ids or [],
             'cta': { 'label': self.cta_label, 'color': self.cta_color } if self.cta_label else None,
+        }
+
+    def to_detail(self) -> dict:
+        d = self.details or {}
+        return {
+            'id': f"p{self.project_id}",
+            'title': getattr(self.project, 'title', None),
+            'subtitle': self.subtitle or d.get('ngo') or d.get('subtitle'),
+            'icon': self.icon or d.get('icon'),
+            'gradientFrom': self.gradient_from or d.get('gradientFrom'),
+            'gradientTo': self.gradient_to or d.get('gradientTo'),
+            'progressPct': self.progress_pct,
+            'metricLabel': self.metric_label or d.get('sector') or d.get('metricLabel'),
+            'due': self._due_label(),
+            # Basics
+            'sector': d.get('sector'),
+            'sdgs': d.get('sdgs', []),
+            'region': d.get('region'),
+            # Timeline & milestones
+            'start': d.get('start'),
+            'end': d.get('end'),
+            'phase': d.get('phase'),
+            'completedMilestones': d.get('completedMilestones'),
+            'totalMilestones': d.get('totalMilestones'),
+            'milestoneSummary': d.get('milestoneSummary'),
+            'nextMilestone': d.get('nextMilestone'),
+            'nextDue': d.get('nextDue'),
+            # Financials
+            'allocated': d.get('allocated'),
+            'spent': d.get('spent'),
+            'remaining': d.get('remaining'),
+            'utilizedPct': d.get('utilizedPct'),
+            # KPIs & status
+            'kpis': d.get('kpis', []),
+            'statusText': d.get('statusText'),
+            'issues': d.get('issues'),
+            'aiSuggestions': d.get('aiSuggestions'),
+            # Supporting data
+            'latestReport': d.get('latestReport'),
+            'evidenceLinks': d.get('evidenceLinks', []),
+            'verification': d.get('verification'),
         }
 
     def _due_label(self) -> str:
