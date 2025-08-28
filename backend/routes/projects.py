@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, current_app
-from models import db, User, Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, Company, NGORiskAssessment, ApprovalRequest, ApprovalStep, ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal, ProjectTrackingInfo, ProjectTimelineEntry, ReportJob, ReportArtifact, DecisionRationale, RationaleNote, AuditEvent
+from models import db, User, Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, Company, NGORiskAssessment, ApprovalRequest, ApprovalStep, ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal, ProjectTrackingInfo, ProjectTimelineEntry, ReportJob, ReportArtifact, DecisionRationale, RationaleNote, AuditEvent, NGOImpactEvent, NGODocument, NGOTransparencyReport, NGOCertificate, NGOTestimonial
 from utils import decode_token
 import json
 from datetime import datetime
@@ -301,6 +301,37 @@ def create_audit_event():
     db.session.add(evt)
     db.session.commit()
     return jsonify(evt.to_dict()), 201
+
+
+# NGO marketplace endpoints (public)
+@projects_bp.get('/ngos/<int:ngo_id>/impact-timeline')
+def ngo_impact_timeline(ngo_id: int):
+    rows = NGOImpactEvent.query.filter_by(ngo_id=ngo_id).order_by(NGOImpactEvent.date.asc()).all()
+    return jsonify([r.to_timeline_item() for r in rows])
+
+
+@projects_bp.get('/ngos/<int:ngo_id>/documents')
+def ngo_documents(ngo_id: int):
+    rows = NGODocument.query.filter_by(ngo_id=ngo_id).order_by(NGODocument.uploaded_at.desc()).all()
+    return jsonify([r.to_row() for r in rows])
+
+
+@projects_bp.get('/ngos/<int:ngo_id>/transparency')
+def ngo_transparency(ngo_id: int):
+    rows = NGOTransparencyReport.query.filter_by(ngo_id=ngo_id).order_by(NGOTransparencyReport.created_at.desc()).limit(12).all()
+    return jsonify([r.to_dict() for r in rows])
+
+
+@projects_bp.get('/ngos/<int:ngo_id>/certificates')
+def ngo_certificates(ngo_id: int):
+    rows = NGOCertificate.query.filter_by(ngo_id=ngo_id).order_by(NGOCertificate.valid_until.desc().nullslast()).all()
+    return jsonify([r.to_card() for r in rows])
+
+
+@projects_bp.get('/ngos/<int:ngo_id>/testimonials')
+def ngo_testimonials(ngo_id: int):
+    rows = NGOTestimonial.query.filter_by(ngo_id=ngo_id).order_by(NGOTestimonial.created_at.desc()).limit(50).all()
+    return jsonify([r.to_card() for r in rows])
 
 
 # Reporting generator endpoints (public)

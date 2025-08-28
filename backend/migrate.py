@@ -16,7 +16,7 @@ from models import (
     db, User, Company, CompanyBranch, CSRContact, Budget, FocusArea, 
     ComplianceDocument, NGOPreference, AIConfig, UserRole,
     Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, NGORiskAssessment, ApprovalRequest, ApprovalStep,
-    ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal, ProjectTrackingInfo, ProjectTimelineEntry, ReportJob, ReportArtifact, DecisionRationale, RationaleNote, AuditEvent
+    ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal, ProjectTrackingInfo, ProjectTimelineEntry, ReportJob, ReportArtifact, DecisionRationale, RationaleNote, AuditEvent, NGOImpactEvent, NGODocument, NGOTransparencyReport, NGOCertificate, NGOTestimonial
 )
 
 def get_table_names():
@@ -79,7 +79,12 @@ def add_new_tables():
             'report_artifacts',
             'decision_rationales',
             'rationale_notes',
-            'audit_events'
+            'audit_events',
+            'ngo_impact_events',
+            'ngo_documents',
+            'ngo_transparency_reports',
+            'ngo_certificates',
+            'ngo_testimonials'
         ]
         
         # Find missing tables
@@ -425,7 +430,12 @@ def show_database_info():
             'report_artifacts': ReportArtifact,
             'decision_rationales': DecisionRationale,
             'rationale_notes': RationaleNote,
-            'audit_events': AuditEvent
+            'audit_events': AuditEvent,
+            'ngo_impact_events': NGOImpactEvent,
+            'ngo_documents': NGODocument,
+            'ngo_transparency_reports': NGOTransparencyReport,
+            'ngo_certificates': NGOCertificate,
+            'ngo_testimonials': NGOTestimonial
         }
         
         for table_name, model in tables.items():

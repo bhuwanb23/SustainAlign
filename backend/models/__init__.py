@@ -26,6 +26,7 @@ from .tracker import ProjectTrackingInfo, ProjectTimelineEntry
 from .reporting import ReportJob, ReportArtifact
 from .rationale import DecisionRationale, RationaleNote
 from .audit import AuditEvent
+from .ngo_marketplace import NGOImpactEvent, NGODocument, NGOTransparencyReport, NGOCertificate, NGOTestimonial
 
 __all__ = [
     'db',
@@ -61,3 +62,8 @@ __all__.append('ReportArtifact')
 __all__.append('DecisionRationale')
 __all__.append('RationaleNote')
 __all__.append('AuditEvent')
+__all__.append('NGOImpactEvent')
+__all__.append('NGODocument')
+__all__.append('NGOTransparencyReport')
+__all__.append('NGOCertificate')
+__all__.append('NGOTestimonial')

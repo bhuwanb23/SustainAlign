@@ -1,9 +1,12 @@
-export default function HeaderBar({ header }) {
+export default function HeaderBar({ header, onBack }) {
   return (
     <header className="bg-white shadow-sm border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
+            {onBack && (
+              <button onClick={onBack} className="mr-2 px-3 py-1.5 text-sm rounded-lg border border-emerald-200 text-emerald-700 bg-white hover:bg-emerald-50">← Back</button>
+            )}
             <img className="w-12 h-12 rounded-full object-cover" src={header.logo} alt="NGO logo" />
             <div>
               <h1 className="text-xl font-bold text-gray-900">{header.name}</h1>
