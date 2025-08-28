@@ -11,6 +11,10 @@ class ApprovalRequest(db.Model):
     title = db.Column(db.String(200), nullable=False)
     summary = db.Column(db.Text, nullable=True)
     status = db.Column(db.String(32), nullable=False, default='pending')  # pending | in_review | approved | rejected
+    # New flexible fields for AI recommendations and compliance details
+    ai_recommendation = db.Column(db.JSON, nullable=True)  # { label: 'Strongly Recommended', confidencePct: 95, reasons: [...] }
+    compliance_notes = db.Column(db.JSON, nullable=True)  # [ 'EPA certification required...', 'ISO 14001 ...', ... ]
+    compliance_metrics = db.Column(db.JSON, nullable=True)  # { complianceConfidencePct: 95, impactPositive: true, roi: 'strong' }
     created_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -25,11 +29,17 @@ class ApprovalRequest(db.Model):
             'title': self.title,
             'summary': self.summary,
             'status': self.status,
+            'aiRecommendation': self.ai_recommendation or None,
+            'complianceNotes': self.compliance_notes or [],
+            'complianceMetrics': self.compliance_metrics or {},
             'projectId': self.project_id,
             'companyId': self.company_id,
             'createdBy': self.created_by,
             'createdAt': self.created_at.isoformat() if self.created_at else None,
             'updatedAt': self.updated_at.isoformat() if self.updated_at else None,
+            # lightweight relationship summaries for UI convenience
+            'project': {'id': self.project.id, 'title': getattr(self.project, 'title', None)} if self.project else None,
+            'company': {'id': self.company.id, 'name': getattr(self.company, 'company_name', None)} if self.company else None,
             'steps': [s.to_dict() for s in self.steps],
         }
 

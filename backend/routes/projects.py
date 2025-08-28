@@ -160,6 +160,28 @@ def get_approval(approval_id: int):
     return jsonify(r.to_dict())
 
 
+@projects_bp.put('/approvals/<int:approval_id>')
+def update_approval(approval_id: int):
+    r = ApprovalRequest.query.get(approval_id)
+    if not r:
+        return jsonify({'error': 'Not found'}), 404
+    data = request.get_json() or {}
+    if 'title' in data:
+        r.title = data['title']
+    if 'summary' in data:
+        r.summary = data['summary']
+    if 'status' in data:
+        r.status = data['status']
+    if 'aiRecommendation' in data:
+        r.ai_recommendation = data['aiRecommendation']
+    if 'complianceNotes' in data:
+        r.compliance_notes = data['complianceNotes']
+    if 'complianceMetrics' in data:
+        r.compliance_metrics = data['complianceMetrics']
+    db.session.commit()
+    return jsonify(r.to_dict())
+
+
 @projects_bp.put('/approvals/<int:approval_id>/steps/<int:step_id>')
 def update_approval_step(approval_id: int, step_id: int):
     step = ApprovalStep.query.filter_by(id=step_id, request_id=approval_id).first()
