@@ -99,7 +99,7 @@ flowchart LR
 
   %% Notable Flows
   classDef note fill:#ecfdf5,stroke:#10b981,color:#065f46
-  subgraph Flows[]
+  subgraph Flows["Notable Flows"]
     F1["Project Add (public)<br/>FE → POST /api/projects<br/>Guest fallback if unauthenticated"]:::note
     F2["AI Matching<br/>FE → GET /api/ai-matches<br/>Filters: company_id, min_score"]:::note
     F3["NGO Directory<br/>FE → GET /api/ngos (auth)"]:::note
