@@ -9,7 +9,7 @@ function TeamAvatars({ ids }) {
   )
 }
 
-export default function ProjectCard({ project }) {
+export default function ProjectCard({ project, onView }) {
   return (
     <div className="project-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg relative">
       <div className="tooltip absolute -top-16 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-4 py-2 rounded-lg text-sm whitespace-nowrap opacity-0">
@@ -54,7 +54,7 @@ export default function ProjectCard({ project }) {
 
       <div className="flex items-center justify-between">
         <TeamAvatars ids={project.team} />
-        <button className="text-sm font-medium" style={{ color: project.cta.color }}>{project.cta.label}</button>
+        <button onClick={() => onView && onView(project)} className="text-sm font-medium" style={{ color: project.cta.color }}>{project.cta.label || 'View Details'}</button>
       </div>
     </div>
   )

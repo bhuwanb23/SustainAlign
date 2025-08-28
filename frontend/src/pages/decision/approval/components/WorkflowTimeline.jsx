@@ -23,11 +23,14 @@ function Step({ icon, title, desc, statusClass, badge, badgeColor, body }) {
   )
 }
 
-export default function WorkflowTimeline() {
+export default function WorkflowTimeline({ approval }) {
   return (
     <section className="lg:col-span-2">
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-8">Approval Workflow</h2>
+        {!approval && (
+          <div className="text-sm text-gray-600">Select an approved project to view its workflow.</div>
+        )}
         <div className="relative">
           <div className="absolute left-8 top-16 bottom-0 w-0.5 progress-line step-active" />
 

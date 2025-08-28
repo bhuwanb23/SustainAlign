@@ -290,3 +290,50 @@ export const getNGO = async (ngoId, token) => {
     throw error
   }
 }
+
+// Approvals API
+export const getApprovals = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/approvals`, { method: 'GET' })
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}))
+      throw new Error(err.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+    return await response.json()
+  } catch (error) {
+    console.error('Error fetching approvals:', error)
+    throw error
+  }
+}
+
+export const getApproval = async (approvalId) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/approvals/${approvalId}`, { method: 'GET' })
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}))
+      throw new Error(err.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+    return await response.json()
+  } catch (error) {
+    console.error('Error fetching approval:', error)
+    throw error
+  }
+}
+
+export const updateApprovalStepStatus = async (approvalId, stepId, data) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/approvals/${approvalId}/steps/${stepId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}))
+      throw new Error(err.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+    return await response.json()
+  } catch (error) {
+    console.error('Error updating approval step:', error)
+    throw error
+  }
+}

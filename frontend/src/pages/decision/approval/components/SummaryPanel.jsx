@@ -1,19 +1,19 @@
-function ProjectDetails() {
+function ProjectDetails({ selected }) {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <h3 className="text-lg font-semibold text-gray-900 mb-4">Project Details</h3>
       <div className="space-y-4">
         <div>
           <label className="text-sm font-medium text-gray-600">Project Name</label>
-          <p className="text-gray-900">Green Energy Initiative 2024</p>
+          <p className="text-gray-900">{selected?.projectTitle || selected?.project?.title || '—'}</p>
         </div>
         <div>
           <label className="text-sm font-medium text-gray-600">Budget</label>
-          <p className="text-gray-900">$2.4M</p>
+          <p className="text-gray-900">{selected?.project?.financials ? `${selected.project.financials.currency} ${selected.project.financials.funding_required}` : '—'}</p>
         </div>
         <div>
           <label className="text-sm font-medium text-gray-600">Timeline</label>
-          <p className="text-gray-900">Q2 2024 - Q1 2025</p>
+          <p className="text-gray-900">{selected?.project?.timeline ? `${selected.project.timeline.start_date || ''} - ${selected.project.timeline.end_date || ''}` : '—'}</p>
         </div>
         <div>
           <label className="text-sm font-medium text-gray-600">Impact Score</label>
@@ -82,10 +82,10 @@ function ComplianceNotes() {
   )
 }
 
-export default function SummaryPanel() {
+export default function SummaryPanel({ selected }) {
   return (
     <aside className="space-y-6">
-      <ProjectDetails />
+      <ProjectDetails selected={selected} />
       <AiRationale />
       <ComplianceNotes />
     </aside>

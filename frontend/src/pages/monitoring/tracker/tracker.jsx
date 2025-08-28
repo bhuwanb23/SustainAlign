@@ -1,11 +1,14 @@
+import { useState } from 'react'
 import useTracker from './hooks/useTracker.js'
 import HeaderBar from './components/HeaderBar.jsx'
 import FiltersBar from './components/FiltersBar.jsx'
 import TimelineOverview from './components/TimelineOverview.jsx'
 import ProjectCard from './components/ProjectCard.jsx'
+import ProjectDetails from './components/ProjectDetails.jsx'
 
 export default function ProjectTrackerPage() {
   const { filter, setFilter, projects, timeline } = useTracker()
+  const [active, setActive] = useState(null)
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -15,10 +18,11 @@ export default function ProjectTrackerPage() {
         <TimelineOverview timeline={timeline} />
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {projects.map((p) => (
-            <ProjectCard key={p.id} project={p} />
+            <ProjectCard key={p.id} project={p} onView={setActive} />
           ))}
         </section>
       </main>
+      {active && <ProjectDetails project={active} onClose={() => setActive(null)} />}
     </div>
   )
 }
