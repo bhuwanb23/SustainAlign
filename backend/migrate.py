@@ -16,7 +16,7 @@ from models import (
     db, User, Company, CompanyBranch, CSRContact, Budget, FocusArea, 
     ComplianceDocument, NGOPreference, AIConfig, UserRole,
     Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, NGORiskAssessment, ApprovalRequest, ApprovalStep,
-    ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal, ProjectTrackingInfo, ProjectTimelineEntry, ReportJob, ReportArtifact, DecisionRationale, RationaleNote, AuditEvent, NGOImpactEvent, NGODocument, NGOTransparencyReport, NGOCertificate, NGOTestimonial
+    ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal, ProjectTrackingInfo, ProjectTimelineEntry, ReportJob, ReportArtifact, DecisionRationale, RationaleNote, AuditEvent, NGOImpactEvent, NGODocument, NGOTransparencyReport, NGOCertificate, NGOTestimonial, NGOProfile
 )
 
 def get_table_names():
@@ -90,25 +90,23 @@ def add_new_tables():
         # Find missing tables
         missing_tables = [table for table in expected_tables if table not in existing_tables]
         
-        if not missing_tables:
-            print("✅ All tables already exist!")
-            return
-        
-        print(f"🔧 Adding missing tables: {', '.join(missing_tables)}")
-        
-        # Create only missing tables
-        db.create_all()
-        
-        # Verify new tables were created
-        updated_tables = get_table_names()
-        newly_created = [table for table in missing_tables if table in updated_tables]
-        
-        if newly_created:
-            print(f"✅ Successfully added tables: {', '.join(newly_created)}")
+        if missing_tables:
+            print(f"🔧 Adding missing tables: {', '.join(missing_tables)}")
+            # Create only missing tables (db.create_all is idempotent for existing)
+            db.create_all()
+            # Verify new tables were created
+            updated_tables = get_table_names()
+            newly_created = [table for table in missing_tables if table in updated_tables]
+            if newly_created:
+                print(f"✅ Successfully added tables: {', '.join(newly_created)}")
+            else:
+                print("⚠️  Some tables may not have been created. Check for errors above.")
+            print(f"📋 Total tables now: {', '.join(updated_tables)}")
         else:
-            print("⚠️  Some tables may not have been created. Check for errors above.")
-        
-        print(f"📋 Total tables now: {', '.join(updated_tables)}")
+            print("✅ All tables already exist!")
+
+        # After tables, ensure important new columns exist (non-destructive alters)
+        ensure_column_exists('ngo_profiles', 'about', 'TEXT')
 
 def drop_tables():
     """Drop all database tables (DANGEROUS - use with caution)"""
@@ -124,6 +122,20 @@ def drop_tables():
             print("✅ All tables dropped successfully!")
         else:
             print("❌ Operation cancelled.")
+
+
+def ensure_column_exists(table_name: str, column_name: str, column_sql_type: str):
+    """Attempt to add a column if it does not exist. Safe for SQLite."""
+    try:
+        inspector = db.inspect(db.engine)
+        existing = {c['name'] for c in inspector.get_columns(table_name)}
+        if column_name in existing:
+            return
+        with db.engine.begin() as conn:
+            conn.execute(db.text(f"ALTER TABLE {table_name} ADD COLUMN {column_name} {column_sql_type}"))
+        print(f"✅ Added column {table_name}.{column_name}")
+    except Exception as e:
+        print(f"⚠️  Could not ensure column {table_name}.{column_name}: {e}")
 
 def create_sample_data():
     """Create sample data for testing"""

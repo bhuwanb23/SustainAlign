@@ -26,18 +26,20 @@ function Input({ label, value, onChange, ...props }) {
 
 export default function NgoOnboardingPage() {
   const [form, setForm] = useState({
-    // 1. Basics
-    title: '', ngo: '', sector: '', sdgs: '', region: '',
-    // 2. Timeline
-    start: '', end: '', phase: '', completed: 0, total: 0, nextMilestone: '', nextDue: '',
-    // 3. Budget
-    allocated: '', spent: '', remaining: '', utilizedPct: '',
-    // 4. KPIs
-    kpi1: '', kpi2: '', kpi3: '', kpi4: '',
-    // 5. Status
-    statusText: 'On Track', issues: '', ai: '',
-    // 6. Supporting
-    report: '', evidence: '', verification: 'Pending',
+    // 1. Profile Basics
+    name: '', registrationNumber: '', legalStatus: '', yearEstablished: '',
+    about: '',
+    // 2. Contact
+    address: '', city: '', state: '', country: '', phone: '', email: '', website: '',
+    // 3. Focus Areas
+    primarySectors: '', sdgFocus: '', geographicFocus: '',
+    // 4. Financials
+    annualBudget: '', currency: 'INR', fundingSources: '',
+    // 5. Compliance & Credibility
+    pan: '', tan: '', gst: '', _80gStatus: '', fcraStatus: '', fcraNumber: '',
+    rating: '', verificationBadge: 'Pending',
+    // 6. Media & Documents
+    logoUrl: '', profileImageUrl: '', documents: '',
   })
 
   const update = (k, v) => setForm((s) => ({ ...s, [k]: v }))
@@ -45,7 +47,39 @@ export default function NgoOnboardingPage() {
   const onSubmit = async (e) => {
     e.preventDefault()
     try {
-      const response = await apiPost('/api/profile/ngo-onboarding', form)
+      // Transform comma-separated inputs to arrays
+      const payload = {
+        name: form.name,
+        registration_number: form.registrationNumber,
+        legal_status: form.legalStatus,
+        year_established: form.yearEstablished ? parseInt(form.yearEstablished, 10) : null,
+        about: form.about,
+        address: form.address,
+        city: form.city,
+        state: form.state,
+        country: form.country,
+        phone: form.phone,
+        email: form.email,
+        website: form.website,
+        primary_sectors: form.primarySectors ? form.primarySectors.split(',').map(s => s.trim()) : [],
+        sdg_focus: form.sdgFocus ? form.sdgFocus.split(',').map(s => s.trim()) : [],
+        geographic_focus: form.geographicFocus ? form.geographicFocus.split(',').map(s => s.trim()) : [],
+        annual_budget: form.annualBudget ? Number(form.annualBudget) : null,
+        currency: form.currency || 'INR',
+        funding_sources: form.fundingSources ? form.fundingSources.split(',').map(s => s.trim()) : [],
+        pan_number: form.pan,
+        tan_number: form.tan,
+        gst_number: form.gst,
+        _80g_status: form._80gStatus,
+        fcra_status: form.fcraStatus,
+        fcra_number: form.fcraNumber,
+        rating: form.rating ? parseInt(form.rating, 10) : null,
+        verification_badge: form.verificationBadge,
+        logo_url: form.logoUrl,
+        profile_image_url: form.profileImageUrl,
+        documents: form.documents ? form.documents.split(',').map(s => s.trim()) : [],
+      }
+      const response = await apiPost('/api/profile/ngo-onboarding', payload)
       console.log('NGO Onboarding saved:', response)
       localStorage.setItem('ngoOnboardingComplete', 'true')
       window.location.href = '/dashboard'
@@ -73,48 +107,51 @@ export default function NgoOnboardingPage() {
         </div>
 
         <form className="space-y-6" onSubmit={onSubmit}>
-          <Section title="1. Project Basics">
-            <Input label="Project Title" value={form.title} onChange={(v) => update('title', v)} placeholder="e.g., Clean Water Initiative" />
-            <Input label="NGO / Implementing Partner" value={form.ngo} onChange={(v) => update('ngo', v)} placeholder="Your NGO name" />
-            <Input label="Sector" value={form.sector} onChange={(v) => update('sector', v)} placeholder="e.g., Water & Sanitation" />
-            <Input label="SDG(s) linked" value={form.sdgs} onChange={(v) => update('sdgs', v)} placeholder="e.g., Clean Water; Good Health" />
-            <Input label="Location / Region" value={form.region} onChange={(v) => update('region', v)} placeholder="City, State / Country" />
+          <Section title="1. NGO Profile Basics">
+            <Input label="NGO Name" value={form.name} onChange={(v) => update('name', v)} placeholder="Your NGO name" />
+            <Input label="Registration Number" value={form.registrationNumber} onChange={(v) => update('registrationNumber', v)} placeholder="e.g., 12-345-XYZ" />
+            <Input label="Legal Status" value={form.legalStatus} onChange={(v) => update('legalStatus', v)} placeholder="Trust / Society / Section 8" />
+            <Input label="Year Established" value={form.yearEstablished} onChange={(v) => update('yearEstablished', v)} type="number" min="1900" />
+            <Input label="About (short)" value={form.about} onChange={(v) => update('about', v)} placeholder="One paragraph summary" />
           </Section>
 
-          <Section title="2. Timeline & Milestones">
-            <Input label="Start Date" value={form.start} onChange={(v) => update('start', v)} type="date" />
-            <Input label="End Date" value={form.end} onChange={(v) => update('end', v)} type="date" />
-            <Input label="Current Phase" value={form.phase} onChange={(v) => update('phase', v)} placeholder="Planning / Execution / Reporting" />
-            <Input label="Completed Milestones" value={form.completed} onChange={(v) => update('completed', v)} type="number" min="0" />
-            <Input label="Total Milestones" value={form.total} onChange={(v) => update('total', v)} type="number" min="0" />
-            <Input label="Next Milestone" value={form.nextMilestone} onChange={(v) => update('nextMilestone', v)} placeholder="What’s next" />
-            <Input label="Next Due Date" value={form.nextDue} onChange={(v) => update('nextDue', v)} type="date" />
+          <Section title="2. Contact Information">
+            <Input label="Address" value={form.address} onChange={(v) => update('address', v)} placeholder="Street, Area" />
+            <Input label="City" value={form.city} onChange={(v) => update('city', v)} />
+            <Input label="State" value={form.state} onChange={(v) => update('state', v)} />
+            <Input label="Country" value={form.country} onChange={(v) => update('country', v)} />
+            <Input label="Phone" value={form.phone} onChange={(v) => update('phone', v)} />
+            <Input label="Email" value={form.email} onChange={(v) => update('email', v)} type="email" />
+            <Input label="Website" value={form.website} onChange={(v) => update('website', v)} />
           </Section>
 
-          <Section title="3. Budget & Financials">
-            <Input label="Allocated Budget" value={form.allocated} onChange={(v) => update('allocated', v)} placeholder="$" />
-            <Input label="Amount Spent" value={form.spent} onChange={(v) => update('spent', v)} placeholder="$" />
-            <Input label="Remaining Budget" value={form.remaining} onChange={(v) => update('remaining', v)} placeholder="$" />
-            <Input label="% Utilized" value={form.utilizedPct} onChange={(v) => update('utilizedPct', v)} type="number" min="0" max="100" placeholder="0-100" />
+          <Section title="3. Focus Areas">
+            <Input label="Primary Sectors (comma-separated)" value={form.primarySectors} onChange={(v) => update('primarySectors', v)} placeholder="Education, Health, Environment" />
+            <Input label="SDG Focus (comma-separated numbers)" value={form.sdgFocus} onChange={(v) => update('sdgFocus', v)} placeholder="3,4,6,13" />
+            <Input label="Geographic Focus (comma-separated)" value={form.geographicFocus} onChange={(v) => update('geographicFocus', v)} placeholder="Maharashtra, Karnataka" />
           </Section>
 
-          <Section title="4. Impact Metrics (Dynamic KPIs)">
-            <Input label="KPI 1" value={form.kpi1} onChange={(v) => update('kpi1', v)} placeholder="Students Educated / Households Benefited" />
-            <Input label="KPI 2" value={form.kpi2} onChange={(v) => update('kpi2', v)} placeholder="CO₂ Reduced / Trees Planted" />
-            <Input label="KPI 3" value={form.kpi3} onChange={(v) => update('kpi3', v)} placeholder="Liters of Water Conserved" />
-            <Input label="KPI 4" value={form.kpi4} onChange={(v) => update('kpi4', v)} placeholder="Employment Generated" />
+          <Section title="4. Financials">
+            <Input label="Annual Budget" value={form.annualBudget} onChange={(v) => update('annualBudget', v)} placeholder="e.g., 2500000" />
+            <Input label="Currency" value={form.currency} onChange={(v) => update('currency', v)} placeholder="INR / USD" />
+            <Input label="Funding Sources (comma-separated)" value={form.fundingSources} onChange={(v) => update('fundingSources', v)} placeholder="CSR, Grants, Donations" />
           </Section>
 
-          <Section title="5. Status & Alerts">
-            <Input label="Current Status" value={form.statusText} onChange={(v) => update('statusText', v)} placeholder="On Track / Delayed / At Risk" />
-            <Input label="Issues Raised" value={form.issues} onChange={(v) => update('issues', v)} placeholder="fund delays, low impact reports" />
-            <Input label="AI Suggestions (optional)" value={form.ai} onChange={(v) => update('ai', v)} placeholder="auto-generated flags or notes" />
+          <Section title="5. Compliance & Credibility">
+            <Input label="PAN" value={form.pan} onChange={(v) => update('pan', v)} />
+            <Input label="TAN" value={form.tan} onChange={(v) => update('tan', v)} />
+            <Input label="GST" value={form.gst} onChange={(v) => update('gst', v)} />
+            <Input label="80G Status" value={form._80gStatus} onChange={(v) => update('_80gStatus', v)} placeholder="Valid / Expired / Not Available" />
+            <Input label="FCRA Status" value={form.fcraStatus} onChange={(v) => update('fcraStatus', v)} placeholder="Valid / Expired / Not Required" />
+            <Input label="FCRA Number" value={form.fcraNumber} onChange={(v) => update('fcraNumber', v)} />
+            <Input label="Rating (1-5)" value={form.rating} onChange={(v) => update('rating', v)} type="number" min="1" max="5" />
+            <Input label="Verification Badge" value={form.verificationBadge} onChange={(v) => update('verificationBadge', v)} placeholder="Verified / Pending / Unverified" />
           </Section>
 
-          <Section title="6. Supporting Data">
-            <Input label="Latest NGO Report" value={form.report} onChange={(v) => update('report', v)} placeholder="filename or link" />
-            <Input label="Evidence Links" value={form.evidence} onChange={(v) => update('evidence', v)} placeholder="comma-separated links" />
-            <Input label="Verification Status" value={form.verification} onChange={(v) => update('verification', v)} placeholder="corporate / third-party verified" />
+          <Section title="6. Media & Documents">
+            <Input label="Logo URL" value={form.logoUrl} onChange={(v) => update('logoUrl', v)} />
+            <Input label="Profile Image URL" value={form.profileImageUrl} onChange={(v) => update('profileImageUrl', v)} />
+            <Input label="Document Links (comma-separated)" value={form.documents} onChange={(v) => update('documents', v)} />
           </Section>
 
           <div className="flex items-center justify-end gap-2">

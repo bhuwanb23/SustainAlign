@@ -15,9 +15,9 @@ from .projects import (
     Project,
     ProjectMilestone,
     ProjectApplication,
-    ProjectImpactReport,
-    NGOProfile
+    ProjectImpactReport
 )
+from .ngo_marketplace import NGOProfile
 from .ai_matching import AIMatch
 from .risk import NGORiskAssessment
 from .approval import ApprovalRequest, ApprovalStep

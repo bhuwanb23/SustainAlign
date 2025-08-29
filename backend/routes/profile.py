@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request, current_app
+from sqlalchemy import text
 import os
 from models import db, User, Company, CompanyBranch, CSRContact, Budget, FocusArea, ComplianceDocument, NGOPreference, AIConfig, UserRole, Project, NGOProfile
 from utils import decode_token, hash_password
@@ -19,6 +20,19 @@ def get_current_user():
         return None
     
     return User.query.get(payload['user_id'])
+
+
+def ensure_column_exists(table_name: str, column_name: str, column_sql_type: str):
+    try:
+        inspector = db.inspect(db.engine)
+        cols = {c['name'] for c in inspector.get_columns(table_name)}
+        if column_name in cols:
+            return
+        with db.engine.begin() as conn:
+            conn.execute(text(f"ALTER TABLE {table_name} ADD COLUMN {column_name} {column_sql_type}"))
+        current_app.logger.info(f"Added column {table_name}.{column_name}")
+    except Exception as e:
+        current_app.logger.warning(f"ensure_column_exists failed for {table_name}.{column_name}: {e}")
 
 
 @profile_bp.get('/test-dev')
@@ -44,7 +58,10 @@ def test_dev_mode():
 
 @profile_bp.post('/ngo-onboarding')
 def save_ngo_onboarding():
-    """Save NGO onboarding data by creating/updating NGOProfile and a starter Project."""
+    """Save NGO onboarding data by creating/updating NGOProfile and optionally a starter Project.
+
+    Accepts the new schema from ngo-onboarding.jsx. Backwards-compatible with old field names.
+    """
     user = get_current_user()
     # Always allow fallback to guest NGO user if unauthenticated
     if not user:
@@ -61,53 +78,128 @@ def save_ngo_onboarding():
 
     data = request.get_json() or {}
 
+    # Auto-heal: make sure critical new columns exist
+    ensure_column_exists('ngo_profiles', 'about', 'TEXT')
+
+    # Normalize helpers for lists/strings
+    def normalize_to_list(value):
+        if value is None:
+            return []
+        if isinstance(value, list):
+            return [str(v).strip() for v in value if str(v).strip()]
+        if isinstance(value, str):
+            # split on comma or semicolon
+            parts = [p.strip() for p in value.replace(';', ',').split(',') if p.strip()]
+            return parts
+        # fallback single item
+        return [str(value)]
+
     try:
-        # Create or fetch NGO profile by name
-        ngo_name = (data.get('ngo') or '').strip() or 'NGO'
+        # Resolve NGO name (new key 'name' or legacy 'ngo')
+        ngo_name = (data.get('name') or data.get('ngo') or '').strip() or 'NGO'
         ngo = NGOProfile.query.filter_by(name=ngo_name).first()
         if not ngo:
-            ngo = NGOProfile(name=ngo_name, country='India')
+            ngo = NGOProfile(name=ngo_name, country=(data.get('country') or 'India'))
             db.session.add(ngo)
-        if data.get('region'):
-            ngo.city = data.get('region')
-        if data.get('verification'):
-            ngo.verification_badge = data.get('verification')
-        # Enrich NGOProfile from onboarding data
-        if data.get('sector'):
-            ngo.primary_sectors = data.get('sector')
-        if data.get('sdgs'):
-            ngo.sdg_focus = data.get('sdgs')  # store as semicolon- or comma-separated string
-        if data.get('region'):
-            ngo.geographic_focus = data.get('region')
+        # Region may come as string or list
+        regions = normalize_to_list(data.get('geographic_focus') or data.get('geographicFocus') or data.get('region'))
+        if regions:
+            ngo.city = regions[0]  # keep simple single city
+            ngo.set_geographic_focus(regions)
+        verification = (data.get('verification_badge') or data.get('verificationBadge') or data.get('verification') or '').strip()
+        if verification:
+            ngo.verification_badge = verification
+        # Enrich NGOProfile from onboarding data (new keys with fallbacks)
+        sectors = normalize_to_list(data.get('primary_sectors') or data.get('primarySectors') or data.get('sector'))
+        if sectors:
+            ngo.set_primary_sectors(sectors)
+        sdgs_list = normalize_to_list(data.get('sdg_focus') or data.get('sdgFocus') or data.get('sdgs'))
+        if sdgs_list:
+            ngo.set_sdg_focus(sdgs_list)
+        # Basics
+        ngo.registration_number = data.get('registration_number') or data.get('registrationNumber') or ngo.registration_number
+        ngo.legal_status = data.get('legal_status') or data.get('legalStatus') or ngo.legal_status
         try:
-            ngo.annual_budget = float(data.get('allocated') or 0)
+            year_est = data.get('year_established') or data.get('yearEstablished')
+            ngo.year_established = int(year_est) if year_est not in (None, '') else ngo.year_established
         except Exception:
-            ngo.annual_budget = 0
-        ngo.currency = 'INR'
+            pass
+        ngo.about = data.get('about') or ngo.about
+        # Contact
+        ngo.address = data.get('address') or ngo.address
+        ngo.state = data.get('state') or ngo.state
+        ngo.country = data.get('country') or ngo.country or 'India'
+        ngo.phone = data.get('phone') or ngo.phone
+        ngo.email = data.get('email') or ngo.email
+        ngo.website = data.get('website') or ngo.website
+        # Financials
+        try:
+            budget_val = data.get('annual_budget') or data.get('annualBudget') or data.get('allocated')
+            ngo.annual_budget = float(budget_val) if budget_val not in (None, '') else ngo.annual_budget
+        except Exception:
+            pass
+        ngo.currency = (data.get('currency') or ngo.currency or 'INR')
+        funds = normalize_to_list(data.get('funding_sources') or data.get('fundingSources'))
+        if funds:
+            ngo.set_funding_sources(funds)
+        # Compliance & credibility
+        ngo.pan_number = data.get('pan_number') or data.get('pan') or ngo.pan_number
+        ngo.tan_number = data.get('tan_number') or data.get('tan') or ngo.tan_number
+        ngo.gst_number = data.get('gst_number') or data.get('gst') or ngo.gst_number
+        ngo._80g_status = data.get('_80g_status') or data.get('_80gStatus') or ngo._80g_status
+        ngo.fcra_status = data.get('fcra_status') or data.get('fcraStatus') or ngo.fcra_status
+        ngo.fcra_number = data.get('fcra_number') or data.get('fcraNumber') or ngo.fcra_number
+        try:
+            rating_val = data.get('rating')
+            ngo.rating = int(rating_val) if rating_val not in (None, '') else ngo.rating
+        except Exception:
+            pass
+        ngo.verification_badge = verification or ngo.verification_badge
         ngo.status = 'active'
+        # Media & documents
+        docs = normalize_to_list(data.get('documents'))
+        if docs:
+            ngo.set_documents(docs)
+        if data.get('logo_url') or data.get('logoUrl'):
+            ngo.logo_url = data.get('logo_url') or data.get('logoUrl')
+        if data.get('profile_image_url') or data.get('profileImageUrl'):
+            ngo.profile_image_url = data.get('profile_image_url') or data.get('profileImageUrl')
         db.session.flush()
 
         # Build a starter project from onboarding
         from datetime import datetime, date
         def parse_date(s):
             try:
+                if not s:
+                    return date.today()
                 return datetime.strptime(s, '%Y-%m-%d').date()
             except Exception:
                 return date.today()
 
         title = (data.get('title') or 'Untitled Project').strip()
-        start_date = parse_date(data.get('start') or '')
-        end_date = parse_date(data.get('end') or '')
+        start_date = parse_date(data.get('start'))
+        end_date = parse_date(data.get('end'))
+
+        total_cost = 0.0
+        remaining = 0.0
+        try:
+            total_cost = float(data.get('allocated') or 0)
+        except Exception:
+            total_cost = 0.0
+        try:
+            remaining = float(data.get('remaining') or 0)
+        except Exception:
+            remaining = 0.0
 
         project = Project(
             title=title,
-            short_description=f"{data.get('sector') or ''} · {data.get('region') or ''}",
+            short_description=f"{(sectors[0] if sectors else '')} · {(regions[0] if regions else '')}",
             ngo_name=ngo_name,
             location_city='',
-            location_region=data.get('region') or '',
+            location_region=(regions[0] if regions else ''),
             location_country='India',
-            total_project_cost=float(data.get('allocated') or 0),
-            funding_required=float(data.get('remaining') or 0),
+            total_project_cost=total_cost,
+            funding_required=remaining,
             currency='INR',
             csr_eligibility=True,
             preferred_contribution_type='cash',
@@ -117,20 +209,22 @@ def save_ngo_onboarding():
             ngo_80g_status=None,
             ngo_fcra_status=None,
             ngo_rating=None,
-            ngo_verification_badge=data.get('verification') or 'Pending',
+            ngo_verification_badge=verification or 'Pending',
             past_projects_completed=0,
             status='draft',
             visibility='public',
             created_by=(user.id if user else None)
         )
 
-        sdgs = [s.strip() for s in (data.get('sdgs') or '').split(';') if s.strip()]
-        if sdgs:
-            project.set_sdg_goals(sdgs)
-        if data.get('sector'):
-            project.set_csr_focus_areas([data.get('sector')])
+        if sdgs_list:
+            project.set_sdg_goals(sdgs_list)
+        if sectors:
+            project.set_csr_focus_areas(sectors)
 
+        # KPIs can be provided as keyed fields or a dict
         kpis = {}
+        if isinstance(data.get('kpis'), dict):
+            kpis.update(data.get('kpis'))
         if data.get('kpi1'): kpis['kpi1'] = data.get('kpi1')
         if data.get('kpi2'): kpis['kpi2'] = data.get('kpi2')
         if data.get('kpi3'): kpis['kpi3'] = data.get('kpi3')
@@ -141,10 +235,13 @@ def save_ngo_onboarding():
         db.session.add(project)
         db.session.commit()
 
-        return jsonify({'message': 'Onboarding saved', 'ngo': ngo.to_dict(), 'project': project.to_dict()}), 201
+        return jsonify({'message': 'Onboarding saved', 'ngo': ngo.to_detail(), 'project': project.to_dict()}), 201
     except Exception as e:
         db.session.rollback()
         current_app.logger.error(f"NGO onboarding save failed: {str(e)}")
+        # In development, include error detail to help debugging
+        if current_app.debug:
+            return jsonify({'error': 'Failed to save onboarding', 'detail': str(e)}), 500
         return jsonify({'error': 'Failed to save onboarding'}), 500
 
 
