@@ -1,12 +1,66 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import ProjectCard from './components/ProjectCard.jsx'
 import ProjectDetailsView from './components/ProjectDetailsView.jsx'
 import useProjectCards from './hooks/useProjectCards.js'
+import { createApproval } from '../../../lib/projectApi'
 
 export default function ProjectCardsPage() {
   const { projects, loading } = useProjectCards()
   const [selectedProject, setSelectedProject] = useState(null)
+  const navigate = useNavigate()
+
+  const handleCompare = (project) => {
+    try {
+      const full = project.__full || {}
+      const item = {
+        id: full.id || project.id,
+        name: full.title || project.projectName,
+        cost: full.financials?.total_project_cost ?? full.total_project_cost ?? project.budget ?? 0,
+        impactScore: full.impact_metrics?.score || undefined,
+        sdg: full.sdg_goals || project.sdgs || [],
+        esg: full.esg_rating || undefined,
+        risk: full.risk_level || undefined,
+      }
+      const current = JSON.parse(localStorage.getItem('comparisonSelected') || '[]')
+      const next = [...current.filter(p => p.id !== item.id), item]
+      localStorage.setItem('comparisonSelected', JSON.stringify(next))
+      navigate('/alignment/comparison')
+    } catch (e) {
+      console.error('Failed to add to comparison:', e)
+      navigate('/alignment/comparison')
+    }
+  }
+
+  const handleApply = async (project) => {
+    try {
+      const full = project.__full || {}
+      const payload = {
+        project_id: full.id || project.id,
+        title: `Approval: ${full.title || project.projectName}`,
+        summary: full.short_description || project.description || 'Project application for approval',
+        status: 'pending',
+        steps: [
+          { name: 'CSR Review', order: 1, assignee_role: 'CSR Manager', status: 'pending' },
+          { name: 'Finance Approval', order: 2, assignee_role: 'Finance Head', status: 'pending' },
+          { name: 'Executive Sign-off', order: 3, assignee_role: 'CEO', status: 'pending' },
+        ]
+      }
+      const res = await createApproval(payload)
+      const approval = res?.approval
+      if (approval?.id) {
+        // store context for the approval page (optional)
+        localStorage.setItem('lastApprovalId', String(approval.id))
+        navigate('/decision/approval')
+      } else {
+        navigate('/decision/approval')
+      }
+    } catch (e) {
+      console.error('Failed to create approval:', e)
+      navigate('/decision/approval')
+    }
+  }
 
   if (loading) {
     return (
@@ -178,6 +232,8 @@ export default function ProjectCardsPage() {
                 <ProjectCard 
                   project={project} 
                   onClick={(project) => setSelectedProject(project)}
+                  onCompare={handleCompare}
+                  onApply={handleApply}
                 />
               </motion.div>
             ))}

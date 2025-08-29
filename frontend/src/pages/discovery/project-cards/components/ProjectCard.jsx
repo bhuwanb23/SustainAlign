@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 
-export default function ProjectCard({ project, onClick }) {
+export default function ProjectCard({ project, onClick, onCompare, onApply }) {
   const getSdgColor = (sdgName) => {
     const colorMap = {
       'No Poverty': 'bg-red-500',
@@ -27,12 +27,13 @@ export default function ProjectCard({ project, onClick }) {
   }
 
   const formatBudget = (budget) => {
+    const num = typeof budget === 'number' ? budget : parseFloat(budget || 0)
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    }).format(budget)
+    }).format(isNaN(num) ? 0 : num)
   }
 
   return (
@@ -151,12 +152,20 @@ export default function ProjectCard({ project, onClick }) {
             View Details
           </motion.button>
           <motion.button
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => { e.stopPropagation(); onCompare && onCompare(project) }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="px-4 py-2 border border-emerald-500 text-emerald-600 text-sm font-medium rounded-lg hover:bg-emerald-50 transition-all duration-200"
           >
-            Contact
+            Compare
+          </motion.button>
+          <motion.button
+            onClick={(e) => { e.stopPropagation(); onApply && onApply(project) }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="px-4 py-2 border border-teal-600 text-teal-700 text-sm font-medium rounded-lg hover:bg-teal-50 transition-all duration-200"
+          >
+            Apply
           </motion.button>
         </div>
       </div>

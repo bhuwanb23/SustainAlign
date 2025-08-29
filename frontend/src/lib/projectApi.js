@@ -337,3 +337,21 @@ export const updateApprovalStepStatus = async (approvalId, stepId, data) => {
     throw error
   }
 }
+
+export const createApproval = async (data) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/approvals`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}))
+      throw new Error(err.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+    return await response.json()
+  } catch (error) {
+    console.error('Error creating approval:', error)
+    throw error
+  }
+}
