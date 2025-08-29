@@ -48,7 +48,7 @@ export default function NgoOnboardingPage() {
       const response = await apiPost('/api/profile/ngo-onboarding', form)
       console.log('NGO Onboarding saved:', response)
       localStorage.setItem('ngoOnboardingComplete', 'true')
-      window.location.href = '/marketplace/ngo'
+      window.location.href = '/dashboard'
     } catch (error) {
       console.error('Failed to save NGO onboarding:', error)
       alert('Failed to save NGO onboarding. Please try again.')
@@ -61,6 +61,15 @@ export default function NgoOnboardingPage() {
         <div className="mb-6">
           <h1 className="text-2xl font-extrabold bg-gradient-to-r from-emerald-700 to-emerald-500 text-transparent bg-clip-text">NGO Onboarding – Project Basics</h1>
           <p className="text-sm text-gray-600">Fill these details to activate your profile. You can edit later.</p>
+          
+          {/* Special message for new NGO users */}
+          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-center justify-center gap-2 text-blue-800">
+              <span className="text-lg">🔒</span>
+              <span className="font-medium">Complete this form to unlock access to SustainAlign</span>
+            </div>
+            <p className="text-sm text-blue-600 mt-1">Your account is ready, but you need to set up your NGO profile first.</p>
+          </div>
         </div>
 
         <form className="space-y-6" onSubmit={onSubmit}>

@@ -16,10 +16,19 @@ import AllocationPreview from './components/AllocationPreview.jsx'
 export default function CompanyDetailsPage() {
   const location = useLocation()
   const isShowcaseMode = location.pathname === '/profile/company-showcase'
+  const isNewUserMode = location.pathname === '/profile/company-details' && localStorage.getItem('newCorporateUser') === 'true'
   const [showForm, setShowForm] = useState(false)
   const [selectedCompany, setSelectedCompany] = useState(null)
   const [companies, setCompanies] = useState([])
   const w = useCompanyWizard()
+
+  // Check if new corporate user is trying to access showcase mode - redirect them back to form
+  useEffect(() => {
+    if (isShowcaseMode && localStorage.getItem('newCorporateUser') === 'true') {
+      window.location.href = '/profile/company-details'
+      return
+    }
+  }, [isShowcaseMode])
 
   // load companies from API on mount (dev allows unauthenticated)
   useEffect(() => {
@@ -80,12 +89,12 @@ export default function CompanyDetailsPage() {
     }
   }
 
-  // Auto-show form when in form mode (not showcase mode)
+  // Auto-show form when in form mode (not showcase mode) or for new users
   useEffect(() => {
-    if (!isShowcaseMode && !showForm) {
+    if ((!isShowcaseMode && !showForm) || isNewUserMode) {
       setShowForm(true)
     }
-  }, [isShowcaseMode, showForm])
+  }, [isShowcaseMode, showForm, isNewUserMode])
 
   const handleAddNew = useCallback(() => {
     console.log('handleAddNew called')
@@ -117,13 +126,40 @@ export default function CompanyDetailsPage() {
       console.log('Company created:', res)
       const mapped = mapCompanyFromApi(res.company)
       setCompanies(prev => [...prev, mapped])
+      
+      // If this is a new corporate user, redirect to dashboard
+      if (isNewUserMode) {
+        localStorage.removeItem('newCorporateUser')
+        
+        // Show success message before redirect
+        const successMessage = `
+🎉 Welcome to SustainAlign!
+
+Your company profile has been successfully created. You now have full access to all features including:
+
+• Project Discovery & AI Matching
+• Alignment & Evaluation Tools  
+• Decision Support Systems
+• Monitoring & Reporting
+• Marketplace Access
+
+Redirecting you to your dashboard...
+        `
+        
+        alert(successMessage)
+        
+        // Redirect to main dashboard
+        window.location.href = '/dashboard'
+        return
+      }
+      
       alert('Company profile saved to database!')
       setShowForm(false)
     } catch (e) {
       console.error('Failed to save company profile', e)
       alert(`Failed to save company profile: ${e.message}`)
     }
-  }, [w])
+  }, [w, isNewUserMode])
 
   // Show selected company details
   if (selectedCompany) {
@@ -507,25 +543,27 @@ export default function CompanyDetailsPage() {
         <Stepper step={w.step} goTo={w.goTo} mode="form" />
 
         <div className="relative z-10 max-w-5xl mx-auto px-6 py-8 space-y-8">
-          {/* Back to List Button */}
-          <motion.div 
-            className="flex justify-start"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <button
-              onClick={handleBackToList}
-              className="group px-6 py-3 text-slate-600 hover:text-slate-800 hover:bg-white/80 rounded-xl transition-all duration-300 flex items-center gap-3 hover:shadow-lg backdrop-blur-sm"
+          {/* Back to List Button - Only show for existing users, not new users */}
+          {!isNewUserMode && (
+            <motion.div 
+              className="flex justify-start"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <motion.i 
-                className="fas fa-arrow-left"
-                whileHover={{ x: -3 }}
-                transition={{ duration: 0.2 }}
-              />
-              Back to Company List
-            </button>
-          </motion.div>
+              <button
+                onClick={handleBackToList}
+                className="group px-6 py-3 text-slate-600 hover:text-slate-800 hover:bg-white/80 rounded-xl transition-all duration-300 flex items-center gap-3 hover:shadow-lg backdrop-blur-sm"
+              >
+                <motion.i 
+                  className="fas fa-arrow-left"
+                  whileHover={{ x: -3 }}
+                  transition={{ duration: 0.2 }}
+                />
+                Back to Company List
+              </button>
+            </motion.div>
+          )}
 
           <AnimatePresence mode="wait">
             {w.step === 1 && (

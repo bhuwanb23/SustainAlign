@@ -47,8 +47,7 @@ export default function TopNav() {
                             <div className="absolute left-0 mt-2 w-72 z-50 bg-white/95 backdrop-blur-xl border border-green-200/70 rounded-2xl shadow-2xl ring-1 ring-green-300/40 p-4 hidden group-hover:block">
                                 <div className="text-xs font-semibold text-green-600 mb-2">Corporate Profile</div>
                                 <div className="flex flex-col gap-1">
-                                    {role === 'corporate' && <NavLink to="/profile/company-details" className={linkClass}>Company Details Form</NavLink>}
-                                    {/* NGO should only see showcase */}
+                                    {/* Company details form removed - only showcase remains */}
                                     <NavLink to="/profile/company-showcase" className={linkClass}>Company Details Showcase</NavLink>
                                 </div>
                             </div>

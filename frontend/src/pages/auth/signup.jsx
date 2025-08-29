@@ -123,6 +123,12 @@ export default function SignupPage() {
         window.location.href = '/ngo-onboarding'
         return
       }
+      // If corporate role, send to company details form first
+      if ((form.role || '').toLowerCase() === 'corporate') {
+        localStorage.setItem('newCorporateUser', 'true')
+        window.location.href = '/profile/company-details'
+        return
+      }
       setSuccess(true)
     } catch (err) {
       setError(err.message)

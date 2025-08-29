@@ -50,12 +50,31 @@ import FeedbackPage from './pages/support/feedback/feedback.jsx'
 
 import { isAuthenticated } from './lib/auth'
 import LogoutPage from './pages/auth/Logout.jsx'
+import RouteGuard from './components/RouteGuard.jsx'
 
 function RequireAuth() {
   if (!isAuthenticated()) {
     return <Navigate to="/login" replace />
   }
   return <Outlet />
+}
+
+// Custom layout component that conditionally renders header
+function ConditionalAppLayout() {
+  // Check if user is a new corporate user
+  const isNewCorporateUser = localStorage.getItem('newCorporateUser') === 'true'
+  
+  if (isNewCorporateUser) {
+    // For new corporate users, render without header
+    return (
+      <div className="min-h-screen font-sans overflow-x-hidden">
+        <Outlet />
+      </div>
+    )
+  }
+  
+  // For existing users, render with full header
+  return <AppLayout />
 }
 
 export default function App() {
@@ -70,9 +89,9 @@ export default function App() {
       {/* NGO onboarding (pre-access) */}
       <Route path="/ngo-onboarding" element={<NgoOnboardingPage />} />
 
-      {/* App routes with universal sidebar */}
+      {/* App routes with conditional header rendering */}
       <Route element={<RequireAuth />}>
-        <Route element={<AppLayout />}>
+        <Route element={<RouteGuard><ConditionalAppLayout /></RouteGuard>}>
         {/* 🏠 Corporate Dashboard (Main Landing) */}
         <Route path="/dashboard" element={<DashboardPage />} />
 
