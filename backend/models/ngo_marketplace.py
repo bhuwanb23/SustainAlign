@@ -70,45 +70,60 @@ class NGOProfile(db.Model):
             self.primary_sectors = json.dumps(sectors_list)
 
     def get_primary_sectors(self):
-        if self.primary_sectors:
+        if not self.primary_sectors:
+            return []
+        try:
             return json.loads(self.primary_sectors)
-        return []
+        except Exception:
+            return []
 
     def set_sdg_focus(self, sdg_list):
         if isinstance(sdg_list, list):
             self.sdg_focus = json.dumps(sdg_list)
 
     def get_sdg_focus(self):
-        if self.sdg_focus:
+        if not self.sdg_focus:
+            return []
+        try:
             return json.loads(self.sdg_focus)
-        return []
+        except Exception:
+            return []
 
     def set_geographic_focus(self, regions_list):
         if isinstance(regions_list, list):
             self.geographic_focus = json.dumps(regions_list)
 
     def get_geographic_focus(self):
-        if self.geographic_focus:
+        if not self.geographic_focus:
+            return []
+        try:
             return json.loads(self.geographic_focus)
-        return []
+        except Exception:
+            return []
 
     def set_funding_sources(self, sources_list):
         if isinstance(sources_list, list):
             self.funding_sources = json.dumps(sources_list)
 
     def get_funding_sources(self):
-        if self.funding_sources:
+        if not self.funding_sources:
+            return []
+        try:
             return json.loads(self.funding_sources)
-        return []
+        except Exception:
+            return []
 
     def set_documents(self, doc_urls):
         if isinstance(doc_urls, list):
             self.documents = json.dumps(doc_urls)
 
     def get_documents(self):
-        if self.documents:
+        if not self.documents:
+            return []
+        try:
             return json.loads(self.documents)
-        return []
+        except Exception:
+            return []
 
     def to_summary(self) -> dict:
         return {

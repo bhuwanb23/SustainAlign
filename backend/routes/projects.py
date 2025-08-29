@@ -1,10 +1,24 @@
 from flask import Blueprint, jsonify, request, current_app
 from models import db, User, Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, Company, NGORiskAssessment, ApprovalRequest, ApprovalStep, ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal, ProjectTrackingInfo, ProjectTimelineEntry, ReportJob, ReportArtifact, DecisionRationale, RationaleNote, AuditEvent, NGOImpactEvent, NGODocument, NGOTransparencyReport, NGOCertificate, NGOTestimonial
+from sqlalchemy import text
+from sqlalchemy.exc import OperationalError
 from utils import decode_token
 import json
 from datetime import datetime
 
 projects_bp = Blueprint('projects', __name__)
+def ensure_column_exists(table_name: str, column_name: str, column_sql_type: str):
+    try:
+        inspector = db.inspect(db.engine)
+        cols = {c['name'] for c in inspector.get_columns(table_name)}
+        if column_name in cols:
+            return
+        with db.engine.begin() as conn:
+            conn.execute(text(f"ALTER TABLE {table_name} ADD COLUMN {column_name} {column_sql_type}"))
+        current_app.logger.info(f"Added column {table_name}.{column_name}")
+    except Exception as e:
+        current_app.logger.warning(f"ensure_column_exists failed for {table_name}.{column_name}: {e}")
+
 
 
 def get_current_user():
@@ -304,6 +318,73 @@ def create_audit_event():
 
 
 # NGO marketplace endpoints (public)
+@projects_bp.get('/ngos')
+def list_ngos():
+    try:
+        ensure_column_exists('ngo_profiles', 'about', 'TEXT')
+        # sanity check
+        _ = db.inspect(db.engine).get_columns('ngo_profiles')
+        rows = NGOProfile.query.order_by(NGOProfile.id.desc()).limit(200).all()
+        return jsonify([r.to_summary() for r in rows])
+    except OperationalError as oe:
+        # Fallback path if column still missing: query minimal fields via raw SQL
+        msg = str(oe)
+        if 'no such column: ngo_profiles.about' in msg:
+            try:
+                ensure_column_exists('ngo_profiles', 'about', 'TEXT')
+                # raw select limited fields
+                sql = text("""
+                    SELECT id, name, city, state, country, rating, verification_badge, primary_sectors, logo_url, profile_image_url, total_projects_completed, total_beneficiaries_reached
+                    FROM ngo_profiles
+                    ORDER BY id DESC LIMIT 200
+                """)
+                result = db.session.execute(sql).mappings().all()
+                def parse_list(v):
+                    try:
+                        import json as _json
+                        return _json.loads(v) if v else []
+                    except Exception:
+                        return []
+                payload = []
+                for r in result:
+                    payload.append({
+                        'id': r['id'],
+                        'name': r['name'],
+                        'location': { 'city': r['city'], 'state': r['state'], 'country': r['country'] },
+                        'rating': r['rating'],
+                        'verificationBadge': r['verification_badge'],
+                        'sectors': parse_list(r['primary_sectors']),
+                        'logoUrl': r['logo_url'],
+                        'profileImageUrl': r['profile_image_url'],
+                        'projectsCompleted': r['total_projects_completed'],
+                        'beneficiariesReached': r['total_beneficiaries_reached'],
+                    })
+                return jsonify(payload)
+            except Exception as e2:
+                current_app.logger.error(f"/api/ngos raw fallback failed: {e2}")
+                return jsonify({'error': 'failed', 'detail': str(e2)}), 500
+        current_app.logger.error(f"/api/ngos operational error: {oe}")
+        return jsonify({'error': 'failed', 'detail': msg}), 500
+    except Exception as e:
+        current_app.logger.error(f"/api/ngos failed: {e}")
+        return jsonify({'error': 'failed', 'detail': str(e)}), 500
+
+
+@projects_bp.get('/ngos/<int:ngo_id>')
+def get_ngo(ngo_id: int):
+    try:
+        ensure_column_exists('ngo_profiles', 'about', 'TEXT')
+        _ = db.inspect(db.engine).get_columns('ngo_profiles')
+        ngo = NGOProfile.query.filter_by(id=ngo_id).first()
+        if not ngo:
+            return jsonify({'error': 'NGO not found'}), 404
+        return jsonify(ngo.to_detail())
+    except Exception as e:
+        current_app.logger.error(f"/api/ngos/{ngo_id} failed: {e}")
+        if current_app.debug:
+            return jsonify({'error': 'failed', 'detail': str(e)}), 500
+        return jsonify({'error': 'failed'}), 500
+
 @projects_bp.get('/ngos/<int:ngo_id>/impact-timeline')
 def ngo_impact_timeline(ngo_id: int):
     rows = NGOImpactEvent.query.filter_by(ngo_id=ngo_id).order_by(NGOImpactEvent.date.asc()).all()
@@ -776,58 +857,5 @@ def apply_to_project(project_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': f'Failed to submit application: {str(e)}'}), 500
-
-
-@projects_bp.get('/ngos')
-def list_ngos():
-    """Get all NGO profiles"""
-    user = get_current_user()
-    if not user:
-        return jsonify({'error': 'Unauthorized'}), 401
-    
-    # Get query parameters for filtering
-    sector = request.args.get('sector')
-    sdg_focus = request.args.get('sdg_focus')
-    location = request.args.get('location')
-    rating = request.args.get('rating')
-    
-    # Start with base query
-    query = NGOProfile.query
-    
-    # Apply filters
-    if sector:
-        query = query.filter(NGOProfile.primary_sectors.contains(sector))
-    if sdg_focus:
-        query = query.filter(NGOProfile.sdg_focus.contains(str(sdg_focus)))
-    if location:
-        query = query.filter(
-            (NGOProfile.city.contains(location)) |
-            (NGOProfile.state.contains(location)) |
-            (NGOProfile.country.contains(location))
-        )
-    if rating:
-        query = query.filter(NGOProfile.rating >= int(rating))
-    
-    # Get NGOs
-    ngos = query.order_by(NGOProfile.rating.desc()).all()
-    
-    return jsonify({
-        'ngos': [ngo.to_dict() for ngo in ngos],
-        'total': len(ngos)
-    })
-
-
-@projects_bp.get('/ngos/<int:ngo_id>')
-def get_ngo(ngo_id):
-    """Get specific NGO profile"""
-    user = get_current_user()
-    if not user:
-        return jsonify({'error': 'Unauthorized'}), 401
-    
-    ngo = NGOProfile.query.get(ngo_id)
-    if not ngo:
-        return jsonify({'error': 'NGO not found'}), 404
-    
-    return jsonify(ngo.to_dict())
 
 

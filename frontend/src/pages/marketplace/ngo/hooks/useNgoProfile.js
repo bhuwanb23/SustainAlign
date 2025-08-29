@@ -1,8 +1,29 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { apiGet } from '../../../../lib/api'
 
 export default function useNgoProfile() {
   const [activeTab, setActiveTab] = useState('impact')
   const [selectedNgo, setSelectedNgo] = useState(null)
+  const [ngos, setNgos] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    let mounted = true
+    ;(async () => {
+      try {
+        const data = await apiGet('/api/ngos')
+        if (!mounted) return
+        setNgos(Array.isArray(data) ? data : [])
+      } catch (e) {
+        if (!mounted) return
+        setError('Failed to load NGOs')
+      } finally {
+        if (mounted) setLoading(false)
+      }
+    })()
+    return () => { mounted = false }
+  }, [])
 
   const header = {
     logo: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/c7ce476191-96e2094d5a9cd6b9ed7a.png',
@@ -99,25 +120,21 @@ export default function useNgoProfile() {
     },
   ]
 
-  const list = [
-    {
-      id: 'n1', icon: '🌱', name: 'GreenEarth Foundation', sector: 'Environment', location: 'Bangalore, IN', rating: 4.7,
-      focus: ['Climate', 'Reforestation', 'Water'],
-      summary: 'Driving climate resilience through reforestation, water conservation, and community programs.'
-    },
-    {
-      id: 'n2', icon: '🎓', name: 'EduCare Trust', sector: 'Education', location: 'Pune, IN', rating: 4.5,
-      focus: ['Digital Literacy', 'Girl Child', 'Skilling'],
-      summary: 'Improving education outcomes via digital access and teacher training.'
-    },
-    {
-      id: 'n3', icon: '💧', name: 'JalSeva', sector: 'Water & Sanitation', location: 'Hyderabad, IN', rating: 4.3,
-      focus: ['WASH', 'Rural'],
-      summary: 'Ensuring safe drinking water and sanitation for rural communities.'
-    }
-  ]
+  const list = useMemo(() => {
+    if (!ngos || ngos.length === 0) return []
+    return ngos.map(n => ({
+      id: n.id,
+      icon: '🌱',
+      name: n.name,
+      sector: (n.sectors && n.sectors[0]) || '',
+      location: [n.location?.city, n.location?.state, n.location?.country].filter(Boolean).join(', '),
+      rating: n.rating || null,
+      focus: n.sectors || [],
+      summary: n.about || ''
+    }))
+  }, [ngos])
 
-  return { activeTab, setActiveTab, selectedNgo, setSelectedNgo, list, header, hero, impactTimeline, documents, transparency, certificates, testimonials }
+  return { activeTab, setActiveTab, selectedNgo, setSelectedNgo, list, header, hero, impactTimeline, documents, transparency, certificates, testimonials, loading, error }
 }
 
 
