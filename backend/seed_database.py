@@ -103,7 +103,7 @@ def seed_database():
         
         # 2. Seed Companies and related data
         print("   🏢 Seeding companies and related data...")
-        company_data = sample_data.get('company_details', {})
+        company_data = sample_data.get('companies', {})
         
         if 'companies' in company_data:
             for company_data_item in company_data['companies']:

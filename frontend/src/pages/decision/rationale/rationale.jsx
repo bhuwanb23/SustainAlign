@@ -10,11 +10,16 @@ export default function RecommendationRationalePage() {
     loading, 
     error, 
     isGenerating,
-    generateAIRationaleForCompany 
+    generateAIRationaleForCompany,
+    resetAutoGeneration
   } = useRationale()
 
   const handleGenerateAI = async () => {
     try {
+      // If we already have a rationale, reset auto-generation state to allow refresh
+      if (currentRationale) {
+        resetAutoGeneration()
+      }
       await generateAIRationaleForCompany()
     } catch (error) {
       console.error('Failed to generate AI rationale:', error)
@@ -36,7 +41,14 @@ export default function RecommendationRationalePage() {
               </div>
               <div>
                 <h3 className="text-sm font-medium text-blue-800">AI-Powered Project Matching</h3>
-                <p className="text-sm text-blue-600">Get intelligent project recommendations based on your company profile</p>
+                <p className="text-sm text-blue-600">
+                  {isGenerating 
+                    ? 'Automatically analyzing your company profile and available projects...'
+                    : currentRationale 
+                      ? 'AI analysis complete! Review your personalized project recommendations below.'
+                      : 'Get intelligent project recommendations based on your company profile'
+                  }
+                </p>
               </div>
             </div>
             <button
@@ -51,12 +63,12 @@ export default function RecommendationRationalePage() {
               {isGenerating ? (
                 <div className="flex items-center">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Generating...
+                  Analyzing...
                 </div>
               ) : (
                 <div className="flex items-center">
                   <span className="mr-2">✨</span>
-                  Generate AI Analysis
+                  {currentRationale ? 'Refresh Analysis' : 'Generate AI Analysis'}
                 </div>
               )}
             </button>
@@ -72,6 +84,19 @@ export default function RecommendationRationalePage() {
           </div>
         )}
 
+        {/* Initial Loading State */}
+        {loading && !isGenerating && !currentRationale && (
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+            <div className="flex items-center">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600 mr-3"></div>
+              <div>
+                <h4 className="text-sm font-medium text-gray-800">Loading AI Matching System</h4>
+                <p className="text-sm text-gray-600">Preparing to analyze your company profile...</p>
+              </div>
+            </div>
+          </div>
+        )}
+        
         {/* AI Generation Status */}
         {isGenerating && (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
@@ -79,8 +104,44 @@ export default function RecommendationRationalePage() {
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-3"></div>
               <div>
                 <h4 className="text-sm font-medium text-blue-800">AI Analysis in Progress</h4>
-                <p className="text-sm text-blue-600">Analyzing company profile and available projects...</p>
+                <p className="text-sm text-blue-600">
+                  {!currentRationale 
+                    ? 'Automatically analyzing your company profile and available projects...'
+                    : 'Refreshing AI analysis with latest data...'
+                  }
+                </p>
+                <p className="text-xs text-blue-500 mt-1">This may take a few moments</p>
               </div>
+            </div>
+          </div>
+        )}
+        
+        {/* Auto-Generation Success Message */}
+        {!isGenerating && currentRationale && !loading && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                  <span className="text-green-600 text-sm">✅</span>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-green-800">AI Analysis Complete!</h4>
+                  <p className="text-sm text-green-600">
+                    Your personalized project recommendations are ready. Review the analysis below.
+                  </p>
+                  {currentRationale.created_at && (
+                    <p className="text-xs text-green-500 mt-1">
+                      Generated on {new Date(currentRationale.created_at).toLocaleString()}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <button
+                onClick={handleGenerateAI}
+                className="text-xs text-green-600 hover:text-green-800 underline"
+              >
+                Refresh Analysis
+              </button>
             </div>
           </div>
         )}

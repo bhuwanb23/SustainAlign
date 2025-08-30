@@ -134,7 +134,7 @@ SustainAlign is an AI-powered CSR-focused platform designed to connect NGO proje
 
 ### Regional Impact Distribution
 <div align="center">
-<img src="docs/images/India%20Impact%20areas%202.png.jpg" alt="Regional Impact Areas" width="600" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin: 20px 0;" />
+<img src="docs/images/India%20Impact%20areas%202.png.jpg" alt="Regional Impact Areas" width="300" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin: 20px 0;" />
 </div>
 
 **Geographic Coverage**:
@@ -149,7 +149,7 @@ SustainAlign is an AI-powered CSR-focused platform designed to connect NGO proje
 ## 🔗 User Connections & Ecosystem
 
 <div align="center">
-<img src="docs/images/users_connections.png" alt="User Connections" width="600" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin: 20px 0;" />
+<img src="docs/images/users_connections.png" alt="User Connections" width="300" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin: 20px 0;" />
 </div>
 
 **Platform Ecosystem**:

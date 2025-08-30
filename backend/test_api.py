@@ -28,7 +28,7 @@ def test_signup():
     print("\n🔍 Testing user signup...")
     data = {
         "email": "test@example.com",
-        "password": "test123",
+        "password": "test123",                                                                  
         "role": "corporate"
     }
     response = requests.post(f"{BASE_URL}/auth/signup", json=data)

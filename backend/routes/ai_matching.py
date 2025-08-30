@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from ai_models.ai_matching_service import AIMatchingService
 from models.base import db
+from functools import wraps
 import logging
 
 logger = logging.getLogger(__name__)
@@ -9,6 +10,7 @@ ai_matching_bp = Blueprint('ai_matching', __name__, url_prefix='/api/ai-matching
 
 def require_ai_auth(f):
     """Simple authentication decorator - replace with proper auth in production"""
+    @wraps(f)
     def decorated_function(*args, **kwargs):
         # For development, assume user is authenticated
         # In production, implement proper JWT token validation
