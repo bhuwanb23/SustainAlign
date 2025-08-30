@@ -1,0 +1,18 @@
+# Flask Configuration
+SECRET_KEY=your-secret-key-here
+FLASK_ENV=development
+FLASK_DEBUG=True
+
+# Database Configuration
+DATABASE_URL=sqlite:///sustainalign.db
+
+# CORS Configuration
+CORS_ORIGIN=http://localhost:5173
+
+# OpenRouter AI Configuration
+OPENROUTER_API_KEY=your-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
+SITE_URL=https://sustainalign.com
+SITE_NAME=SustainAlign
+
+# Optional: Other AI Models (you can change the model in ai_model.py)
+# Available models: qwen/qwen3-coder:free, anthropic/claude-3.5-sonnet, openai/gpt-4, etc.

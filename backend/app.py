@@ -9,6 +9,7 @@ from routes.reports import reports_bp
 from routes.profile import profile_bp
 from routes.comparisons import comparisons_bp
 from routes.approvals import approvals_bp
+from routes.ai_matching import ai_matching_bp
 
 
 def create_app() -> Flask:
@@ -33,10 +34,11 @@ def create_app() -> Flask:
 	# Blueprints (API)
 	app.register_blueprint(auth_bp, url_prefix="/api/auth")
 	app.register_blueprint(profile_bp, url_prefix="/api/profile")
-	app.register_blueprint(projects_bp, url_prefix="/api")
+	app.register_blueprint(projects_bp, url_prefix="/api/projects")
 	app.register_blueprint(reports_bp, url_prefix="/api/reports")
-	app.register_blueprint(comparisons_bp, url_prefix="/api")
-	app.register_blueprint(approvals_bp, url_prefix="/api")
+	app.register_blueprint(comparisons_bp, url_prefix="/api/comparisons")
+	app.register_blueprint(approvals_bp, url_prefix="/api/approvals")
+	app.register_blueprint(ai_matching_bp)
 
 	# View pages
 	from routes.views import views_bp

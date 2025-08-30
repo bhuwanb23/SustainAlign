@@ -1,32 +1,34 @@
-# SustainAlign Backend (Flask)
+# SustainAlign Backend (Flask 3)
 
-A lightweight Flask API to support authentication and core endpoints for the SustainAlign hackathon app.
+A comprehensive Flask API supporting the complete SustainAlign CSR/ESG management platform with AI agents, comprehensive data models, and automated workflows.
 
-## Features
-- JWT authentication (signup, login, forgot-password stub)
-- SQLAlchemy models with SQLite by default
-- CORS enabled for local frontend
-- Health check endpoint
-- Comprehensive company profile management
-- CSR/ESG data management
-- Document upload support
-- Modular model structure for easy maintenance
+## 🌟 Features
+- **JWT Authentication** - Multi-role user management (corporate, ngo, admin, regulator)
+- **AI Agent Integration** - 6 specialized AI agents for CSR/ESG lifecycle management
+- **Comprehensive Data Models** - 25+ models covering projects, companies, NGOs, impact tracking
+- **Sample Data Seeding** - Rich, realistic data for development and demos
+- **Modular Architecture** - Blueprint-based API organization with clean separation
+- **Advanced Analytics** - Impact metrics, risk scoring, compliance tracking
+- **Document Management** - File uploads, compliance documents, NGO certificates
+- **Real-time Monitoring** - Project tracking, alerts, impact dashboards
 
-## Quick start
+## 🚀 Quick Start
 
-1. Create a virtual environment and install deps
-
+1. **Create and activate virtual environment**
 ```bash
 python -m venv .venv
-./venv/Scripts/activate  # Windows PowerShell
+.venv\Scripts\activate  # Windows PowerShell
+source .venv/bin/activate  # macOS/Linux
+```
+
+2. **Install dependencies**
+```bash
 pip install -r requirements.txt
 ```
 
-2. Configure environment
-
+3. **Configure environment**
 Create a `.env` file with:
-
-```
+```env
 FLASK_ENV=development
 SECRET_KEY=change-this-secret
 CORS_ORIGIN=http://localhost:5173
@@ -35,106 +37,213 @@ DATABASE_URL=sqlite:///sustainalign.db
 PASSWORD_SALT=please-change-salt
 ```
 
-3. Setup Database
-
+4. **Setup Database with Sample Data**
 ```bash
-# Create all database tables
+# Seed database with comprehensive sample data
+python seed_database.py
+
+# Alternative: Use migrate.py for basic setup
 python migrate.py create
-
-# Create sample data for testing
 python migrate.py sample
-
-# Verify database setup
-python migrate.py info
 ```
 
-4. Run the server
-
+5. **Run the server**
 ```bash
 python app.py
 ```
 
 API will be available at `http://localhost:5000`.
 
-## Database Management
+## 🗄️ Database Management
 
-### Initial Setup
+### Sample Data Seeding (Recommended)
+```bash
+# Comprehensive seeding with realistic data
+python seed_database.py
+```
 
+This creates:
+- **13 Users** (corporate, NGO, admin, regulator roles)
+- **5 Companies** with complete profiles
+- **15+ Projects** with milestones and impact reports
+- **NGO Profiles** with transparency reports and certificates
+- **AI Matches** and approval workflows
+- **Impact Metrics** and monitoring data
+- **Risk Assessments** and compliance tracking
+
+### Basic Database Operations
 ```bash
 # Create all tables from models
 python migrate.py create
 
-# Create sample data
+# Create basic sample data
 python migrate.py sample
 
 # Show database information
 python migrate.py info
-```
-
-### Database Operations
-
-```bash
-# Drop all tables (DANGEROUS - deletes all data)
-python migrate.py drop
 
 # Reset everything (drop + create + sample data)
 python migrate.py reset
-
-# Show current database status
-python migrate.py info
 ```
 
-### Adding New Tables/Models
+## 🏗️ Model Architecture
 
-1. **Create new model file** in `models/` folder:
-```python
-# models/new_feature.py
-from datetime import datetime
-from .base import db
+### Core Models (25+ Models)
 
-class NewModel(db.Model):
-    __tablename__ = 'new_models'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'created_at': self.created_at.isoformat(),
-        }
-```
+#### **User & Authentication**
+- `User` - Multi-role authentication (corporate, ngo, admin, regulator)
+- `UserRole` - Company-specific role assignments
 
-2. **Update `models/__init__.py`**:
-```python
-from .new_feature import NewModel
+#### **Company Management**
+- `Company` - Main company information
+- `CompanyBranch` - Branch locations and details
+- `CSRContact` - CSR contact person information
+- `Budget` - CSR budget with flexible splits
+- `FocusArea` - ESG goals and SDG priorities
+- `NGOPreference` - NGO partnership preferences
+- `AIConfig` - AI agent optimization settings
 
-__all__ = [
-    # ... existing models
-    'NewModel'
-]
-```
+#### **Project & NGO Management**
+- `Project` - CSR project details with SDG alignment
+- `ProjectMilestone` - Project timeline and milestones
+- `ProjectApplication` - Project funding applications
+- `ProjectImpactReport` - Impact measurement and reporting
+- `NGOProfile` - Comprehensive NGO information
+- `NGOImpactEvent` - NGO impact tracking
+- `NGODocument` - NGO certificates and documents
+- `NGOTestimonial` - NGO success stories
 
-3. **Create new tables**:
+#### **AI & Decision Support**
+- `AIMatch` - Company-project alignment scoring
+- `ApprovalRequest` - Project approval workflows
+- `ApprovalStep` - Multi-step approval process
+- `DecisionRationale` - AI decision explanations
+- `RationaleNote` - Detailed reasoning notes
+
+#### **Monitoring & Impact**
+- `ImpactMetricSnapshot` - Real-time impact data
+- `ImpactTimeSeries` - Historical impact trends
+- `ImpactRegionStat` - Geographic impact distribution
+- `ImpactGoal` - Impact targets and KPIs
+- `ProjectTrackingInfo` - Real-time project monitoring
+- `ProjectTimelineEntry` - Project timeline events
+
+#### **Risk & Compliance**
+- `NGORiskAssessment` - NGO credibility scoring
+- `AuditEvent` - Compliance audit trail
+- `ComplianceDocument` - Policy and certificate files
+
+#### **Reporting & Analytics**
+- `ReportJob` - Automated report generation
+- `ReportArtifact` - Generated report files
+
+## 🔌 API Endpoints
+
+### **Authentication & Users**
+- `POST /api/auth/signup` - User registration
+- `POST /api/auth/login` - User authentication
+- `POST /api/auth/forgot-password` - Password recovery
+- `GET /api/profile/me` - Current user profile
+
+### **Company & Profile Management**
+- `GET /api/profile/companies` - List user companies
+- `GET /api/profile/companies/<id>` - Company details
+- `POST /api/profile/companies` - Create company profile
+- `PUT /api/profile/companies/<id>` - Update company profile
+- `POST /api/profile/companies/<id>/documents` - Upload documents
+
+### **Project Discovery & Management**
+- `GET /api/projects` - List/filter projects (public)
+- `POST /api/projects` - Create project (guest fallback)
+- `PUT /api/projects/:id` - Update project
+- `GET /api/projects/:id/milestones` - Project milestones
+- `GET /api/projects/:id/impact` - Project impact data
+
+### **AI Matching & Alignment**
+- `GET /api/ai-matches` - Company-project alignment scores
+- `POST /api/ai-matches` - Generate new matches
+- `GET /api/ai-matches/company/:id` - Company-specific matches
+
+### **Approval Workflows**
+- `GET /api/approvals` - List approval requests
+- `GET /api/approvals/:id` - Approval details
+- `POST /api/approvals/:id/steps/:step_id/status` - Update approval step
+- `GET /api/approvals/:id/workflow` - Workflow timeline
+
+### **Impact Monitoring**
+- `GET /api/impact/snapshots` - Impact metric snapshots
+- `GET /api/impact/time-series` - Historical impact data
+- `GET /api/impact/regions` - Geographic impact stats
+- `GET /api/impact/goals` - Impact targets and KPIs
+
+### **NGO Marketplace**
+- `GET /api/ngos` - NGO profiles (authenticated)
+- `GET /api/ngos/:id` - NGO details
+- `GET /api/ngos/:id/impact` - NGO impact events
+- `GET /api/ngos/:id/documents` - NGO certificates
+
+### **Risk Assessment**
+- `GET /api/risk/assessments` - NGO risk assessments
+- `GET /api/risk/assessments/:id` - Risk assessment details
+- `POST /api/risk/assessments` - Generate risk assessment
+
+### **Reporting & Compliance**
+- `POST /api/reports/generate` - Generate compliance reports
+- `GET /api/reports/jobs` - Report generation jobs
+- `GET /api/reports/artifacts` - Generated reports
+- `GET /api/audit/events` - Compliance audit trail
+
+## 📊 Sample Data Structure
+
+### **Users & Roles**
+- **Corporate Users**: 5 companies with sustainability officers
+- **NGO Representatives**: 5 NGOs with project portfolios
+- **Admin Users**: Platform administrators
+- **Regulators**: Government auditors and inspectors
+
+### **Projects & Impact**
+- **Education Projects**: Digital literacy, rural education
+- **Environmental Projects**: Clean water, tree planting, renewable energy
+- **Healthcare Projects**: Medical camps, health awareness
+- **Women Empowerment**: Skills training, entrepreneurship
+
+### **AI Matching Data**
+- **Alignment Scores**: 0-100% company-project fit
+- **Risk Assessments**: NGO credibility and financial health
+- **Impact Predictions**: Expected outcomes and KPIs
+
+### **Workflow Data**
+- **Approval Requests**: Multi-step approval processes
+- **Decision Rationales**: AI explanations for recommendations
+- **Audit Trails**: Complete compliance tracking
+
+## 🔧 Development Workflow
+
+### **Adding New Models**
+1. **Create model file** in `models/` folder
+2. **Update `models/__init__.py`** with new imports
+3. **Add sample data** in `sample_data/` folder
+4. **Update `seed_database.py`** for seeding
+5. **Create tables**: `python seed_database.py`
+
+### **Adding New API Endpoints**
+1. **Create route file** in `routes/` folder
+2. **Register blueprint** in `app.py`
+3. **Add authentication** and validation
+4. **Test endpoints** with `test_api.py`
+
+### **Database Schema Updates**
 ```bash
-python migrate.py create
-```
+# For new tables (preserves existing data)
+python seed_database.py
 
-### Database Schema Updates
-
-For existing databases with data:
-
-```bash
-# Create new tables (preserves existing data)
-python migrate.py create
-
-# If you need to reset everything
+# For complete reset
 python migrate.py reset
 ```
 
-### Testing Database
+## 🧪 Testing
 
+### **API Testing**
 ```bash
 # Run comprehensive API tests
 python test_api.py
@@ -143,246 +252,93 @@ python test_api.py
 curl -X GET http://localhost:5000/api/health
 ```
 
-## Model Structure
+### **Sample Data Testing**
+After seeding, test with:
+- **Corporate Login**: `admin@techcorp.com` / `admin123`
+- **NGO Login**: `director@womenempowerment.org` / `women123`
+- **Admin Login**: `admin@sustainalign.local` / `admin123`
 
-The backend uses a modular model structure:
+## 🚀 Production Deployment
 
-```
-models/
-├── __init__.py          # Main import file
-├── base.py              # SQLAlchemy database instance
-├── user.py              # User authentication model
-├── company_details.py   # All company-related models
-└── README.md           # Detailed model documentation
-```
+### **Environment Setup**
+- Use PostgreSQL/MySQL instead of SQLite
+- Set strong `SECRET_KEY` and `PASSWORD_SALT`
+- Configure proper `CORS_ORIGIN` for production domain
+- Enable HTTPS and security headers
 
-### Core Models
-- **User** - User authentication and basic profile
-- **Company** - Main company information and relationships
-- **CompanyBranch** - Company branch locations
-- **CSRContact** - CSR contact person details
-- **Budget** - CSR budget and financial information
-- **FocusArea** - ESG goals and SDG priorities
-- **ComplianceDocument** - Policy, report, and certificate files
-- **NGOPreference** - NGO partnership preferences
-- **AIConfig** - AI optimization settings
-- **UserRole** - Company user roles and access
+### **Database Migration**
+1. **Backup existing data**
+2. **Update models** and dependencies
+3. **Run migrations** carefully
+4. **Verify data integrity**
 
-## Endpoints
+### **Security Considerations**
+- Change all default secrets
+- Implement rate limiting
+- Add proper logging and monitoring
+- Use cloud storage for file uploads
+- Regular security audits
 
-### Authentication
-- `GET /api/health` – health check
-- `POST /api/auth/signup` – body: `{ email, password, role }`
-- `POST /api/auth/login` – body: `{ email, password }`
-- `POST /api/auth/forgot-password` – body: `{ email }` (stub only)
-
-### Profile Management
-- `GET /api/profile/me` – get current user profile
-- `GET /api/profile/companies` – get all companies for current user
-- `GET /api/profile/companies/<id>` – get specific company details
-- `POST /api/profile/companies` – create new company profile
-- `PUT /api/profile/companies/<id>` – update company profile
-- `DELETE /api/profile/companies/<id>` – delete company profile
-- `POST /api/profile/companies/<id>/documents` – upload compliance document
-
-## API Request/Response Examples
-
-### Create Company Profile
-```json
-POST /api/profile/companies
-Authorization: Bearer <jwt_token>
-
-{
-  "company": {
-    "companyName": "TechCorp Solutions",
-    "logoFile": "https://example.com/logo.png",
-    "registrationId": "TECH001",
-    "industry": "Technology",
-    "hq": {
-      "country": "India",
-      "state": "Karnataka",
-      "city": "Bangalore"
-    },
-    "branches": [
-      {
-        "country": "India",
-        "state": "Maharashtra",
-        "city": "Mumbai"
-      }
-    ]
-  },
-  "contact": {
-    "csrContactName": "Priya Sharma",
-    "csrContactRole": "CSR Manager",
-    "csrEmail": "priya@techcorp.com",
-    "csrPhone": "+91-9876543210",
-    "website": "https://techcorp.com"
-  },
-  "budget": {
-    "amount": 5000000,
-    "currency": "INR",
-    "projectSize": "Medium",
-    "splits": {
-      "education": 30,
-      "healthcare": 25,
-      "environment": 45
-    }
-  },
-  "focus": {
-    "prioritySdgs": ["Quality Education", "Climate Action", "Industry & Innovation"],
-    "esgGoals": "Net Zero by 2035, Women in Leadership 40% by 2030",
-    "themes": "Digital literacy, Renewable energy",
-    "targetYear": "2030",
-    "reportingStandard": "GRI"
-  },
-  "ngoPrefs": {
-    "ngoSize": "Mid-level",
-    "partnershipModel": "Funding + Execution",
-    "regions": ["Local", "National"],
-    "spendHistory": "Previous CSR spend on education projects"
-  },
-  "ai": {
-    "optimizeFor": ["Impact", "Budget efficiency"],
-    "riskAppetite": "Medium",
-    "alignmentMode": "Strict compliance",
-    "integrations": ["SAP", "Workday"]
-  },
-  "access": {
-    "roles": [
-      {
-        "email": "admin@techcorp.com",
-        "role": "Admin"
-      },
-      {
-        "email": "csr@techcorp.com",
-        "role": "CSR Manager"
-      }
-    ]
-  }
-}
-```
-
-### Response
-```json
-{
-  "message": "Company profile created successfully",
-  "company": {
-    "id": 1,
-    "user_id": 1,
-    "company_name": "TechCorp Solutions",
-    "logo_url": "https://example.com/logo.png",
-    "registration_id": "TECH001",
-    "industry": "Technology",
-    "hq_country": "India",
-    "hq_state": "Karnataka",
-    "hq_city": "Bangalore",
-    "website": "https://techcorp.com",
-    "created_at": "2024-01-15T10:30:00",
-    "updated_at": "2024-01-15T10:30:00",
-    "branches": [...],
-    "csr_contact": {...},
-    "budget": {...},
-    "focus_area": {...},
-    "compliance_documents": [...],
-    "ngo_preferences": {...},
-    "ai_config": {...},
-    "user_roles": [...]
-  }
-}
-```
-
-## Project structure
+## 📁 Project Structure
 ```
 backend/
-├── app.py                 # app factory and blueprint registration
-├── models.py              # main models import (backward compatibility)
-├── utils.py               # hashing, JWT helpers
-├── migrate.py             # database migration and setup scripts
+├── app.py                 # App factory and blueprint registration
+├── models.py              # Main models import (backward compatibility)
+├── seed_database.py       # Comprehensive sample data seeding
+├── migrate.py             # Basic database migration scripts
 ├── test_api.py            # API testing script
 ├── requirements.txt       # Python dependencies
 ├── models/                # Modular model structure
 │   ├── __init__.py        # Model exports
 │   ├── base.py            # SQLAlchemy database instance
 │   ├── user.py            # User authentication model
-│   ├── company_details.py # All company-related models
-│   └── README.md          # Model documentation
+│   ├── company_details.py # Company and profile models
+│   ├── projects.py        # Project and NGO models
+│   ├── ai_matching.py     # AI matching and alignment
+│   ├── approval.py        # Approval workflows
+│   ├── impact.py          # Impact monitoring models
+│   ├── risk.py            # Risk assessment models
+│   ├── reporting.py       # Reporting and compliance
+│   └── tracker.py         # Project tracking models
+├── sample_data/           # Comprehensive sample data
+│   ├── __init__.py        # Sample data aggregator
+│   ├── user_sample.py     # User and role data
+│   ├── company_details_sample.py # Company profiles
+│   ├── projects_sample.py # Projects and NGOs
+│   ├── ai_matching_sample.py # AI matching data
+│   ├── approval_sample.py # Approval workflows
+│   ├── impact_sample.py   # Impact metrics
+│   ├── ngo_marketplace_sample.py # NGO marketplace
+│   ├── risk_sample.py     # Risk assessments
+│   ├── tracker_sample.py  # Project tracking
+│   └── reporting_sample.py # Reporting data
 ├── routes/                # API endpoints
-│   ├── auth.py            # authentication endpoints
-│   ├── profile.py         # company profile management
-│   ├── projects.py        # project management
-│   ├── reports.py         # reporting endpoints
-│   └── views.py           # view pages
+│   ├── auth.py            # Authentication endpoints
+│   ├── profile.py         # Company profile management
+│   ├── projects.py        # Project management
+│   ├── reports.py         # Reporting endpoints
+│   └── views.py           # Admin HTML views
 └── templates/             # HTML templates
 ```
 
-## Development Workflow
+## 🔍 Troubleshooting
 
-### Adding New Features
-
-1. **Create new model** (if needed):
-```bash
-# Add model to models/ folder
-# Update models/__init__.py
-python migrate.py create
-```
-
-2. **Add new routes**:
-```bash
-# Create new route file in routes/ folder
-# Register blueprint in app.py
-```
-
-3. **Test changes**:
-```bash
-python test_api.py
-```
-
-### Database Migrations
-
-```bash
-# For new tables
-python migrate.py create
-
-# For schema changes (reset everything)
-python migrate.py reset
-
-# For production (manual migration)
-# 1. Backup existing data
-# 2. Update models
-# 3. Run create command
-# 4. Restore data if needed
-```
-
-### Testing
-
-```bash
-# Run all tests
-python test_api.py
-
-# Test specific endpoints
-curl -X GET http://localhost:5000/api/health
-curl -X POST http://localhost:5000/api/auth/signup \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"test123","role":"corporate"}'
-```
-
-## Troubleshooting
-
-### Common Issues
+### **Common Issues**
 
 **Import Errors:**
 ```bash
-# Make sure you're in the backend directory
-cd backend
+# Ensure virtual environment is activated
+.venv\Scripts\activate  # Windows
+source .venv/bin/activate  # macOS/Linux
 
-# Check if virtual environment is activated
+# Check Python path
 which python  # Should show .venv/bin/python
 ```
 
 **Database Issues:**
 ```bash
 # Reset database completely
-python migrate.py reset
+python seed_database.py
 
 # Check database status
 python migrate.py info
@@ -390,34 +346,39 @@ python migrate.py info
 
 **API Errors:**
 ```bash
-# Check if server is running
+# Check server status
 curl http://localhost:5000/api/health
 
 # Check server logs
 python app.py
 ```
 
-### Sample Data
+### **Sample Data Issues**
+- Ensure all sample data files are present
+- Check database file permissions
+- Verify model relationships are correct
 
-After running `python migrate.py sample`, you can use:
-- **Email**: `demo@techcorp.com`
-- **Password**: `demo123`
+## 🌟 Key Benefits
 
-## Production Notes
+### **For Developers**
+- **Rich Sample Data**: Immediate testing and development
+- **Modular Architecture**: Easy to extend and maintain
+- **Comprehensive Models**: Covers entire CSR/ESG lifecycle
+- **AI Integration Ready**: Built for AI agent workflows
 
-- Change all default secrets and salts
-- Use proper database (PostgreSQL, MySQL) instead of SQLite
-- Implement proper file upload to cloud storage
-- Add rate limiting and security headers
-- Use environment variables for all configuration
-- Implement proper logging and monitoring
-- Add database backups and recovery procedures
+### **For Stakeholders**
+- **Realistic Demos**: Show platform capabilities immediately
+- **Complete Workflows**: End-to-end CSR management
+- **AI Insights**: Demonstrate AI agent value
+- **Compliance Ready**: Built for regulatory requirements
 
-## Development notes
-- The DB file `sustainalign.db` will be created automatically on first run.
-- Do not use static salts or dev secrets in production.
-- JSON fields are used for flexible data storage (SDGs, budget splits, etc.).
-- File uploads are placeholder implementations - integrate with cloud storage in production.
-- All endpoints require JWT authentication via Authorization header.
-- Cascade deletes ensure data integrity when companies are removed.
-- Modular model structure allows easy addition of new features.
+## 📚 Additional Resources
+
+- **Model Documentation**: `models/README.md`
+- **API Testing**: `test_api.py`
+- **Sample Data**: `sample_data/` folder
+- **Database Schema**: `PROJECT_MODELS_SUMMARY.md`
+
+---
+
+**Made with care for sustainability-minded teams 🌍**

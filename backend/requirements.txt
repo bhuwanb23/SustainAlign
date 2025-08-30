@@ -6,4 +6,5 @@ reportlab==4.2.2
 XlsxWriter==3.2.0
 Flask-SQLAlchemy==3.1.1
 SQLAlchemy==2.0.32
+requests==2.32.5
 
