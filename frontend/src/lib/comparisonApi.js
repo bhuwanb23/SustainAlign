@@ -3,7 +3,7 @@
  * Handles CRUD operations for comparisons and comparison items
  */
 
-const API_BASE = '/api'
+const API_BASE = '/api/comparisons'
 
 /**
  * Get all comparisons for the current user
@@ -20,7 +20,7 @@ export async function getComparisons() {
       headers['Authorization'] = `Bearer ${token}`
     }
     
-    const response = await fetch(`${API_BASE}/comparisons`, {
+    const response = await fetch(`${API_BASE}`, {
       headers
     })
     
@@ -51,7 +51,7 @@ export async function getComparison(comparisonId) {
       headers['Authorization'] = `Bearer ${token}`
     }
     
-    const response = await fetch(`${API_BASE}/comparisons/${comparisonId}`, {
+    const response = await fetch(`${API_BASE}/${comparisonId}`, {
       headers
     })
     
@@ -82,7 +82,7 @@ export async function createComparison(comparisonData) {
       headers['Authorization'] = `Bearer ${token}`
     }
     
-    const response = await fetch(`${API_BASE}/comparisons`, {
+    const response = await fetch(`${API_BASE}`, {
       method: 'POST',
       headers,
       body: JSON.stringify(comparisonData)
@@ -116,7 +116,7 @@ export async function updateComparison(comparisonId, updateData) {
       headers['Authorization'] = `Bearer ${token}`
     }
     
-    const response = await fetch(`${API_BASE}/comparisons/${comparisonId}`, {
+    const response = await fetch(`${API_BASE}/${comparisonId}`, {
       method: 'PUT',
       headers,
       body: JSON.stringify(updateData)
@@ -150,7 +150,7 @@ export async function deleteComparison(comparisonId) {
       headers['Authorization'] = `Bearer ${token}`
     }
     
-    const response = await fetch(`${API_BASE}/comparisons/${comparisonId}`, {
+    const response = await fetch(`${API_BASE}/${comparisonId}`, {
       method: 'DELETE',
       headers
     })
@@ -182,7 +182,7 @@ export async function addProjectToComparison(comparisonId, projectId, notes = ''
       headers['Authorization'] = `Bearer ${token}`
     }
     
-    const response = await fetch(`${API_BASE}/comparisons/${comparisonId}/projects`, {
+    const response = await fetch(`${API_BASE}/${comparisonId}/projects`, {
       method: 'POST',
       headers,
       body: JSON.stringify({
@@ -220,7 +220,7 @@ export async function removeProjectFromComparison(comparisonId, projectId) {
       headers['Authorization'] = `Bearer ${token}`
     }
     
-    const response = await fetch(`${API_BASE}/comparisons/${comparisonId}/projects/${projectId}`, {
+    const response = await fetch(`${API_BASE}/${comparisonId}/projects/${projectId}`, {
       method: 'DELETE',
       headers
     })
@@ -252,7 +252,7 @@ export async function updateProjectInComparison(comparisonId, projectId, updateD
       headers['Authorization'] = `Bearer ${token}`
     }
     
-    const response = await fetch(`${API_BASE}/comparisons/${comparisonId}/projects/${projectId}`, {
+    const response = await fetch(`${API_BASE}/${comparisonId}/projects/${projectId}`, {
       method: 'PUT',
       headers,
       body: JSON.stringify(updateData)

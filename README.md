@@ -26,7 +26,7 @@
 
 ## 🚀 Solution: AI-Agent Powered Platform
 
-SustainAlign uses **6 specialized AI agents** to automate and optimize the entire CSR/ESG lifecycle:
+SustainAlign is a Ai powered CSR focused platform which is design to connec the NGO projects with corporate companies to promote CSR in the environment. 
 
 ![Solution Features](docs/images/solution_features.png)
 

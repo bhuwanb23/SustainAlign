@@ -1,4 +1,4 @@
-const API_BASE_URL = '/api'
+const API_BASE_URL = '/api/projects'
 
 /**
  * Create a new project

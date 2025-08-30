@@ -106,7 +106,7 @@ const testConnection = {
       const response = await fetch('/api/ngos');
       const data = await response.json();
       console.log('✅ NGO profiles retrieved:', data);
-      return true;
+      return false;
     } catch (error) {
       console.error('❌ Get NGOs test failed:', error);
       return false;
