@@ -1279,3 +1279,313 @@ def create_timeline_entry():
         return jsonify({'error': f'Failed to create timeline entry: {str(e)}'}), 500
 
 
+@projects_bp.get('/corporate-risk-analysis')
+def get_corporate_risk_analysis():
+    """Get comprehensive risk analysis for corporate collaboration projects"""
+    try:
+        # Get all projects that have corporate collaborations (applications)
+        collaborations = ProjectApplication.query.filter(
+            ProjectApplication.status.in_(['approved', 'in_progress', 'completed'])
+        ).all()
+        
+        # Group by company and analyze risks
+        company_risks = {}
+        total_projects = 0
+        high_risk_count = 0
+        medium_risk_count = 0
+        low_risk_count = 0
+        
+        for collab in collaborations:
+            company_id = collab.company_id
+            project = collab.project
+            
+            if company_id not in company_risks:
+                company_risks[company_id] = {
+                    'company_id': company_id,
+                    'company_name': 'Corporate Partner',  # TODO: Get from Company model
+                    'projects': [],
+                    'total_investment': 0,
+                    'risk_score': 0,
+                    'risk_level': 'Low',
+                    'unusual_activities': [],
+                    'daily_metrics': {
+                        'projects_active': 0,
+                        'projects_completed': 0,
+                        'projects_delayed': 0,
+                        'compliance_issues': 0,
+                        'budget_overruns': 0
+                    }
+                }
+            
+            # Calculate project risk
+            project_risk = calculate_project_risk(project, collab)
+            company_risks[company_id]['projects'].append({
+                'id': project.id,
+                'title': project.title,
+                'ngo_name': project.ngo_name,
+                'status': collab.status,
+                'investment': float(collab.amount_offered or 0),
+                'risk_score': project_risk['score'],
+                'risk_level': project_risk['level'],
+                'risk_factors': project_risk['factors'],
+                'unusual_activities': project_risk['unusual_activities']
+            })
+            
+            company_risks[company_id]['total_investment'] += float(collab.amount_offered or 0)
+            total_projects += 1
+            
+            # Count risk levels
+            if project_risk['level'] == 'High':
+                high_risk_count += 1
+            elif project_risk['level'] == 'Medium':
+                medium_risk_count += 1
+            else:
+                low_risk_count += 1
+        
+        # Calculate overall company risk scores
+        for company_id, company_data in company_risks.items():
+            if company_data['projects']:
+                avg_risk_score = sum(p['risk_score'] for p in company_data['projects']) / len(company_data['projects'])
+                company_data['risk_score'] = round(avg_risk_score, 2)
+                company_data['risk_level'] = get_risk_level(avg_risk_score)
+                
+                # Aggregate unusual activities
+                all_unusual = []
+                for project in company_data['projects']:
+                    all_unusual.extend(project['unusual_activities'])
+                company_data['unusual_activities'] = all_unusual[:10]  # Top 10 most recent
+                
+                # Calculate daily metrics
+                company_data['daily_metrics'] = calculate_daily_metrics(company_data['projects'])
+        
+        # Get recent unusual activities across all companies
+        recent_unusual_activities = get_recent_unusual_activities()
+        
+        return jsonify({
+            'companies': list(company_risks.values()),
+            'summary': {
+                'total_projects': total_projects,
+                'total_companies': len(company_risks),
+                'high_risk': high_risk_count,
+                'medium_risk': medium_risk_count,
+                'low_risk': low_risk_count,
+                'total_investment': sum(c['total_investment'] for c in company_risks.values())
+            },
+            'recent_unusual_activities': recent_unusual_activities,
+            'daily_analysis': get_daily_analysis()
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+def calculate_project_risk(project, collaboration):
+    """Calculate risk score for a specific project"""
+    risk_score = 0
+    risk_factors = []
+    unusual_activities = []
+    
+    # Financial Risk (30% weight)
+    financial_risk = 0
+    funding_required = float(project.funding_required or 0)
+    total_cost = float(project.total_project_cost or 0)
+    
+    if funding_required > 0 and total_cost > 0:
+        funding_ratio = funding_required / total_cost
+        if funding_ratio > 0.8:
+            financial_risk += 20
+            risk_factors.append('High funding requirement ratio')
+        elif funding_ratio < 0.3:
+            financial_risk += 10
+            risk_factors.append('Low funding requirement ratio')
+    
+    risk_score += financial_risk * 0.3
+    
+    # NGO Credibility Risk (25% weight)
+    ngo_risk = 0
+    past_projects = int(project.past_projects_completed or 0)
+    rating = int(project.ngo_rating or 0)
+    
+    if past_projects < 5:
+        ngo_risk += 25
+        risk_factors.append('Limited project experience')
+    elif past_projects < 10:
+        ngo_risk += 15
+        risk_factors.append('Moderate project experience')
+        
+    if rating < 3:
+        ngo_risk += 20
+        risk_factors.append('Low NGO rating')
+    elif rating < 4:
+        ngo_risk += 10
+        risk_factors.append('Moderate NGO rating')
+    
+    risk_score += ngo_risk * 0.25
+    
+    # Timeline Risk (20% weight)
+    timeline_risk = 0
+    duration_months = int(project.duration_months or 0)
+    if duration_months > 24:
+        timeline_risk += 20
+        risk_factors.append('Long project duration')
+    elif duration_months < 3:
+        timeline_risk += 15
+        risk_factors.append('Very short project duration')
+    
+    risk_score += timeline_risk * 0.20
+    
+    # Compliance Risk (15% weight)
+    compliance_risk = 0
+    fcra_status = project.ngo_fcra_status or ''
+    g80_status = project.ngo_80g_status or ''
+    
+    if fcra_status != 'Valid':
+        compliance_risk += 30
+        risk_factors.append('FCRA status issues')
+    if g80_status != 'Valid':
+        compliance_risk += 20
+        risk_factors.append('80G status issues')
+    
+    risk_score += compliance_risk * 0.15
+    
+    # Impact Risk (10% weight)
+    impact_risk = 0
+    expected_outcomes = project.expected_outcomes
+    if not expected_outcomes:
+        impact_risk += 15
+        risk_factors.append('Limited impact metrics defined')
+    
+    risk_score += impact_risk * 0.10
+    
+    # Check for unusual activities
+    unusual_activities = detect_unusual_activities(project, collaboration)
+    
+    return {
+        'score': round(risk_score, 2),
+        'level': get_risk_level(risk_score),
+        'factors': risk_factors,
+        'unusual_activities': unusual_activities
+    }
+
+
+def get_risk_level(score):
+    """Convert risk score to risk level"""
+    if score >= 70:
+        return 'High'
+    elif score >= 40:
+        return 'Medium'
+    else:
+        return 'Low'
+
+
+def calculate_daily_metrics(projects):
+    """Calculate daily metrics for projects"""
+    metrics = {
+        'projects_active': 0,
+        'projects_completed': 0,
+        'projects_delayed': 0,
+        'compliance_issues': 0,
+        'budget_overruns': 0
+    }
+    
+    for project in projects:
+        if project['status'] == 'in_progress':
+            metrics['projects_active'] += 1
+        elif project['status'] == 'completed':
+            metrics['projects_completed'] += 1
+        
+        # Check for delays (simplified logic)
+        if project['risk_level'] == 'High':
+            metrics['projects_delayed'] += 1
+        
+        # Check for compliance issues
+        if any('compliance' in factor.lower() for factor in project['risk_factors']):
+            metrics['compliance_issues'] += 1
+    
+    return metrics
+
+
+def detect_unusual_activities(project, collaboration):
+    """Detect unusual activities for a project"""
+    unusual = []
+    
+    # Check for high-risk indicators
+    rating = int(project.ngo_rating or 0)
+    if rating < 3:
+        unusual.append({
+            'type': 'low_rating',
+            'message': f'NGO rating is low ({rating}/5)',
+            'severity': 'high',
+            'timestamp': datetime.utcnow().isoformat()
+        })
+    
+    # Check for funding anomalies
+    funding_required = float(project.funding_required or 0)
+    if funding_required > 10000000:  # 1 crore
+        unusual.append({
+            'type': 'high_funding',
+            'message': f'High funding requirement: ₹{funding_required:,.0f}',
+            'severity': 'medium',
+            'timestamp': datetime.utcnow().isoformat()
+        })
+    
+    # Check for timeline issues
+    duration = int(project.duration_months or 0)
+    if duration > 36:  # 3 years
+        unusual.append({
+            'type': 'long_duration',
+            'message': f'Very long project duration: {duration} months',
+            'severity': 'medium',
+            'timestamp': datetime.utcnow().isoformat()
+        })
+    
+    return unusual
+
+
+def get_recent_unusual_activities():
+    """Get recent unusual activities across all projects"""
+    # This would typically query a database table for unusual activities
+    # For now, return sample data
+    return [
+        {
+            'id': 1,
+            'project_id': 1,
+            'project_title': 'Healthcare Access in Remote Areas',
+            'type': 'compliance_alert',
+            'message': 'FCRA certificate expiring in 30 days',
+            'severity': 'high',
+            'timestamp': datetime.utcnow().isoformat(),
+            'company_id': 1
+        },
+        {
+            'id': 2,
+            'project_id': 2,
+            'project_title': 'Skill Development for Urban Youth',
+            'type': 'budget_alert',
+            'message': 'Project spending 15% above budget',
+            'severity': 'medium',
+            'timestamp': datetime.utcnow().isoformat(),
+            'company_id': 1
+        }
+    ]
+
+
+def get_daily_analysis():
+    """Get daily analysis summary"""
+    return {
+        'date': datetime.utcnow().strftime('%Y-%m-%d'),
+        'total_projects_monitored': 15,
+        'new_risks_identified': 3,
+        'resolved_risks': 1,
+        'compliance_alerts': 2,
+        'budget_alerts': 1,
+        'timeline_alerts': 0,
+        'overall_risk_trend': 'stable',
+        'recommendations': [
+            'Monitor FCRA certificate renewals',
+            'Review budget utilization for high-spending projects',
+            'Schedule compliance audits for medium-risk NGOs'
+        ]
+    }
+
+

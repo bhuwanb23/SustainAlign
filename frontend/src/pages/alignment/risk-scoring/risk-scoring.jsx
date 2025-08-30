@@ -1,18 +1,72 @@
+import { useState } from 'react'
 import useRiskScoring from './hooks/useRiskScoring.js'
-import { Sidebar, HeadlineMetrics } from './components/RiskPanel.jsx'
-import { CostImpactChart as RadarShim, EsgScoreChart as LineShim } from '../../alignment/comparison-matrix/components/Charts.jsx'
+import { 
+  Sidebar, 
+  HeadlineMetrics, 
+  UnusualActivitiesPanel, 
+  ProjectRiskTable 
+} from './components/RiskPanel.jsx'
+import { exportRiskReport } from '../../../lib/riskApiNew.js'
 
 export default function RiskScoringPage() {
   const {
+    loading,
+    error,
     query,
     setQuery,
     riskFilter,
     setRiskFilter,
-    ngos,
-    selectedNgo,
-    setSelectedNgoId,
-    metrics,
+    companies,
+    selectedCompany,
+    setSelectedCompanyId,
+    corporateSummary,
+    recentUnusualActivities,
+    dailyAnalysis,
+    unusualActivities,
+    dailyMetrics,
+    projectRiskDistribution,
+    refreshData
   } = useRiskScoring()
+
+  const [activeTab, setActiveTab] = useState('overview')
+
+  const handleExportReport = async () => {
+    try {
+      await exportRiskReport('pdf')
+    } catch (error) {
+      console.error('Error exporting report:', error)
+      alert('Failed to export report. Please try again.')
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="bg-gray-50 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading risk analysis...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="bg-gray-50 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-500 text-6xl mb-4">⚠️</div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Error Loading Risk Analysis</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button 
+            onClick={refreshData}
+            className="px-6 py-3 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="bg-gray-50">
@@ -22,85 +76,170 @@ export default function RiskScoringPage() {
           setQuery={setQuery}
           riskFilter={riskFilter}
           setRiskFilter={setRiskFilter}
-          ngos={ngos}
-          onSelect={setSelectedNgoId}
+          companies={companies}
+          onSelect={setSelectedCompanyId}
         />
 
         <div className="flex-1 overflow-y-auto">
           <div className="bg-white border-b border-gray-200 p-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Risk Analysis Dashboard</h2>
-                <p className="text-gray-600 mt-1">Comprehensive NGO and project risk evaluation</p>
+                <h2 className="text-2xl font-bold text-gray-900">Corporate Risk Analysis Dashboard</h2>
+                <p className="text-gray-600 mt-1">Comprehensive monitoring of corporate collaboration projects and risk assessment</p>
               </div>
               <div className="flex gap-3">
-                <button className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
+                <button 
+                  onClick={handleExportReport}
+                  className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+                >
                   ⬇ Export Report
+                </button>
+                <button 
+                  onClick={refreshData}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  🔄 Refresh
                 </button>
               </div>
             </div>
           </div>
 
           <div className="p-6">
-            <HeadlineMetrics metrics={metrics} />
+            {/* Headline Metrics and Daily Analysis */}
+            <HeadlineMetrics 
+              summary={corporateSummary} 
+              dailyAnalysis={dailyAnalysis} 
+            />
 
-            <div className="grid grid-cols-2 gap-6 mb-8">
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Risk Factor Analysis</h3>
-                <RadarShim />
-              </div>
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Compliance Trends</h3>
-                <LineShim />
+            {/* Tab Navigation */}
+            <div className="mb-6">
+              <div className="border-b border-gray-200">
+                <nav className="-mb-px flex space-x-8">
+                  {[
+                    { id: 'overview', label: 'Overview', icon: '📊' },
+                    { id: 'projects', label: 'Project Analysis', icon: '📋' },
+                    { id: 'alerts', label: 'Risk Alerts', icon: '⚠️' },
+                    { id: 'recent', label: 'Recent Activities', icon: '🕒' }
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${
+                        activeTab === tab.id
+                          ? 'border-emerald-500 text-emerald-600'
+                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      }`}
+                    >
+                      <span>{tab.icon}</span>
+                      {tab.label}
+                    </button>
+                  ))}
+                </nav>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-              <div className="p-6 border-b border-gray-100">
-                <h3 className="text-lg font-semibold text-gray-900">{selectedNgo.name} - Detailed Risk Assessment</h3>
+            {/* Tab Content */}
+            {activeTab === 'overview' && (
+              <div className="space-y-6">
+                {/* Selected Company Overview */}
+                {selectedCompany && (
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+                    <div className="p-6 border-b border-gray-100">
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        {selectedCompany.company_name} - Risk Overview
+                      </h3>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Overall risk score: {selectedCompany.risk_score}% | 
+                        Total investment: ₹{(selectedCompany.total_investment / 100000).toFixed(1)}L | 
+                        Projects: {selectedCompany.projects?.length || 0}
+                      </p>
+                    </div>
+                    <div className="p-6">
+                      <div className="grid grid-cols-3 gap-6 mb-6">
+                        <div className="text-center">
+                          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <span className="text-green-600 text-xl">✅</span>
+                          </div>
+                          <p className="text-sm font-medium text-gray-900">Active Projects</p>
+                          <p className="text-2xl font-bold text-gray-900">{dailyMetrics.projects_active || 0}</p>
+                        </div>
+                        <div className="text-center">
+                          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <span className="text-blue-600 text-xl">📈</span>
+                          </div>
+                          <p className="text-sm font-medium text-gray-900">Completed</p>
+                          <p className="text-2xl font-bold text-gray-900">{dailyMetrics.projects_completed || 0}</p>
+                        </div>
+                        <div className="text-center">
+                          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <span className="text-red-600 text-xl">⚠️</span>
+                          </div>
+                          <p className="text-sm font-medium text-gray-900">Delayed</p>
+                          <p className="text-2xl font-bold text-gray-900">{dailyMetrics.projects_delayed || 0}</p>
+                        </div>
+                      </div>
+
+                      {/* Risk Distribution Chart */}
+                      <div className="bg-gray-50 rounded-lg p-4">
+                        <h4 className="text-sm font-medium text-gray-900 mb-3">Project Risk Distribution</h4>
+                        <div className="flex items-center space-x-4">
+                          {projectRiskDistribution.map((item) => (
+                            <div key={item.label} className="flex-1 text-center">
+                              <div className="text-2xl font-bold text-gray-900">{item.value}</div>
+                              <div className="text-xs text-gray-600">{item.label}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Recent Unusual Activities */}
+                <UnusualActivitiesPanel activities={recentUnusualActivities} />
               </div>
-              <div className="p-6">
-                <div className="grid grid-cols-3 gap-6 mb-6">
-                  <InfoBubble colorBg="bg-risk-low" icon="✔" title="Verified NGO" subtitle="Full compliance" />
-                  <InfoBubble colorBg="bg-emerald-500" icon="⚖️" title="Legal Standing" subtitle="Excellent" />
-                  <InfoBubble colorBg="bg-blue-500" icon="📈" title="Performance" subtitle="Above average" />
+            )}
+
+            {activeTab === 'projects' && selectedCompany && (
+              <ProjectRiskTable projects={selectedCompany.projects || []} />
+            )}
+
+            {activeTab === 'alerts' && (
+              <UnusualActivitiesPanel activities={unusualActivities} />
+            )}
+
+            {activeTab === 'recent' && (
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+                <div className="p-6 border-b border-gray-100">
+                  <h3 className="text-lg font-semibold text-gray-900">Recent Risk Activities</h3>
+                  <p className="text-sm text-gray-600 mt-1">Latest updates and monitoring events</p>
                 </div>
-
-                <MetricBar label="Financial Stability" valuePct={92} tone="low" />
-                <MetricBar label="Past Compliance" valuePct={88} tone="low" />
-                <MetricBar label="Execution Track Record" valuePct={95} tone="low" />
-                <MetricBar label="Transparency Score" valuePct={90} tone="low" />
+                <div className="p-6">
+                  <div className="space-y-4">
+                    {recentUnusualActivities.map((activity, index) => (
+                      <div key={index} className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg">
+                        <div className={`w-3 h-3 rounded-full mt-2 ${
+                          activity.severity === 'high' ? 'bg-red-500' :
+                          activity.severity === 'medium' ? 'bg-yellow-500' :
+                          'bg-blue-500'
+                        }`}></div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-sm font-medium text-gray-900">{activity.project_title}</span>
+                            <span className="text-xs text-gray-500">
+                              {new Date(activity.timestamp).toLocaleString()}
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-700">{activity.message}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
-      </div>
-    </div>
-  )
-}
-
-function InfoBubble({ colorBg, icon, title, subtitle }) {
-  return (
-    <div className="text-center">
-      <div className={`w-16 h-16 ${colorBg} rounded-full flex items-center justify-center mx-auto mb-3 text-white text-xl`}>
-        {icon}
-      </div>
-      <p className="text-sm font-medium text-gray-900">{title}</p>
-      <p className="text-xs text-gray-500">{subtitle}</p>
-    </div>
-  )
-}
-
-function MetricBar({ label, valuePct, tone }) {
-  const toneClass = tone === 'low' ? 'text-risk-low bg-risk-low' : tone === 'medium' ? 'text-risk-medium bg-risk-medium' : 'text-risk-high bg-risk-high'
-  return (
-    <div className="space-y-2 mb-4">
-      <div className="flex justify-between mb-2">
-        <span className="text-sm font-medium text-gray-700">{label}</span>
-        <span className={`text-sm font-bold ${toneClass.split(' ')[0]}`}>{valuePct}%</span>
-      </div>
-      <div className="w-full bg-gray-200 rounded-full h-2">
-        <div className={`${toneClass.split(' ')[1]} h-2 rounded-full`} style={{ width: `${valuePct}%` }}></div>
       </div>
     </div>
   )
