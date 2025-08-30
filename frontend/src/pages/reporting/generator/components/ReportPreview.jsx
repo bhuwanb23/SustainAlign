@@ -1,4 +1,4 @@
-export default function ReportPreview({ isGenerating, lastUpdated, currentJob, reportJobs }) {
+export default function ReportPreview({ isGenerating, lastUpdated, currentJob, reportJobs, reportContent, reportType, period }) {
   return (
     <section className="bg-white rounded-xl shadow-sm">
       <div className="p-6 border-b border-gray-200">
@@ -15,11 +15,12 @@ export default function ReportPreview({ isGenerating, lastUpdated, currentJob, r
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
               <div className="text-4xl text-green-600 mb-4">⏳</div>
-              <p className="text-gray-600">Generating report...</p>
+              <p className="text-gray-600">Generating comprehensive report...</p>
               {currentJob && (
                 <div className="mt-4 p-3 bg-blue-50 rounded-lg">
                   <p className="text-sm text-blue-700">Job ID: {currentJob.id}</p>
                   <p className="text-sm text-blue-600">Status: {currentJob.status}</p>
+                  <p className="text-sm text-blue-600">Type: {currentJob.reportType}</p>
                 </div>
               )}
             </div>
@@ -87,49 +88,152 @@ export default function ReportPreview({ isGenerating, lastUpdated, currentJob, r
               </div>
             )}
 
-            {/* Sample Report Preview */}
+            {/* Comprehensive Report Preview */}
             <div className="print-animation">
               <div className="border-b border-gray-200 pb-6 mb-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h1 className="text-2xl font-bold text-gray-900">ESG Progress Report</h1>
-                    <p className="text-gray-600 mt-1">Q4 2024 Performance Summary</p>
+                    <h1 className="text-2xl font-bold text-gray-900">{reportType}</h1>
+                    <p className="text-gray-600 mt-1">{period} Performance Summary</p>
                   </div>
                   <div className="text-right">
                     <div className="text-sm text-gray-500">Generated on</div>
-                    <div className="font-medium">January 15, 2025</div>
+                    <div className="font-medium">{new Date().toLocaleDateString()}</div>
                   </div>
                 </div>
               </div>
+
+              {/* Executive Summary */}
               <div className="mb-8">
                 <h2 className="text-xl font-semibold text-green-700 mb-4">Executive Summary</h2>
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                  <p className="text-gray-700">Our organization achieved significant progress in environmental sustainability, reducing carbon emissions by 23% while maintaining operational excellence. Key achievements include renewable energy adoption and waste reduction initiatives.</p>
+                  <p className="text-gray-700">{reportContent.executiveSummary}</p>
                 </div>
               </div>
+
+              {/* Key Performance Indicators */}
               <div className="mb-8">
                 <h2 className="text-xl font-semibold text-blue-700 mb-4">Key Performance Indicators</h2>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="text-2xl font-bold text-green-600">23%</div>
-                    <div className="text-sm text-gray-600">Carbon Reduction</div>
+                    <div className="text-2xl font-bold text-green-600">{reportContent.keyMetrics.totalProjects || 0}</div>
+                    <div className="text-sm text-gray-600">Total Projects</div>
                   </div>
                   <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="text-2xl font-bold text-blue-600">87%</div>
-                    <div className="text-sm text-gray-600">Energy Efficiency</div>
+                    <div className="text-2xl font-bold text-blue-600">₹{reportContent.keyMetrics.totalBudget || 0}M</div>
+                    <div className="text-sm text-gray-600">Total Investment</div>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="text-2xl font-bold text-purple-600">{reportContent.keyMetrics.completionRate || 0}%</div>
+                    <div className="text-sm text-gray-600">Completion Rate</div>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="text-2xl font-bold text-orange-600">{reportContent.keyMetrics.environmentalImpact || 0}</div>
+                    <div className="text-sm text-gray-600">Impact Score</div>
                   </div>
                 </div>
               </div>
+
+              {/* Detailed Sections */}
+              {reportContent.sections && reportContent.sections.map((section, index) => (
+                <div key={index} className="mb-8">
+                  <h2 className="text-xl font-semibold text-gray-700 mb-4">{section.title}</h2>
+                  <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                    <p className="text-gray-700">{section.content}</p>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {Object.entries(section.metrics).map(([key, value]) => (
+                      <div key={key} className="bg-white border border-gray-200 rounded-lg p-3">
+                        <div className="text-lg font-semibold text-gray-900">{value}</div>
+                        <div className="text-xs text-gray-600 capitalize">
+                          {key.replace(/([A-Z])/g, ' $1').toLowerCase()}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+
+              {/* SDG Alignment */}
               <div className="mb-8">
                 <h2 className="text-xl font-semibold text-purple-700 mb-4">SDG Alignment</h2>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <span className="font-medium">Goal 7: Clean Energy</span>
-                    <div className="w-24 bg-gray-200 rounded-full h-2"><div className="bg-orange-500 h-2 rounded-full" style={{ width: '85%' }} /></div>
+                    <div className="w-24 bg-gray-200 rounded-full h-2">
+                      <div className="bg-orange-500 h-2 rounded-full" style={{ width: '85%' }} />
+                    </div>
                   </div>
                   <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <span className="font-medium">Goal 13: Climate Action</span>
-                    <div className="w-24 bg-gray-200 rounded-full h-2"><div className="bg-green-500 h-2 rounded-full" style={{ width: '92%' }} /></div>
+                    <div className="w-24 bg-gray-200 rounded-full h-2">
+                      <div className="bg-green-500 h-2 rounded-full" style={{ width: '92%' }} />
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <span className="font-medium">Goal 12: Responsible Consumption</span>
+                    <div className="w-24 bg-gray-200 rounded-full h-2">
+                      <div className="bg-blue-500 h-2 rounded-full" style={{ width: '78%' }} />
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <span className="font-medium">Goal 17: Partnerships</span>
+                    <div className="w-24 bg-gray-200 rounded-full h-2">
+                      <div className="bg-purple-500 h-2 rounded-full" style={{ width: '88%' }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Risk Assessment Summary */}
+              <div className="mb-8">
+                <h2 className="text-xl font-semibold text-red-700 mb-4">Risk Assessment Summary</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-red-600">{reportContent.keyMetrics.averageRiskScore || 0}%</div>
+                      <div className="text-sm text-red-600">Average Risk Score</div>
+                    </div>
+                  </div>
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-yellow-600">12</div>
+                      <div className="text-sm text-yellow-600">Active Alerts</div>
+                    </div>
+                  </div>
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-green-600">96%</div>
+                      <div className="text-sm text-green-600">Compliance Rate</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Recommendations */}
+              <div className="mb-8">
+                <h2 className="text-xl font-semibold text-indigo-700 mb-4">Strategic Recommendations</h2>
+                <div className="space-y-3">
+                  <div className="flex items-start space-x-3 p-3 bg-indigo-50 rounded-lg">
+                    <span className="text-indigo-600 text-lg">💡</span>
+                    <div>
+                      <h4 className="font-medium text-indigo-800">Enhance Carbon Reduction Initiatives</h4>
+                      <p className="text-sm text-indigo-700">Focus on renewable energy adoption and energy efficiency improvements to achieve carbon neutrality targets.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3 p-3 bg-indigo-50 rounded-lg">
+                    <span className="text-indigo-600 text-lg">🤝</span>
+                    <div>
+                      <h4 className="font-medium text-indigo-800">Strengthen Stakeholder Engagement</h4>
+                      <p className="text-sm text-indigo-700">Increase community outreach programs and enhance transparency in sustainability reporting.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3 p-3 bg-indigo-50 rounded-lg">
+                    <span className="text-indigo-600 text-lg">📊</span>
+                    <div>
+                      <h4 className="font-medium text-indigo-800">Implement Advanced Analytics</h4>
+                      <p className="text-sm text-indigo-700">Deploy AI-powered monitoring systems for real-time impact assessment and predictive analytics.</p>
+                    </div>
                   </div>
                 </div>
               </div>
