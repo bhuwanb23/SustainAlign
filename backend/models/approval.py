@@ -23,6 +23,22 @@ class ApprovalRequest(db.Model):
     company = db.relationship('Company', backref=db.backref('approval_requests', lazy='dynamic'))
     steps = db.relationship('ApprovalStep', backref='request', cascade='all, delete-orphan', order_by='ApprovalStep.order_index')
 
+    def recompute_status(self):
+        statuses = [s.status.lower() for s in self.steps]
+        if not statuses:
+            self.status = self.status or 'pending'
+            return self.status
+        if any(s in ('rejected', 'cancelled') for s in statuses):
+            self.status = 'rejected'
+        elif all(s == 'approved' for s in statuses):
+            self.status = 'approved'
+        elif any(s == 'approved' for s in statuses) and any(s == 'pending' for s in statuses):
+            self.status = 'in_review'
+        else:
+            # default when there are no approvals yet but not rejected
+            self.status = 'pending'
+        return self.status
+
     def to_dict(self) -> dict:
         return {
             'id': self.id,

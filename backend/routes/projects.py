@@ -133,6 +133,10 @@ def get_ngo_risk_detail(ngo_id: int):
 # Approval workflow endpoints (public for dev)
 @projects_bp.post('/approvals')
 def create_approval():
+    # Ensure new JSON columns exist for SQLite
+    ensure_column_exists('approval_requests', 'ai_recommendation', 'TEXT')
+    ensure_column_exists('approval_requests', 'compliance_notes', 'TEXT')
+    ensure_column_exists('approval_requests', 'compliance_metrics', 'TEXT')
     data = request.get_json() or {}
     req = ApprovalRequest(
         project_id=data.get('project_id'),
@@ -162,12 +166,19 @@ def create_approval():
 
 @projects_bp.get('/approvals')
 def list_approvals():
+    # Ensure new JSON columns exist for SQLite
+    ensure_column_exists('approval_requests', 'ai_recommendation', 'TEXT')
+    ensure_column_exists('approval_requests', 'compliance_notes', 'TEXT')
+    ensure_column_exists('approval_requests', 'compliance_metrics', 'TEXT')
     q = ApprovalRequest.query.order_by(ApprovalRequest.created_at.desc()).limit(200).all()
     return jsonify([r.to_dict() for r in q])
 
 
 @projects_bp.get('/approvals/<int:approval_id>')
 def get_approval(approval_id: int):
+    ensure_column_exists('approval_requests', 'ai_recommendation', 'TEXT')
+    ensure_column_exists('approval_requests', 'compliance_notes', 'TEXT')
+    ensure_column_exists('approval_requests', 'compliance_metrics', 'TEXT')
     r = ApprovalRequest.query.get(approval_id)
     if not r:
         return jsonify({'error': 'Not found'}), 404
@@ -208,8 +219,12 @@ def update_approval_step(approval_id: int, step_id: int):
             step.decided_at = datetime.utcnow()
     if 'decision_notes' in data:
         step.decision_notes = data['decision_notes']
+    # Recompute overall approval status
+    req = ApprovalRequest.query.get(approval_id)
+    if req:
+        req.recompute_status()
     db.session.commit()
-    return jsonify(step.to_dict())
+    return jsonify({'step': step.to_dict(), 'approval': req.to_dict() if req else None})
 
 
 # Impact dashboard endpoints (public)

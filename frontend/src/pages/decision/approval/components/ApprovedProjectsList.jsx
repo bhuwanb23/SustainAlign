@@ -17,13 +17,14 @@ export default function ApprovedProjectsList({ onSelect, selectedApprovalId }) {
         const withProjects = await Promise.all(
           approvals.map(async (a) => {
             let projectTitle = a.project?.title
-            if (!projectTitle && a.project_id) {
+            const pid = a.project_id ?? a.projectId
+            if (!projectTitle && pid) {
               try {
-                const p = await getProject(a.project_id)
+                const p = await getProject(pid)
                 projectTitle = p.title
               } catch (_) {}
             }
-            return { ...a, projectTitle }
+            return { ...a, projectTitle, project_id: pid }
           })
         )
         if (isMounted) setItems(withProjects)
@@ -37,7 +38,7 @@ export default function ApprovedProjectsList({ onSelect, selectedApprovalId }) {
     return () => { isMounted = false }
   }, [])
 
-  const accepted = useMemo(() => items.filter(i => (i.status || '').toLowerCase() === 'approved' || (i.status || '').toLowerCase() === 'accepted'), [items])
+  const allApprovals = useMemo(() => items, [items])
 
   if (loading) {
     return (
@@ -62,7 +63,7 @@ export default function ApprovedProjectsList({ onSelect, selectedApprovalId }) {
           <h3 className="text-sm font-semibold text-gray-800">Approved Projects</h3>
         </div>
         <ul className="divide-y divide-gray-100">
-          {accepted.map((a) => (
+          {allApprovals.map((a) => (
             <li key={a.id}>
               <button
                 className={`w-full text-left px-4 py-3 hover:bg-gray-50 ${selectedApprovalId === a.id ? 'bg-blue-50' : ''}`}
@@ -73,12 +74,12 @@ export default function ApprovedProjectsList({ onSelect, selectedApprovalId }) {
                     <p className="text-sm font-medium text-gray-900">{a.projectTitle || a.title || 'Project'}</p>
                     <p className="text-xs text-gray-600">Approval #{a.id}{a.company_id ? ` · Company ${a.company_id}` : ''}</p>
                   </div>
-                  <span className="text-xs px-2 py-1 rounded bg-green-100 text-green-700">{a.status || 'approved'}</span>
+                  <span className={`text-xs px-2 py-1 rounded ${String(a.status||'').toLowerCase()==='approved'?'bg-green-100 text-green-700': String(a.status||'').toLowerCase()==='rejected' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'}`}>{a.status || 'pending'}</span>
                 </div>
               </button>
             </li>
           ))}
-          {accepted.length === 0 && (
+          {allApprovals.length === 0 && (
             <li className="px-4 py-4">
               <div className="text-sm text-gray-700 mb-3">No approved projects yet. Sample projects:</div>
               <div className="space-y-3">

@@ -1,4 +1,6 @@
-function Step({ icon, title, desc, statusClass, badge, badgeColor, body }) {
+import { useEffect, useState } from 'react'
+
+function Step({ icon, title, desc, statusClass, badge, badgeColor, body, actions }) {
   return (
     <div className="relative flex items-start mb-12">
       <div className={`flex-shrink-0 w-16 h-16 rounded-full flex items-center justify-center border-4 ${statusClass} relative z-10`}>
@@ -17,6 +19,7 @@ function Step({ icon, title, desc, statusClass, badge, badgeColor, body }) {
             )}
           </div>
           {body}
+          {actions}
         </div>
       </div>
     </div>
@@ -24,56 +27,74 @@ function Step({ icon, title, desc, statusClass, badge, badgeColor, body }) {
 }
 
 export default function WorkflowTimeline({ approval }) {
+  const [current, setCurrent] = useState(approval)
+
+  useEffect(() => {
+    setCurrent(approval)
+  }, [approval])
+
+  const updateStep = async (stepId, status) => {
+    if (!current?.id) return
+    try {
+      const res = await fetch(`/api/approvals/${current.id}/steps/${stepId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status })
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data?.error || 'Failed to update step')
+      if (data?.approval) setCurrent(data.approval)
+    } catch (e) {
+      console.error('Update step failed', e)
+      alert('Failed to update step')
+    }
+  }
+
+  const renderStatus = (status) => {
+    const s = String(status || 'pending').toLowerCase()
+    if (s === 'approved') return { badge: 'Approved', cls: 'bg-green-100 border-green-500 text-green-600', color: { bg: 'bg-green-50', text: 'text-green-800', icon: <span className="text-green-600">✓</span> } }
+    if (s === 'rejected' || s === 'cancelled') return { badge: 'Rejected', cls: 'bg-red-100 border-red-500 text-red-600', color: { bg: 'bg-red-50', text: 'text-red-800', icon: <span className="text-red-600">✕</span> } }
+    return { badge: 'Pending', cls: 'bg-gray-100 border-gray-300 text-gray-400', color: { bg: 'bg-gray-50', text: 'text-gray-600' } }
+  }
+
   return (
     <section className="lg:col-span-2">
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-8">Approval Workflow</h2>
-        {!approval && (
+        {!current && (
           <div className="text-sm text-gray-600">Select an approved project to view its workflow.</div>
         )}
         <div className="relative">
           <div className="absolute left-8 top-16 bottom-0 w-0.5 progress-line step-active" />
-
-          <Step
-            icon="🍃"
-            title="Environmental Review"
-            desc="Initial assessment of environmental impact and compliance requirements."
-            statusClass="bg-green-100 border-green-500 text-green-600"
-            badge="Completed"
-            badgeColor={{ bg: 'bg-green-50', text: 'text-green-800', icon: <span className="text-green-600">✓</span> }}
-            body={<p className="text-sm text-green-700">All environmental criteria met. Carbon footprint reduced by 35%.</p>}
-          />
-
-          <Step
-            icon="🤝"
-            title="Stakeholder Evaluation"
-            desc="Assessment of business impact and stakeholder alignment."
-            statusClass="bg-blue-100 border-blue-500 text-blue-600"
-            badge="In Progress"
-            badgeColor={{ bg: 'bg-blue-50', text: 'text-blue-800', border: 'border-blue-600', spinner: true }}
-            body={<p className="text-sm text-blue-700">Awaiting final stakeholder feedback. 2 of 3 approvals received.</p>}
-          />
-
-          <Step
-            icon="✔️"
-            title="Final Approval"
-            desc="Executive decision and formal project authorization."
-            statusClass="bg-gray-100 border-gray-300 text-gray-400"
-            badge="Pending"
-            badgeColor={{ bg: 'bg-gray-50', text: 'text-gray-600' }}
-            body={<p className="text-sm text-gray-500">Awaiting your decision to proceed.</p>}
-          />
+          {(current?.steps || []).map((s, idx) => {
+            const st = renderStatus(s.status)
+            return (
+              <Step
+                key={s.id}
+                icon={idx === 0 ? '🍃' : idx === 1 ? '🤝' : '✔️'}
+                title={s.name || `Step ${idx+1}`}
+                desc={`Order ${s.order}`}
+                statusClass={st.cls}
+                badge={st.badge}
+                badgeColor={st.color}
+                body={<p className="text-sm text-gray-600">Assignee: {s.assigneeRole || s.assigneeUserId || 'Unassigned'}</p>}
+                actions={
+                  <div className="mt-3 flex gap-2">
+                    <button onClick={() => updateStep(s.id, 'approved')} className="px-3 py-1.5 rounded bg-green-600 text-white text-xs hover:bg-green-700">Approve</button>
+                    <button onClick={() => updateStep(s.id, 'rejected')} className="px-3 py-1.5 rounded bg-red-600 text-white text-xs hover:bg-red-700">Reject</button>
+                  </div>
+                }
+              />
+            )
+          })}
 
           <div className="flex flex-wrap gap-4 mt-8 pt-8 border-t border-gray-200" id="action-buttons">
             <button className="px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-lg font-medium hover:from-gray-600 hover:to-gray-700 transition-all duration-200 transform hover:scale-105">
               💾 Save Draft
             </button>
-            <button className="px-6 py-3 bg-gradient-to-r from-green-500 to-blue-600 text-white rounded-lg font-medium hover:from-green-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105">
-              ✔️ Approve
-            </button>
-            <button className="px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg font-medium hover:from-red-600 hover:to-red-700 transition-all duration-200 transform hover:scale-105">
-              ✖️ Reject
-            </button>
+            {current?.status && (
+              <span className="text-sm text-gray-700">Overall status: {current.status}</span>
+            )}
           </div>
         </div>
       </div>
