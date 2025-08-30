@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useCallback, useEffect } from 'react'
+import { getTrackerProjects, getTrackerTimeline } from '../../../../lib/projectApi'
 
 const SDG = {
   green: '#4CAF50',
@@ -9,207 +10,48 @@ const SDG = {
 
 export default function useTracker() {
   const [filter, setFilter] = useState('all') // all | on-track | delayed | completed
+  const [projects, setProjects] = useState([])
+  const [timeline, setTimeline] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  const projects = useMemo(
-    () => [
-      {
-        id: 'p1',
-        title: 'Clean Water Initiative',
-        subtitle: 'Rural Communities Development',
-        status: 'on-track',
-        badge: { text: 'On Track', bg: '#DCFCE7', textColor: '#166534' },
-        progressPct: 65,
-        due: 'Due: Dec 2024',
-        metricLabel: 'Water Access',
-        icon: '🌱',
-        gradientFrom: '#4ade80',
-        gradientTo: '#16a34a',
-        progressFrom: SDG.green,
-        progressTo: '#4ade80',
-        metricColor: SDG.teal,
-        tooltip: 'Budget: $45,000 spent | Partner: GreenEarth NGO',
-        team: [1, 2, 3],
-        cta: { label: 'View Details', color: SDG.green },
-        // Details view fields
-        ngo: 'GreenEarth NGO',
-        sector: 'Water & Sanitation',
-        sdgs: ['Clean Water', 'Good Health'],
-        region: 'Maharashtra, India',
-        start: '01 Mar 2024',
-        end: '15 Dec 2024',
-        phase: 'Execution',
-        completedMilestones: 3,
-        totalMilestones: 5,
-        milestoneSummary: '3/5 completed',
-        nextMilestone: 'Commission filtration unit',
-        nextDue: '05 Nov 2024',
-        allocated: '$90,000',
-        spent: '$45,000',
-        remaining: '$45,000',
-        utilizedPct: 50,
-        kpis: [
-          { label: 'Households Benefited', value: '1,250' },
-          { label: 'Liters Water Conserved', value: '3.2M' },
-          { label: 'Employment Generated', value: '42' },
-        ],
-        statusText: 'On Track',
-        issues: '—',
-        aiSuggestions: 'Maintain current cadence; consider adding IoT sensors for flow monitoring.',
-        latestReport: 'Q3 Status Report (PDF)',
-        evidenceLinks: ['https://example.com/photo-1', 'https://example.com/photo-2'],
-        verification: 'Corporate verified',
-      },
-      {
-        id: 'p2',
-        title: 'Education for All',
-        subtitle: 'Digital Learning Platform',
-        status: 'delayed',
-        badge: { text: 'Delayed', bg: '#FFEDD5', textColor: '#9A3412' },
-        progressPct: 40,
-        due: 'Due: Nov 2024',
-        metricLabel: 'Education',
-        icon: '🎓',
-        gradientFrom: '#60a5fa',
-        gradientTo: '#2563eb',
-        progressFrom: SDG.orange,
-        progressTo: '#fb923c',
-        metricColor: SDG.blue,
-        tooltip: 'Budget: $32,000 spent | Partner: EduFuture Foundation',
-        team: [4, 5],
-        cta: { label: 'View Details', color: SDG.blue },
-        ngo: 'EduFuture Foundation',
-        sector: 'Education',
-        sdgs: ['Quality Education', 'Reduced Inequalities'],
-        region: 'Karnataka, India',
-        start: '10 Feb 2024',
-        end: '30 Nov 2024',
-        phase: 'Planning → Execution',
-        completedMilestones: 1,
-        totalMilestones: 4,
-        milestoneSummary: '1/4 completed',
-        nextMilestone: 'Deploy tablets in 5 schools',
-        nextDue: '20 Oct 2024',
-        allocated: '$80,000',
-        spent: '$32,000',
-        remaining: '$48,000',
-        utilizedPct: 40,
-        kpis: [
-          { label: 'Students Educated', value: '780' },
-          { label: 'Teachers Trained', value: '36' },
-        ],
-        statusText: 'Delayed',
-        issues: 'Tablet procurement delays; vendor backlog.',
-        aiSuggestions: 'Switch to secondary vendor; stagger rollout by district to reduce risk.',
-        latestReport: 'Implementation Plan v2',
-        evidenceLinks: [],
-        verification: 'Pending',
-      },
-      {
-        id: 'p3',
-        title: 'Healthcare Access',
-        subtitle: 'Mobile Health Clinics',
-        status: 'completed',
-        badge: { text: 'Completed', bg: '#DBEAFE', textColor: '#1E40AF' },
-        progressPct: 100,
-        due: 'Completed: Oct 2024',
-        metricLabel: 'Healthcare',
-        icon: '❤️',
-        gradientFrom: '#2dd4bf',
-        gradientTo: '#0d9488',
-        progressFrom: SDG.teal,
-        progressTo: '#2dd4bf',
-        metricColor: SDG.teal,
-        tooltip: 'Budget: $50,000 spent | Partner: HealthFirst Alliance',
-        team: [6, 7, 8],
-        cta: { label: 'View Report', color: SDG.teal },
-        ngo: 'HealthFirst Alliance',
-        sector: 'Healthcare',
-        sdgs: ['Good Health'],
-        region: 'Telangana, India',
-        start: '01 Jan 2024',
-        end: '05 Oct 2024',
-        phase: 'Reporting',
-        completedMilestones: 6,
-        totalMilestones: 6,
-        milestoneSummary: '6/6 completed',
-        nextMilestone: '—',
-        nextDue: '',
-        allocated: '$50,000',
-        spent: '$50,000',
-        remaining: '$0',
-        utilizedPct: 100,
-        kpis: [
-          { label: 'Patients Served', value: '5,400' },
-          { label: 'Clinics Deployed', value: '3' },
-        ],
-        statusText: 'Completed',
-        issues: '—',
-        aiSuggestions: 'Archive; consider replication in adjacent districts.',
-        latestReport: 'Final Impact Report',
-        evidenceLinks: ['https://example.com/album'],
-        verification: 'Third‑party verified',
-      },
-      {
-        id: 'p4',
-        title: 'Solar Energy Project',
-        subtitle: 'Renewable Energy Initiative',
-        status: 'on-track',
-        badge: { text: 'On Track', bg: '#DCFCE7', textColor: '#166534' },
-        progressPct: 75,
-        due: 'Due: Jan 2025',
-        metricLabel: 'Clean Energy',
-        icon: '⚡',
-        gradientFrom: '#facc15',
-        gradientTo: '#f97316',
-        progressFrom: '#facc15',
-        progressTo: '#f97316',
-        metricColor: '#f59e0b',
-        tooltip: 'Budget: $28,000 spent | Partner: CleanEnergy Coalition',
-        team: [9, 1],
-        cta: { label: 'View Details', color: '#f59e0b' },
-        ngo: 'CleanEnergy Coalition',
-        sector: 'Clean Energy',
-        sdgs: ['Affordable Energy', 'Climate Action'],
-        region: 'Rajasthan, India',
-        start: '15 May 2024',
-        end: '20 Jan 2025',
-        phase: 'Execution',
-        completedMilestones: 3,
-        totalMilestones: 4,
-        milestoneSummary: '3/4 completed',
-        nextMilestone: 'Commission rooftop arrays',
-        nextDue: '12 Dec 2024',
-        allocated: '$120,000',
-        spent: '$28,000',
-        remaining: '$92,000',
-        utilizedPct: 23,
-        kpis: [
-          { label: 'CO₂ Reduced', value: '210 t' },
-          { label: 'Households Benefited', value: '420' },
-        ],
-        statusText: 'On Track',
-        issues: 'Intermittent supply of inverters; mitigated with buffer stock.',
-        aiSuggestions: 'Lock procurement with price protection; monitor inverter failure telemetry.',
-        latestReport: 'Q2 Progress Summary',
-        evidenceLinks: ['https://example.com/satellite'],
-        verification: 'Corporate verified',
-      },
-    ],
-    []
-  )
+  // Fetch tracker data
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      
+      const [projectsData, timelineData] = await Promise.all([
+        getTrackerProjects({ status: filter === 'all' ? undefined : filter }),
+        getTrackerTimeline()
+      ])
+      
+      setProjects(projectsData)
+      setTimeline(timelineData)
+    } catch (err) {
+      console.error('Error fetching tracker data:', err)
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }, [filter])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
 
   const filtered = useMemo(() => {
     if (filter === 'all') return projects
     return projects.filter((p) => p.status === filter)
   }, [filter, projects])
 
-  const timeline = [
-    { color: SDG.green, text: 'Q1 2024 - 3 Projects Initiated' },
-    { color: SDG.blue, text: 'Q2 2024 - 2 Projects Completed' },
-    { color: SDG.teal, text: 'Q3 2024 - 4 Projects Active' },
-  ]
-
-  return { filter, setFilter, projects: filtered, timeline }
+  return { 
+    filter, 
+    setFilter, 
+    projects: filtered, 
+    timeline,
+    loading,
+    error,
+    refreshData: fetchData
+  }
 }
-
-

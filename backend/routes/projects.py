@@ -1069,3 +1069,213 @@ def get_audit_summary():
         return jsonify({'error': f'Failed to fetch audit summary: {str(e)}'}), 500
 
 
+# Tracker endpoints (public for dev)
+@projects_bp.get('/tracker/projects')
+def list_tracker_projects():
+    """Get all project tracking info with optional filtering"""
+    try:
+        # Ensure tracker table columns exist
+        ensure_column_exists('project_tracking_info', 'details', 'JSON')
+        ensure_column_exists('project_tracking_info', 'team_user_ids', 'JSON')
+        ensure_column_exists('project_tracking_info', 'gradient_from', 'VARCHAR(16)')
+        ensure_column_exists('project_tracking_info', 'gradient_to', 'VARCHAR(16)')
+        ensure_column_exists('project_tracking_info', 'progress_from', 'VARCHAR(16)')
+        ensure_column_exists('project_tracking_info', 'progress_to', 'VARCHAR(16)')
+        ensure_column_exists('project_tracking_info', 'metric_color', 'VARCHAR(16)')
+        ensure_column_exists('project_tracking_info', 'tooltip', 'VARCHAR(255)')
+        ensure_column_exists('project_tracking_info', 'cta_label', 'VARCHAR(64)')
+        ensure_column_exists('project_tracking_info', 'cta_color', 'VARCHAR(16)')
+        
+        status = request.args.get('status')
+        limit = request.args.get('limit', 50, type=int)
+        
+        query = ProjectTrackingInfo.query.join(Project)
+        
+        if status and status != 'all':
+            query = query.filter(ProjectTrackingInfo.status == status)
+        
+        tracking_info = query.order_by(ProjectTrackingInfo.updated_at.desc()).limit(limit).all()
+        return jsonify([info.to_card() for info in tracking_info])
+        
+    except Exception as e:
+        return jsonify({'error': f'Failed to fetch tracker projects: {str(e)}'}), 500
+
+
+@projects_bp.get('/tracker/projects/<int:project_id>')
+def get_tracker_project(project_id: int):
+    """Get detailed tracking info for a specific project"""
+    try:
+        # Ensure tracker table columns exist
+        ensure_column_exists('project_tracking_info', 'details', 'JSON')
+        ensure_column_exists('project_tracking_info', 'team_user_ids', 'JSON')
+        ensure_column_exists('project_tracking_info', 'gradient_from', 'VARCHAR(16)')
+        ensure_column_exists('project_tracking_info', 'gradient_to', 'VARCHAR(16)')
+        ensure_column_exists('project_tracking_info', 'progress_from', 'VARCHAR(16)')
+        ensure_column_exists('project_tracking_info', 'progress_to', 'VARCHAR(16)')
+        ensure_column_exists('project_tracking_info', 'metric_color', 'VARCHAR(16)')
+        ensure_column_exists('project_tracking_info', 'tooltip', 'VARCHAR(255)')
+        ensure_column_exists('project_tracking_info', 'cta_label', 'VARCHAR(64)')
+        ensure_column_exists('project_tracking_info', 'cta_color', 'VARCHAR(16)')
+        
+        tracking_info = ProjectTrackingInfo.query.filter_by(project_id=project_id).first()
+        if not tracking_info:
+            return jsonify({'error': 'Project tracking info not found'}), 404
+        
+        return jsonify(tracking_info.to_detail())
+        
+    except Exception as e:
+        return jsonify({'error': f'Failed to fetch tracker project: {str(e)}'}), 500
+
+
+@projects_bp.post('/tracker/projects')
+def create_tracker_project():
+    """Create new project tracking info"""
+    try:
+        data = request.get_json() or {}
+        
+        # Validate required fields
+        if not data.get('project_id'):
+            return jsonify({'error': 'project_id is required'}), 400
+        
+        # Check if tracking info already exists
+        existing = ProjectTrackingInfo.query.filter_by(project_id=data['project_id']).first()
+        if existing:
+            return jsonify({'error': 'Tracking info already exists for this project'}), 409
+        
+        tracking_info = ProjectTrackingInfo(
+            project_id=data['project_id'],
+            status=data.get('status', 'on-track'),
+            progress_pct=data.get('progress_pct', 0),
+            due_date=datetime.strptime(data['due_date'], '%Y-%m-%d').date() if data.get('due_date') else None,
+            subtitle=data.get('subtitle'),
+            metric_label=data.get('metric_label'),
+            icon=data.get('icon'),
+            gradient_from=data.get('gradient_from'),
+            gradient_to=data.get('gradient_to'),
+            progress_from=data.get('progress_from'),
+            progress_to=data.get('progress_to'),
+            metric_color=data.get('metric_color'),
+            tooltip=data.get('tooltip'),
+            team_user_ids=data.get('team_user_ids'),
+            cta_label=data.get('cta_label'),
+            cta_color=data.get('cta_color'),
+            details=data.get('details')
+        )
+        
+        db.session.add(tracking_info)
+        db.session.commit()
+        
+        return jsonify({
+            'message': 'Project tracking info created successfully',
+            'tracking_info': tracking_info.to_card()
+        }), 201
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': f'Failed to create tracker project: {str(e)}'}), 500
+
+
+@projects_bp.put('/tracker/projects/<int:project_id>')
+def update_tracker_project(project_id: int):
+    """Update project tracking info"""
+    try:
+        data = request.get_json() or {}
+        
+        tracking_info = ProjectTrackingInfo.query.filter_by(project_id=project_id).first()
+        if not tracking_info:
+            return jsonify({'error': 'Project tracking info not found'}), 404
+        
+        # Update fields
+        if 'status' in data:
+            tracking_info.status = data['status']
+        if 'progress_pct' in data:
+            tracking_info.progress_pct = data['progress_pct']
+        if 'due_date' in data:
+            tracking_info.due_date = datetime.strptime(data['due_date'], '%Y-%m-%d').date() if data['due_date'] else None
+        if 'subtitle' in data:
+            tracking_info.subtitle = data['subtitle']
+        if 'metric_label' in data:
+            tracking_info.metric_label = data['metric_label']
+        if 'icon' in data:
+            tracking_info.icon = data['icon']
+        if 'gradient_from' in data:
+            tracking_info.gradient_from = data['gradient_from']
+        if 'gradient_to' in data:
+            tracking_info.gradient_to = data['gradient_to']
+        if 'progress_from' in data:
+            tracking_info.progress_from = data['progress_from']
+        if 'progress_to' in data:
+            tracking_info.progress_to = data['progress_to']
+        if 'metric_color' in data:
+            tracking_info.metric_color = data['metric_color']
+        if 'tooltip' in data:
+            tracking_info.tooltip = data['tooltip']
+        if 'team_user_ids' in data:
+            tracking_info.team_user_ids = data['team_user_ids']
+        if 'cta_label' in data:
+            tracking_info.cta_label = data['cta_label']
+        if 'cta_color' in data:
+            tracking_info.cta_color = data['cta_color']
+        if 'details' in data:
+            tracking_info.details = data['details']
+        
+        db.session.commit()
+        
+        return jsonify({
+            'message': 'Project tracking info updated successfully',
+            'tracking_info': tracking_info.to_card()
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': f'Failed to update tracker project: {str(e)}'}), 500
+
+
+@projects_bp.get('/tracker/timeline')
+def get_tracker_timeline():
+    """Get timeline entries for tracker overview"""
+    try:
+        company_id = request.args.get('company_id', type=int)
+        limit = request.args.get('limit', 20, type=int)
+        
+        query = ProjectTimelineEntry.query
+        
+        if company_id:
+            query = query.filter(ProjectTimelineEntry.company_id == company_id)
+        
+        entries = query.order_by(ProjectTimelineEntry.created_at.desc()).limit(limit).all()
+        return jsonify([entry.to_item() for entry in entries])
+        
+    except Exception as e:
+        return jsonify({'error': f'Failed to fetch timeline: {str(e)}'}), 500
+
+
+@projects_bp.post('/tracker/timeline')
+def create_timeline_entry():
+    """Create new timeline entry"""
+    try:
+        data = request.get_json() or {}
+        
+        if not data.get('text'):
+            return jsonify({'error': 'text is required'}), 400
+        
+        entry = ProjectTimelineEntry(
+            color=data.get('color'),
+            text=data['text'],
+            quarter=data.get('quarter'),
+            company_id=data.get('company_id')
+        )
+        
+        db.session.add(entry)
+        db.session.commit()
+        
+        return jsonify({
+            'message': 'Timeline entry created successfully',
+            'entry': entry.to_item()
+        }), 201
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': f'Failed to create timeline entry: {str(e)}'}), 500
+
+

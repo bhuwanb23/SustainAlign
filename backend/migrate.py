@@ -716,6 +716,131 @@ def create_sample_data():
         )
         db.session.add(audit5)
         
+        # Create sample project tracking info
+        tracking1 = ProjectTrackingInfo(
+            project_id=project.id,
+            status='on-track',
+            progress_pct=65,
+            due_date=date.today() + timedelta(days=45),
+            subtitle='Rural Communities Development',
+            metric_label='Water Access',
+            icon='🌱',
+            gradient_from='#4ade80',
+            gradient_to='#16a34a',
+            progress_from='#4CAF50',
+            progress_to='#4ade80',
+            metric_color='#009688',
+            tooltip='Budget: $45,000 spent | Partner: GreenEarth NGO',
+            team_user_ids=[1, 2, 3],
+            cta_label='View Details',
+            cta_color='#4CAF50',
+            details={
+                'ngo': 'GreenEarth NGO',
+                'sector': 'Water & Sanitation',
+                'sdgs': ['Clean Water', 'Good Health'],
+                'region': 'Maharashtra, India',
+                'start': '01 Mar 2024',
+                'end': '15 Dec 2024',
+                'phase': 'Execution',
+                'completedMilestones': 3,
+                'totalMilestones': 5,
+                'milestoneSummary': '3/5 completed',
+                'nextMilestone': 'Commission filtration unit',
+                'nextDue': '05 Nov 2024',
+                'allocated': '$90,000',
+                'spent': '$45,000',
+                'remaining': '$45,000',
+                'utilizedPct': 50,
+                'kpis': [
+                    {'label': 'Households Benefited', 'value': '1,250'},
+                    {'label': 'Liters Water Conserved', 'value': '3.2M'},
+                    {'label': 'Employment Generated', 'value': '42'}
+                ],
+                'statusText': 'On Track',
+                'issues': '—',
+                'aiSuggestions': 'Maintain current cadence; consider adding IoT sensors for flow monitoring.',
+                'latestReport': 'Q3 Status Report (PDF)',
+                'evidenceLinks': ['https://example.com/photo-1', 'https://example.com/photo-2'],
+                'verification': 'Corporate verified'
+            }
+        )
+        db.session.add(tracking1)
+        
+
+        
+        tracking2 = ProjectTrackingInfo(
+            project_id=project2.id,
+            status='on-track',
+            progress_pct=75,
+            due_date=date.today() + timedelta(days=90),
+            subtitle='Renewable Energy Initiative',
+            metric_label='Clean Energy',
+            icon='⚡',
+            gradient_from='#facc15',
+            gradient_to='#f97316',
+            progress_from='#facc15',
+            progress_to='#f97316',
+            metric_color='#f59e0b',
+            tooltip='Budget: $28,000 spent | Partner: GreenEnergy NGO',
+            team_user_ids=[9, 1],
+            cta_label='View Details',
+            cta_color='#f59e0b',
+            details={
+                'ngo': 'GreenEnergy NGO',
+                'sector': 'Clean Energy',
+                'sdgs': ['Affordable Energy', 'Climate Action'],
+                'region': 'Kenya, Tanzania',
+                'start': '15 May 2024',
+                'end': '20 Jan 2025',
+                'phase': 'Execution',
+                'completedMilestones': 3,
+                'totalMilestones': 4,
+                'milestoneSummary': '3/4 completed',
+                'nextMilestone': 'Commission rooftop arrays',
+                'nextDue': '12 Dec 2024',
+                'allocated': '$120,000',
+                'spent': '$28,000',
+                'remaining': '$92,000',
+                'utilizedPct': 23,
+                'kpis': [
+                    {'label': 'CO₂ Reduced', 'value': '210 t'},
+                    {'label': 'Households Benefited', 'value': '420'}
+                ],
+                'statusText': 'On Track',
+                'issues': 'Intermittent supply of inverters; mitigated with buffer stock.',
+                'aiSuggestions': 'Lock procurement with price protection; monitor inverter failure telemetry.',
+                'latestReport': 'Q2 Progress Summary',
+                'evidenceLinks': ['https://example.com/satellite'],
+                'verification': 'Corporate verified'
+            }
+        )
+        db.session.add(tracking2)
+        
+        # Create timeline entries
+        timeline1 = ProjectTimelineEntry(
+            color='#4CAF50',
+            text='Q1 2024 - 3 Projects Initiated',
+            quarter='Q1 2024',
+            company_id=company.id
+        )
+        db.session.add(timeline1)
+        
+        timeline2 = ProjectTimelineEntry(
+            color='#2196F3',
+            text='Q2 2024 - 2 Projects Completed',
+            quarter='Q2 2024',
+            company_id=company.id
+        )
+        db.session.add(timeline2)
+        
+        timeline3 = ProjectTimelineEntry(
+            color='#009688',
+            text='Q3 2024 - 4 Projects Active',
+            quarter='Q3 2024',
+            company_id=company.id
+        )
+        db.session.add(timeline3)
+        
         db.session.commit()
 
         # Optional: seed one AI match linking the sample project and company

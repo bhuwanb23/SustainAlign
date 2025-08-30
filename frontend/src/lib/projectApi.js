@@ -712,3 +712,135 @@ export const getAuditSummary = async () => {
     throw error
   }
 }
+
+// Tracker API
+export const getTrackerProjects = async (filters = {}) => {
+  try {
+    const params = new URLSearchParams()
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        params.append(key, value)
+      }
+    })
+
+    const response = await fetch(`${API_BASE_URL}/tracker/projects?${params.toString()}`)
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('Error fetching tracker projects:', error)
+    throw error
+  }
+}
+
+export const getTrackerProject = async (projectId) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/tracker/projects/${projectId}`)
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('Error fetching tracker project:', error)
+    throw error
+  }
+}
+
+export const createTrackerProject = async (projectData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/tracker/projects`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(projectData)
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('Error creating tracker project:', error)
+    throw error
+  }
+}
+
+export const updateTrackerProject = async (projectId, projectData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/tracker/projects/${projectId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(projectData)
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('Error updating tracker project:', error)
+    throw error
+  }
+}
+
+export const getTrackerTimeline = async (filters = {}) => {
+  try {
+    const params = new URLSearchParams()
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        params.append(key, value)
+      }
+    })
+
+    const response = await fetch(`${API_BASE_URL}/tracker/timeline?${params.toString()}`)
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('Error fetching tracker timeline:', error)
+    throw error
+  }
+}
+
+export const createTimelineEntry = async (entryData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/tracker/timeline`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(entryData)
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('Error creating timeline entry:', error)
+    throw error
+  }
+}
