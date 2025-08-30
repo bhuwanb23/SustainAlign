@@ -64,9 +64,8 @@ from .rationale_sample import (
 )
 
 from .reporting_sample import (
-    get_sample_report_templates,
-    get_sample_report_instances,
-    get_sample_report_sections,
+    get_sample_report_jobs,
+    get_sample_report_artifacts,
     get_all_sample_data as get_all_reporting_sample_data
 )
 
@@ -161,9 +160,8 @@ __all__ = [
     'get_all_rationale_sample_data',
     
     # Reporting
-    'get_sample_report_templates',
-    'get_sample_report_instances',
-    'get_sample_report_sections',
+    'get_sample_report_jobs',
+    'get_sample_report_artifacts',
     'get_all_reporting_sample_data',
     
     # Risk

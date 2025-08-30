@@ -78,75 +78,104 @@ SustainAlign uses **6 specialized AI agents** to automate and optimize the entir
 flowchart LR
   %% Frontend
   subgraph FE[Frontend · React 19 + Vite]
-    FE_Routes["Routes<br/>- Auth<br/>- Discovery<br/>- Alignment<br/>- Decision<br/>- Monitoring<br/>- Reporting<br/>- Profile<br/>- Marketplace"]
-    FE_Components["UI Components<br/>Cards · Tables · Forms · Charts"]
-    FE_TopNav["Role-aware TopNav"]
-    FE_API["API Client"]
-    FE_Auth["JWT Utils<br/>getToken() · parseJwt()"]
+    FE_TopNav["Role-aware TopNav<br/>Corporate/NGO/Admin Navigation"]
+    FE_Layouts["AppLayout<br/>Global Shell & Sidebar"]
+    FE_Routes["Page Routes<br/>Discovery · Alignment · Decision<br/>Monitoring · Reporting · Profile<br/>Marketplace · Settings · Support"]
+    FE_Components["UI Components<br/>Cards · Tables · Forms · Charts<br/>Modals · Navigation · Layouts"]
+    FE_Pages["Page Components<br/>Dashboard · Project Cards<br/>AI Matching · Workflows<br/>Impact Charts · Reports"]
+    FE_Hooks["Custom Hooks<br/>useDashboardData · useAiMatching<br/>useProjectSearch · useAuditTrail"]
+    FE_Lib["Utility Libraries<br/>api.js · auth.js · projectApi.js<br/>ui.js · constants"]
+    FE_Auth["JWT Utils<br/>getToken() · parseJwt()<br/>isAuthenticated()"]
   end
 
   %% Backend
   subgraph BE[Backend · Flask 3]
-    BE_App["App Factory<br/>CORS · Config · Health"]
-    subgraph BP[Blueprints]
-      BP_Auth[auth]
-      BP_Projects[projects]
-      BP_Profile[profile]
-      BP_Reports[reports]
-      BP_Views["views (admin HTML)"]
+    BE_App["App Factory<br/>CORS · Config · Health<br/>Blueprint Registration"]
+    subgraph BP[API Blueprints]
+      BP_Auth[auth<br/>Login · Signup · JWT]
+      BP_Projects[projects<br/>CRUD · AI Matching<br/>Approvals · Impact]
+      BP_Profile[profile<br/>Company · NGO · CSR History]
+      BP_Reports[reports<br/>Generator · Audit Trail<br/>Compliance]
+      BP_Views["views<br/>Admin HTML Templates"]
     end
     subgraph Models[SQLAlchemy Models]
-      M_User["User · UserRole"]
-      M_Company["Company · Branch · CSRContact"]
-      M_Config["Budget · FocusArea · NGOPref · AIConfig"]
-      M_Project["Project · Milestone · Application · ImpactReport"]
-      M_NGO["NGOProfile"]
-      M_Match["AIMatch"]
+      M_User["User · UserRole<br/>Authentication & Permissions"]
+      M_Company["Company · Branch · CSRContact<br/>Budget · FocusArea · NGOPref"]
+      M_Project["Project · Milestone<br/>Application · ImpactReport<br/>ApprovalRequest · ApprovalStep"]
+      M_NGO["NGOProfile · NGOImpactEvent<br/>NGODocument · NGOTransparencyReport"]
+      M_Match["AIMatch<br/>Company-Project Alignment"]
+      M_Monitoring["ImpactMetricSnapshot<br/>ImpactTimeSeries · ImpactRegionStat"]
+      M_Reporting["ReportJob · ReportArtifact<br/>DecisionRationale · RationaleNote"]
     end
   end
 
   %% Data Stores
-  DB[(Relational DB<br/>SQLite by default)]
+  DB[(Relational Database<br/>SQLite by default<br/>PostgreSQL ready)]
 
-  %% Edges
-  FE_TopNav --> FE_Routes
-  FE_Routes --> FE_Components
-  FE_Components --> FE_API
-  FE_Auth <-->|Bearer JWT| FE_API
+  %% Frontend Connections
+  FE_TopNav --> FE_Layouts
+  FE_Layouts --> FE_Routes
+  FE_Routes --> FE_Pages
+  FE_Pages --> FE_Components
+  FE_Components --> FE_Hooks
+  FE_Hooks --> FE_Lib
+  FE_Lib --> FE_Auth
 
-  FE_API --> BP_Auth
-  FE_API --> BP_Projects
-  FE_API --> BP_Profile
-  FE_API --> BP_Reports
+  %% API Communication
+  FE_Lib -->|HTTP Requests| BE_App
+  FE_Auth -->|Bearer JWT| BE_App
 
-  BP_Auth --- BE_App
-  BP_Projects --- BE_App
-  BP_Profile --- BE_App
-  BP_Reports --- BE_App
+  %% Backend Internal
+  BE_App --> BP_Auth
+  BE_App --> BP_Projects
+  BE_App --> BP_Profile
+  BE_App --> BP_Reports
+  BE_App --> BP_Views
 
+  %% Blueprint to Model Relationships
+  BP_Auth <-->|ORM| M_User
+  BP_Profile <-->|ORM| M_Company
   BP_Projects <-->|ORM| M_Project
-  BP_Profile  <-->|ORM| M_Company
-  BP_Profile  <-->|ORM| M_Config
-  BP_Reports  <-->|ORM| M_Project
-  BP_Reports  <-->|ORM| M_NGO
+  BP_Projects <-->|ORM| M_NGO
   BP_Projects <-->|ORM| M_Match
-  BP_Auth     <-->|ORM| M_User
+  BP_Reports <-->|ORM| M_Monitoring
+  BP_Reports <-->|ORM| M_Reporting
+  BP_Views <-->|ORM| M_User
 
+  %% Models to Database
   Models --> DB
 
-  %% Notable Flows
+  %% Notable API Flows
   classDef note fill:#ecfdf5,stroke:#10b981,color:#065f46
-  subgraph Flows["Notable Flows"]
-    F1["Project Add (public)<br/>FE → POST /api/projects<br/>Guest fallback if unauthenticated"]:::note
-    F2["AI Matching<br/>FE → GET /api/ai-matches<br/>Filters: company_id, min_score"]:::note
-    F3["NGO Directory<br/>FE → GET /api/ngos (auth)"]:::note
-    F4["Monitoring & Reports<br/>FE → GET /api/... (role-based)"]:::note
+  subgraph Flows["Key API Endpoints & Flows"]
+    F1["Project Discovery<br/>GET /api/projects<br/>Public access, filtering"]:::note
+    F2["AI Matching Engine<br/>GET /api/ai-matches<br/>Company-project alignment"]:::note
+    F3["NGO Directory<br/>GET /api/ngos<br/>Authenticated access"]:::note
+    F4["Approval Workflow<br/>POST/PUT /api/approvals<br/>Project approval process"]:::note
+    F5["Impact Monitoring<br/>GET /api/impact/*<br/>Real-time metrics"]:::note
+    F6["Report Generation<br/>POST /api/reports<br/>Compliance & ESG"]:::note
   end
 
-  FE_API --> F1
-  FE_API --> F2
-  FE_API --> F3
-  FE_API --> F4
+  FE_Lib --> F1
+  FE_Lib --> F2
+  FE_Lib --> F3
+  FE_Lib --> F4
+  FE_Lib --> F5
+  FE_Lib --> F6
+
+  %% Data Flow Indicators
+  classDef flow fill:#dbeafe,stroke:#3b82f6,color:#1e40af
+  subgraph DataFlow["Data Flow Patterns"]
+    DF1["User Auth<br/>JWT → Role-based Access"]:::flow
+    DF2["Project Discovery<br/>Search → Filter → AI Rank"]:::flow
+    DF3["Approval Process<br/>Submit → Review → Approve"]:::flow
+    DF4["Impact Tracking<br/>Collect → Analyze → Report"]:::flow
+  end
+
+  FE_Auth --> DF1
+  F1 --> DF2
+  F4 --> DF3
+  F5 --> DF4
 ```
 
 ### Roles & Navigation

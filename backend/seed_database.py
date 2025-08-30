@@ -471,11 +471,33 @@ def seed_database():
             stats['rationale_notes'] = len(rationale_data['rationale_notes'])
             print(f"      ✅ Added {stats['rationale_notes']} rationale notes")
         
-        # 10. Seed Reporting data - Skip for now as models don't match sample data
+        # 10. Seed Reporting data
         print("   📄 Seeding reporting data...")
-        print("      ⚠️  Skipping reporting data - model mismatch with sample data")
-        stats['report_jobs'] = 0
-        stats['report_artifacts'] = 0
+        
+        # Add report jobs
+        if 'reporting' in sample_data and 'report_jobs' in sample_data['reporting']:
+            for job_data in sample_data['reporting']['report_jobs']:
+                # Create job object without metrics first
+                job_dict = {k: v for k, v in job_data.items() if k != 'metrics'}
+                job = ReportJob(**job_dict)
+                
+                # Set metrics using direct assignment for db.JSON field
+                if 'metrics' in job_data and job_data['metrics']:
+                    job.metrics = job_data['metrics']
+                
+                db.session.add(job)
+            db.session.commit()
+            stats['report_jobs'] = len(sample_data['reporting']['report_jobs'])
+            print(f"      ✅ Added {stats['report_jobs']} report jobs")
+        
+        # Add report artifacts
+        if 'reporting' in sample_data and 'report_artifacts' in sample_data['reporting']:
+            for artifact_data in sample_data['reporting']['report_artifacts']:
+                artifact = ReportArtifact(**artifact_data)
+                db.session.add(artifact)
+            db.session.commit()
+            stats['report_artifacts'] = len(sample_data['reporting']['report_artifacts'])
+            print(f"      ✅ Added {stats['report_artifacts']} report artifacts")
         
         # 11. Seed Risk data
         print("   ⚠️  Seeding risk data...")
