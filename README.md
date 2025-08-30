@@ -66,7 +66,6 @@ SustainAlign is an AI-powered CSR-focused platform designed to connect NGO proje
 ## 🌟 Platform Transformation: Before vs After
 
 ### Before SustainAlign
-![Before Implementation](docs/images/before%20vs%20after.jpg)
 
 **Traditional Challenges**:
 - Manual project discovery through scattered sources
@@ -76,7 +75,7 @@ SustainAlign is an AI-powered CSR-focused platform designed to connect NGO proje
 - No real-time impact tracking
 
 ### After SustainAlign Implementation
-![After Implementation](docs/images/before%20vs%20after%202.jpg)
+
 
 **Modern Solutions**:
 - AI-powered project discovery and matching
@@ -86,7 +85,9 @@ SustainAlign is an AI-powered CSR-focused platform designed to connect NGO proje
 - Comprehensive impact analytics
 
 ### Enhanced Impact Areas
-![Enhanced Impact Areas](docs/images/before%20vs%20after%203.jpg)
+<div align="center">
+<img src="docs/images/before%20vs%20after%203.jpg" alt="Enhanced Impact Areas" width="600" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin: 20px 0;" />
+</div>
 
 **Improved Outcomes**:
 - Better project alignment with corporate goals
@@ -99,7 +100,6 @@ SustainAlign is an AI-powered CSR-focused platform designed to connect NGO proje
 ## 🇮🇳 India Impact Areas & Focus
 
 ### Primary Impact Sectors
-![India Impact Areas](docs/images/India%20Impact%20areas.png)
 
 **Key Focus Areas**:
 - **Education**: Digital literacy, skill development, rural education
@@ -109,7 +109,9 @@ SustainAlign is an AI-powered CSR-focused platform designed to connect NGO proje
 - **Women Empowerment**: Skill training, entrepreneurship, leadership
 
 ### Regional Impact Distribution
-![Regional Impact Areas](docs/images/India%20Impact%20areas%202.png.jpg)
+<div align="center">
+<img src="docs/images/India%20Impact%20areas%202.png.jpg" alt="Regional Impact Areas" width="600" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin: 20px 0;" />
+</div>
 
 **Geographic Coverage**:
 - **North India**: Education and healthcare initiatives
@@ -122,7 +124,9 @@ SustainAlign is an AI-powered CSR-focused platform designed to connect NGO proje
 
 ## 🔗 User Connections & Ecosystem
 
-![User Connections](docs/images/users_connections.png)
+<div align="center">
+<img src="docs/images/users_connections.png" alt="User Connections" width="600" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin: 20px 0;" />
+</div>
 
 **Platform Ecosystem**:
 - **Corporate ↔ NGO**: Direct project funding and collaboration
