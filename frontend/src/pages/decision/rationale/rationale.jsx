@@ -75,6 +75,36 @@ export default function RecommendationRationalePage() {
           </div>
         </div>
         
+        {/* AI Error Banner - Show when AI model fails */}
+        {currentRationale?.error && (
+          <div className="mb-6 p-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg">
+            <div className="flex items-start">
+              <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                <span className="text-amber-600 text-lg">⚠️</span>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-sm font-medium text-amber-800 mb-2">
+                  AI Model Temporarily Unavailable
+                </h3>
+                <div className="space-y-2">
+                  <p className="text-sm text-amber-700">
+                    <strong>Reason:</strong> {currentRationale.error.reason}
+                  </p>
+                  <p className="text-sm text-amber-600">
+                    <strong>Details:</strong> {currentRationale.error.details}
+                  </p>
+                  <div className="bg-amber-100 p-3 rounded-lg">
+                    <p className="text-xs text-amber-800">
+                      <strong>Note:</strong> You're currently viewing intelligent mock recommendations based on your company profile. 
+                      These provide a good starting point while we resolve the AI service issue.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
             <div className="flex items-center">

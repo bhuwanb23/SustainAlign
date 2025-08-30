@@ -3,7 +3,7 @@
 <img src="docs/images/logo.png" alt="SustainAlign Logo" width="100" height="100" style="vertical-align: middle; margin-right: 10px;" />
 
 
-# 🌱 SustainAlign
+# 🌱 SustainAlign 🌱
 
 **End-to-End CSR/ESG Management & Alignment Platform with AI Agents**
 
@@ -356,6 +356,9 @@ pip install -r requirements.txt
 $env:SECRET_KEY = "dev-secret"
 $env:CORS_ORIGIN = "http://localhost:5173"
 $env:FLASK_ENV = "development"
+$env:OPENROUTER_API_KEY = "enter your openrouter api keys"
+# Used openroutr api keys and models. Important : Sometimes AI model cause error because openrouter models changes their end points accoridng to time so that it may fails. 
+
 python app.py
 # http://localhost:5000
 ```
@@ -381,45 +384,253 @@ Health check: `GET /api/health` → `{ "status": "ok" }`
 
 ---
 
-## 🎛️ Frontend Details
-- **Styling**: Tailwind v4 via `@tailwindcss/vite`; animated ambient backgrounds in `src/index.css`
-- **Charts**: Highcharts + `highcharts-react-official`
-- **Aliases**: `@pages`, `@components`, `@constants`
-- **Scripts** (run in `frontend/`):
-```bash
-npm run dev       # Start dev server
-npm run build     # Production build → dist/
-npm run preview   # Preview production build
+## 🎛️ Frontend Architecture & Features
+
+### 🎨 Modern Tech Stack
+<div style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap;">
+  <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white" alt="React 19" />
+  <img src="https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white" alt="Vite 7" />
+  <img src="https://img.shields.io/badge/Tailwind-4-38BDF8?logo=tailwindcss&logoColor=white" alt="Tailwind 4" />
+  <img src="https://img.shields.io/badge/Highcharts-12-2E5EAA" alt="Highcharts 12" />
+</div>
+
+**Core Technologies**:
+- **⚡ React 19**: Latest features with concurrent rendering and suspense
+- **🚀 Vite**: Lightning-fast build tool with hot module replacement
+- **🎨 Tailwind v4**: Utility-first CSS with advanced design system
+- **📊 Highcharts**: Professional-grade data visualization
+- **🔧 TypeScript**: Type-safe development experience
+
+### 🏗️ Project Structure
+```
+frontend/
+├─ src/
+│  ├─ components/           # Reusable UI components
+│  │  ├─ TopNav.jsx        # Role-aware navigation
+│  │  ├─ AnimatedBackground.jsx  # Dynamic backgrounds
+│  │  └─ RouteGuard.jsx    # Authentication protection
+│  ├─ layouts/
+│  │  └─ AppLayout.jsx     # Global shell & sidebar
+│  ├─ pages/               # Feature-based page components
+│  │  ├─ dashboard/        # Admin dashboard with widgets
+│  │  ├─ discovery/        # Project search & filtering
+│  │  ├─ alignment/        # AI matching & comparison
+│  │  ├─ monitoring/       # Impact tracking & alerts
+│  │  └─ reporting/        # Compliance & ESG reports
+│  ├─ lib/                 # Utility libraries
+│  │  ├─ api.js           # HTTP client with interceptors
+│  │  ├─ auth.js          # JWT authentication helpers
+│  │  └─ ui.js            # UI utility functions
+│  └─ hooks/              # Custom React hooks
+└─ vite.config.js         # Build configuration
 ```
 
-### Admin Dashboard Widgets (Highcharts-ready)
-- KPIs bar (budget, utilized, projects, compliance, ESG)
-- Budget allocation vs utilization (chart), 12‑month trend (chart)
-- ESG breakdown + company vs industry (charts), SDG heatmap grid
-- Active projects list + sector distribution (chart) + impact KPIs
-- Compliance alerts + risk meter gauge
-- AI insights (suggestions, top 3, forecast)
-- Quick actions + footer compliance progress
+### 🎯 Key Features
+
+#### 🎨 **Design System**
+- **Color Palette**: Sustainable green theme with accessibility compliance
+- **Typography**: Modern font stack with proper hierarchy
+- **Spacing**: Consistent 8px grid system
+- **Animations**: Subtle micro-interactions and transitions
+- **Responsive**: Mobile-first design approach
+
+#### 📊 **Data Visualization**
+- **Real-time Charts**: Live updating dashboards
+- **Interactive Elements**: Hover states and drill-down capabilities
+- **Export Options**: PDF, Excel, and image exports
+- **Custom Themes**: Dark/light mode support
+
+#### 🔐 **Authentication & Security**
+- **JWT Tokens**: Secure API communication
+- **Role-based Access**: Corporate, NGO, and Admin views
+- **Route Protection**: Automatic redirects for unauthorized access
+- **Session Management**: Persistent login states
+
+### 🚀 Development Commands
+```bash
+# Development
+npm run dev          # Start development server (http://localhost:5173)
+npm run build        # Production build → dist/
+npm run preview      # Preview production build
+npm run lint         # ESLint code quality check
+npm run test         # Run test suite
+
+# Package Management
+npm install          # Install dependencies
+npm update           # Update packages
+npm audit            # Security audit
+```
+
+### 📱 Admin Dashboard Components
+
+<div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 20px; border-radius: 12px; margin: 20px 0;">
+
+#### 🎯 **KPI Dashboard**
+- **Budget Overview**: Allocation vs utilization with visual indicators
+- **Project Metrics**: Active projects, completion rates, impact scores
+- **Compliance Status**: Real-time compliance tracking with alerts
+- **ESG Performance**: Environmental, Social, Governance metrics
+
+#### 📈 **Analytics Widgets**
+- **Budget Trends**: 12-month spending patterns and forecasts
+- **Impact Heatmap**: Geographic distribution of CSR activities
+- **SDG Alignment**: Sustainable Development Goals progress tracking
+- **Risk Assessment**: AI-powered risk scoring and recommendations
+
+#### 🤖 **AI Insights Panel**
+- **Smart Recommendations**: Top 3 project suggestions with rationale
+- **Predictive Analytics**: Future spending and impact forecasts
+- **Anomaly Detection**: Unusual patterns and compliance alerts
+- **Optimization Tips**: AI-generated improvement suggestions
+
+</div>
 
 ---
 
-## 🔧 Backend Details
-- App factory, SQLAlchemy, CORS, and blueprints (`auth`, `projects`, `profile`, `reports`)
-- Minimal admin HTML views under `/` for quick inspection
-- Configure via env: `SECRET_KEY`, `CORS_ORIGIN`, `PORT`, etc.
+## 🔧 Backend Architecture & API
 
-### Data Model (high-level)
-- Users (roles: admin, corporate, ngo)
-- Company, CompanyBranch, CSRContact, Budget, FocusArea, NGOPreference, AIConfig, UserRole
-- Projects, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile
-- AI Match (company ↔ project alignment)
+### 🏗️ Technology Stack
+<div style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap;">
+  <img src="https://img.shields.io/badge/Flask-3-000000?logo=flask&logoColor=white" alt="Flask 3" />
+  <img src="https://img.shields.io/badge/SQLAlchemy-2.0-000000?logo=sqlalchemy&logoColor=white" alt="SQLAlchemy 2.0" />
+  <img src="https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white" alt="Python 3.11" />
+  <img src="https://img.shields.io/badge/JWT-000000?logo=jsonwebtokens&logoColor=white" alt="JWT" />
+</div>
 
-### API Endpoints (selected)
-- `GET /api/projects` — List/filter projects (public)
-- `POST /api/projects` — Create project (guest fallback enabled)
-- `PUT /api/projects/:id` — Update project (authZ: owner/admin)
-- `GET /api/ngos` — List NGO profiles (auth)
-- `GET /api/ai-matches` — Ranked matches (public)
+**Core Framework**:
+- **🐍 Flask 3**: Modern Python web framework with async support
+- **🗄️ SQLAlchemy 2.0**: Advanced ORM with type safety
+- **🔐 JWT**: Secure authentication and authorization
+- **🌐 CORS**: Cross-origin resource sharing for frontend integration
+- **📊 SQLite/PostgreSQL**: Flexible database options
+
+### 🏛️ Architecture Overview
+
+<div style="background: linear-gradient(135deg, #fef7ff 0%, #f3e8ff 100%); padding: 20px; border-radius: 12px; margin: 20px 0;">
+
+#### 🔐 **Authentication Layer**
+- **JWT Token Management**: Secure token generation and validation
+- **Role-based Access Control**: Admin, Corporate, and NGO permissions
+- **Session Management**: Persistent user sessions with refresh tokens
+- **Security Headers**: CSRF protection and secure cookie handling
+
+#### 🗄️ **Data Layer**
+- **SQLAlchemy ORM**: Type-safe database operations
+- **Migration System**: Automated schema versioning and updates
+- **Connection Pooling**: Optimized database performance
+- **Audit Trail**: Complete change tracking and logging
+
+#### 🤖 **AI Integration**
+- **OpenRouter API**: Multi-model AI service integration
+- **Matching Engine**: Intelligent project-company alignment
+- **Risk Assessment**: AI-powered credibility scoring
+- **Recommendation System**: Personalized project suggestions
+
+</div>
+
+### 📊 Data Model Architecture
+
+#### 👥 **User Management**
+```python
+User (id, email, role, company_id)
+├─ UserRole (permissions, access_level)
+└─ Company (details, branches, contacts)
+```
+
+#### 🏢 **Corporate Profile**
+```python
+Company (id, name, industry, budget)
+├─ CompanyBranch (location, contact_info)
+├─ CSRContact (personnel, roles)
+├─ Budget (allocation, utilization)
+├─ FocusArea (SDG_goals, priorities)
+└─ NGOPreference (partnership_history)
+```
+
+#### 📋 **Project Management**
+```python
+Project (id, title, description, ngo_id)
+├─ ProjectMilestone (timeline, deliverables)
+├─ ProjectApplication (status, funding)
+├─ ProjectImpactReport (metrics, outcomes)
+└─ ApprovalRequest (workflow, decisions)
+```
+
+#### 🤖 **AI & Analytics**
+```python
+AIMatch (company_id, project_id, score)
+├─ DecisionRationale (ai_reasoning, factors)
+├─ ImpactMetricSnapshot (real_time_data)
+└─ RiskAssessment (credibility, compliance)
+```
+
+### 🔌 API Endpoints
+
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 20px; border-radius: 12px; margin: 20px 0;">
+
+#### 🔐 **Authentication**
+```http
+POST /api/auth/login          # User authentication
+POST /api/auth/signup         # User registration
+POST /api/auth/refresh        # Token refresh
+GET  /api/auth/profile        # User profile data
+```
+
+#### 📋 **Project Management**
+```http
+GET    /api/projects          # List/filter projects (public)
+POST   /api/projects          # Create new project
+PUT    /api/projects/:id      # Update project
+DELETE /api/projects/:id      # Delete project
+GET    /api/projects/:id      # Get project details
+```
+
+#### 🤖 **AI Matching**
+```http
+GET  /api/ai-matching/available-projects    # AI-filtered projects
+POST /api/ai-matching/generate-rationale    # AI recommendations
+GET  /api/ai-matching/rationales/:company   # Company rationales
+PUT  /api/ai-matching/rationales/:id        # Update rationale
+```
+
+#### 📊 **Monitoring & Reporting**
+```http
+GET /api/impact/metrics       # Real-time impact data
+GET /api/reports/generate     # Compliance report generation
+GET /api/audit-trail          # Complete audit history
+POST /api/alerts/configure    # Alert configuration
+```
+
+</div>
+
+### ⚙️ Configuration & Environment
+
+#### 🔧 **Environment Variables**
+```bash
+# Security
+SECRET_KEY=your-secret-key-here
+JWT_SECRET_KEY=your-jwt-secret
+
+# Database
+DATABASE_URL=sqlite:///sustainalign.db
+# or DATABASE_URL=postgresql://user:pass@localhost/db
+
+# CORS
+CORS_ORIGIN=http://localhost:5173
+
+# AI Services
+OPENROUTER_API_KEY=your-openrouter-key
+
+# Server
+PORT=5000
+FLASK_ENV=development
+```
+
+#### 🚀 **Deployment Options**
+- **Development**: SQLite with hot reload
+- **Production**: PostgreSQL with WSGI server
+- **Docker**: Containerized deployment ready
+- **Cloud**: AWS, GCP, or Azure compatible
 
 ---
 
@@ -497,21 +708,189 @@ http://localhost:5000/api/health
 
 ---
 
-## 🎨 Visual Design System
+## 🎨 Visual Design System & Brand Identity
 
-### Brand Identity
-**Design Principles**:
-- **Sustainability**: Green color palette representing environmental focus
-- **Technology**: Modern, clean interfaces with AI-powered features
-- **Trust**: Professional design conveying reliability and transparency
-- **Accessibility**: Inclusive design for all user types
+### 🌟 Design Philosophy
 
-### Project Overview
-**Key Visual Elements**:
-- **Hero Section**: Clear value proposition and platform overview
-- **Feature Highlights**: AI agents, impact tracking, compliance reporting
-- **User Journey**: Step-by-step process visualization
-- **Call-to-Action**: Clear next steps for stakeholders
+<div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); padding: 25px; border-radius: 16px; margin: 25px 0; border-left: 4px solid #10b981;">
+
+**Our design principles reflect the core values of sustainability, innovation, and trust that drive SustainAlign's mission to transform CSR management.**
+
+</div>
+
+### 🎨 **Brand Identity Framework**
+
+#### 🌱 **Sustainability-First Design**
+- **Color Palette**: 
+  - Primary: `#10b981` (Emerald Green) - Growth & Sustainability
+  - Secondary: `#3b82f6` (Blue) - Trust & Technology
+  - Accent: `#f59e0b` (Amber) - Energy & Innovation
+  - Neutral: `#6b7280` (Gray) - Professional & Reliable
+
+- **Typography Hierarchy**:
+  - Headings: Inter (Modern, Clean)
+  - Body: System fonts (Accessible, Fast)
+  - Code: JetBrains Mono (Developer-friendly)
+
+#### 🏗️ **Component Design System**
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 25px 0;">
+
+<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+
+##### 🎯 **Cards & Containers**
+- **Elevation Levels**: 3-tier shadow system
+- **Border Radius**: Consistent 8px/12px/16px
+- **Spacing**: 8px grid system throughout
+- **Hover States**: Subtle animations and transitions
+
+</div>
+
+<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+
+##### 🎨 **Interactive Elements**
+- **Buttons**: Primary, Secondary, Ghost variants
+- **Forms**: Floating labels with validation states
+- **Navigation**: Breadcrumbs and progress indicators
+- **Modals**: Backdrop blur with smooth animations
+
+</div>
+
+<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+
+##### 📊 **Data Visualization**
+- **Charts**: Highcharts with custom themes
+- **Icons**: Lucide React icon library
+- **Loading States**: Skeleton screens and spinners
+- **Empty States**: Helpful illustrations and CTAs
+
+</div>
+
+</div>
+
+### 🎭 **User Experience Design**
+
+#### 📱 **Responsive Design Strategy**
+- **Mobile-First**: Progressive enhancement approach
+- **Breakpoints**: 640px, 768px, 1024px, 1280px
+- **Touch Targets**: Minimum 44px for mobile interaction
+- **Gesture Support**: Swipe, pinch, and tap interactions
+
+#### ♿ **Accessibility Standards**
+- **WCAG 2.1 AA**: Full compliance with accessibility guidelines
+- **Keyboard Navigation**: Complete keyboard accessibility
+- **Screen Reader**: ARIA labels and semantic HTML
+- **Color Contrast**: 4.5:1 minimum contrast ratio
+- **Focus Management**: Clear focus indicators and order
+
+### 🎨 **Visual Language**
+
+#### 🌈 **Color Psychology**
+<div style="display: flex; gap: 15px; margin: 20px 0; flex-wrap: wrap;">
+
+<div style="display: flex; align-items: center; gap: 8px;">
+  <div style="width: 20px; height: 20px; background: #10b981; border-radius: 4px;"></div>
+  <span><strong>Emerald Green</strong> - Growth, Sustainability, Success</span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 8px;">
+  <div style="width: 20px; height: 20px; background: #3b82f6; border-radius: 4px;"></div>
+  <span><strong>Blue</strong> - Trust, Technology, Stability</span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 8px;">
+  <div style="width: 20px; height: 20px; background: #f59e0b; border-radius: 4px;"></div>
+  <span><strong>Amber</strong> - Energy, Innovation, Attention</span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 8px;">
+  <div style="width: 20px; height: 20px; background: #ef4444; border-radius: 4px;"></div>
+  <span><strong>Red</strong> - Alerts, Errors, Important Actions</span>
+</div>
+
+</div>
+
+#### 🎯 **Micro-Interactions**
+- **Button Hover**: Subtle scale and shadow changes
+- **Form Focus**: Smooth border color transitions
+- **Loading States**: Skeleton screens with shimmer effects
+- **Success Feedback**: Green checkmarks with celebration animations
+- **Error Handling**: Gentle shake animations with clear messaging
+
+### 📐 **Layout & Grid System**
+
+#### 🏗️ **Component Architecture**
+```
+Layout Components
+├─ AppLayout (Global shell)
+├─ TopNav (Navigation bar)
+├─ Sidebar (Secondary navigation)
+└─ ContentArea (Main content)
+
+Page Components
+├─ Dashboard (KPI widgets)
+├─ ProjectCards (Discovery grid)
+├─ AI Matching (Recommendation panels)
+├─ Impact Charts (Data visualization)
+└─ Report Generator (Form workflows)
+```
+
+#### 📱 **Responsive Breakpoints**
+```css
+/* Mobile First Approach */
+.container {
+  padding: 1rem;           /* Mobile */
+}
+
+@media (min-width: 640px) {
+  .container { padding: 1.5rem; }  /* Tablet */
+}
+
+@media (min-width: 1024px) {
+  .container { padding: 2rem; }    /* Desktop */
+}
+```
+
+### 🎨 **Design Tokens**
+
+#### 🎨 **Spacing Scale**
+```css
+--space-1: 0.25rem;   /* 4px */
+--space-2: 0.5rem;    /* 8px */
+--space-3: 0.75rem;   /* 12px */
+--space-4: 1rem;      /* 16px */
+--space-6: 1.5rem;    /* 24px */
+--space-8: 2rem;      /* 32px */
+--space-12: 3rem;     /* 48px */
+--space-16: 4rem;     /* 64px */
+```
+
+#### 🎨 **Typography Scale**
+```css
+--text-xs: 0.75rem;   /* 12px */
+--text-sm: 0.875rem;  /* 14px */
+--text-base: 1rem;    /* 16px */
+--text-lg: 1.125rem;  /* 18px */
+--text-xl: 1.25rem;   /* 20px */
+--text-2xl: 1.5rem;   /* 24px */
+--text-3xl: 1.875rem; /* 30px */
+--text-4xl: 2.25rem;  /* 36px */
+```
+
+### 🎭 **Animation & Motion**
+
+#### ⚡ **Performance-First Animations**
+- **Duration**: 150ms for micro-interactions, 300ms for page transitions
+- **Easing**: `cubic-bezier(0.4, 0, 0.2, 1)` for natural feel
+- **Reduced Motion**: Respects user preferences for accessibility
+- **GPU Acceleration**: Transform and opacity for smooth 60fps animations
+
+#### 🎬 **Animation Categories**
+- **Entrance**: Fade in, slide up, scale in
+- **Exit**: Fade out, slide down, scale out
+- **State Changes**: Hover, focus, active states
+- **Loading**: Skeleton screens, progress bars, spinners
+- **Feedback**: Success, error, warning notifications
 
 ---
 
