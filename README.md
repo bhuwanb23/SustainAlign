@@ -294,10 +294,10 @@ sustainalign/
 │     ├─ target_users.png          # User personas
 │     ├─ lifecycle.png             # CSR project lifecycle
 │     ├─ users_connections.png     # Platform ecosystem
-│     ├─ before vs after*.jpg      # Transformation comparison
-│     ├─ India Impact areas*.png   # Regional focus areas
+│     ├─ before%20vs%20after*.jpg      # Transformation comparison
+│     ├─ India%20Impact%20areas*.png   # Regional focus areas
 │     ├─ logo.png                  # SustainAlign branding
-│     └─ Poster - Sustain Align.png # Project overview poster
+│     └─ Poster%20-%20Sustain%20Align.png # Project overview poster
 │
 └─ html/                     # Static prototypes (reference designs)
 ```
@@ -499,6 +499,26 @@ http://localhost:5000/api/health
 <div style="text-align: center;">
 <img src="docs/images/Screenshot_30-8-2025_204753_127.0.0.1.jpeg" alt="Project Management Dashboard" width="300" height="200" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
 <p><strong>Project Management Dashboard</strong></p>
+</div>
+
+<div style="text-align: center;">
+<img src="docs/images/Screenshot_30-8-2025_204812_127.0.0.1.jpeg" alt="AI Matching Interface" width="300" height="200" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+<p><strong>AI Matching Interface</strong></p>
+</div>
+
+<div style="text-align: center;">
+<img src="docs/images/Screenshot_30-8-2025_204829_127.0.0.1.jpeg" alt="Impact Tracking Dashboard" width="300" height="200" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+<p><strong>Impact Tracking Dashboard</strong></p>
+</div>
+
+<div style="text-align: center;">
+<img src="docs/images/Screenshot_30-8-2025_204859_127.0.0.1.jpeg" alt="Compliance Reporting" width="300" height="200" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+<p><strong>Compliance Reporting</strong></p>
+</div>
+
+<div style="text-align: center;">
+<img src="docs/images/Screenshot_30-8-2025_204915_127.0.0.1.jpeg" alt="User Profile Management" width="300" height="200" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+<p><strong>User Profile Management</strong></p>
 </div>
 
 </div>
