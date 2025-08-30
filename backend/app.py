@@ -8,6 +8,7 @@ from routes.projects import projects_bp
 from routes.reports import reports_bp
 from routes.profile import profile_bp
 from routes.comparisons import comparisons_bp
+from routes.approvals import approvals_bp
 
 
 def create_app() -> Flask:
@@ -35,6 +36,7 @@ def create_app() -> Flask:
 	app.register_blueprint(projects_bp, url_prefix="/api")
 	app.register_blueprint(reports_bp, url_prefix="/api/reports")
 	app.register_blueprint(comparisons_bp, url_prefix="/api")
+	app.register_blueprint(approvals_bp, url_prefix="/api")
 
 	# View pages
 	from routes.views import views_bp
@@ -49,6 +51,6 @@ def create_app() -> Flask:
 
 if __name__ == "__main__":
 	app = create_app()
-	app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
+	app.run(host="0.0.0.0", port=int(os.environ.get("PORT", "5000")), debug=True)
 
 

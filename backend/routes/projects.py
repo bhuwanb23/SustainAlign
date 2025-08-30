@@ -241,22 +241,42 @@ def update_approval(approval_id: int):
 
 @projects_bp.put('/approvals/<int:approval_id>/steps/<int:step_id>')
 def update_approval_step(approval_id: int, step_id: int):
-    step = ApprovalStep.query.filter_by(id=step_id, request_id=approval_id).first()
-    if not step:
-        return jsonify({'error': 'Not found'}), 404
-    data = request.get_json() or {}
-    if 'status' in data:
-        step.status = data['status']
-        if data['status'] in ('approved', 'rejected'):
-            step.decided_at = datetime.utcnow()
-    if 'decision_notes' in data:
-        step.decision_notes = data['decision_notes']
-    # Recompute overall approval status
-    req = ApprovalRequest.query.get(approval_id)
-    if req:
-        req.recompute_status()
-    db.session.commit()
-    return jsonify({'step': step.to_dict(), 'approval': req.to_dict() if req else None})
+    """Update approval step status"""
+    try:
+        step = ApprovalStep.query.filter_by(id=step_id, request_id=approval_id).first()
+        if not step:
+            return jsonify({'error': 'Step not found'}), 404
+            
+        data = request.get_json() or {}
+        
+        # Update step status
+        if 'status' in data:
+            step.status = data['status']
+            if data['status'] in ('approved', 'rejected'):
+                step.decided_at = datetime.utcnow()
+                
+        # Update decision notes
+        if 'decision_notes' in data:
+            step.decision_notes = data['decision_notes']
+            
+        # Recompute overall approval status
+        req = ApprovalRequest.query.get(approval_id)
+        if req:
+            req.recompute_status()
+            
+        db.session.commit()
+        
+        # Return updated data
+        return jsonify({
+            'step': step.to_dict(), 
+            'approval': req.to_dict() if req else None,
+            'message': f'Step {step.name} updated to {step.status}'
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error updating approval step: {str(e)}")
+        return jsonify({'error': f'Failed to update step: {str(e)}'}), 500
 
 
 # Impact dashboard endpoints (public)

@@ -306,7 +306,7 @@ def seed_database():
         
         # 5. Seed Approval data
         print("   ✅ Seeding approval data...")
-        approval_data = sample_data.get('approval', {})
+        approval_data = sample_data.get('approvals', {})
         
         if 'approval_requests' in approval_data:
             for request_data in approval_data['approval_requests']:
