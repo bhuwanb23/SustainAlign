@@ -463,7 +463,7 @@ npm audit            # Security audit
 
 ### 📱 Admin Dashboard Components
 
-<div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 20px; border-radius: 12px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg,rgb(58, 159, 227) 0%,rgba(7, 250, 165, 0.9) 100%); padding: 20px; border-radius: 12px; margin: 20px 0; border: 1px solid #e2e8f0; color:black";>
 
 #### 🎯 **KPI Dashboard**
 - **Budget Overview**: Allocation vs utilization with visual indicators
@@ -506,7 +506,7 @@ npm audit            # Security audit
 
 ### 🏛️ Architecture Overview
 
-<div style="background: linear-gradient(135deg, #fef7ff 0%, #f3e8ff 100%); padding: 20px; border-radius: 12px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #fef7ff 0%, #f3e8ff 100%); padding: 20px; border-radius: 12px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 #### 🔐 **Authentication Layer**
 - **JWT Token Management**: Secure token generation and validation
@@ -566,7 +566,7 @@ AIMatch (company_id, project_id, score)
 
 ### 🔌 API Endpoints
 
-<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 20px; border-radius: 12px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 20px; border-radius: 12px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 #### 🔐 **Authentication**
 ```http
@@ -712,7 +712,7 @@ http://localhost:5000/api/health
 
 ### 🌟 Design Philosophy
 
-<div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); padding: 25px; border-radius: 16px; margin: 25px 0; border-left: 4px solid #10b981;">
+<div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); padding: 25px; border-radius: 16px; margin: 25px 0; border-left: 4px solid #10b981; border: 1px solid #e2e8f0;">
 
 **Our design principles reflect the core values of sustainability, innovation, and trust that drive SustainAlign's mission to transform CSR management.**
 
@@ -736,7 +736,7 @@ http://localhost:5000/api/health
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 25px 0;">
 
-<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+<div style="background: #f8fafc; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
 
 ##### 🎯 **Cards & Containers**
 - **Elevation Levels**: 3-tier shadow system
@@ -746,7 +746,7 @@ http://localhost:5000/api/health
 
 </div>
 
-<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+<div style="background: #f8fafc; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
 
 ##### 🎨 **Interactive Elements**
 - **Buttons**: Primary, Secondary, Ghost variants
@@ -756,7 +756,7 @@ http://localhost:5000/api/health
 
 </div>
 
-<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+<div style="background: #f8fafc; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
 
 ##### 📊 **Data Visualization**
 - **Charts**: Highcharts with custom themes
@@ -786,26 +786,30 @@ http://localhost:5000/api/health
 ### 🎨 **Visual Language**
 
 #### 🌈 **Color Psychology**
-<div style="display: flex; gap: 15px; margin: 20px 0; flex-wrap: wrap;">
+<div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; margin: 20px 0;">
 
-<div style="display: flex; align-items: center; gap: 8px;">
+<div style="display: flex; gap: 15px; flex-wrap: wrap;">
+
+<div style="display: flex; align-items: center; gap: 8px; padding: 8px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
   <div style="width: 20px; height: 20px; background: #10b981; border-radius: 4px;"></div>
-  <span><strong>Emerald Green</strong> - Growth, Sustainability, Success</span>
+  <span style="color: #1f2937;"><strong>Emerald Green</strong> - Growth, Sustainability, Success</span>
 </div>
 
-<div style="display: flex; align-items: center; gap: 8px;">
+<div style="display: flex; align-items: center; gap: 8px; padding: 8px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
   <div style="width: 20px; height: 20px; background: #3b82f6; border-radius: 4px;"></div>
-  <span><strong>Blue</strong> - Trust, Technology, Stability</span>
+  <span style="color: #1f2937;"><strong>Blue</strong> - Trust, Technology, Stability</span>
 </div>
 
-<div style="display: flex; align-items: center; gap: 8px;">
+<div style="display: flex; align-items: center; gap: 8px; padding: 8px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
   <div style="width: 20px; height: 20px; background: #f59e0b; border-radius: 4px;"></div>
-  <span><strong>Amber</strong> - Energy, Innovation, Attention</span>
+  <span style="color: #1f2937;"><strong>Amber</strong> - Energy, Innovation, Attention</span>
 </div>
 
-<div style="display: flex; align-items: center; gap: 8px;">
+<div style="display: flex; align-items: center; gap: 8px; padding: 8px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
   <div style="width: 20px; height: 20px; background: #ef4444; border-radius: 4px;"></div>
-  <span><strong>Red</strong> - Alerts, Errors, Important Actions</span>
+  <span style="color: #1f2937;"><strong>Red</strong> - Alerts, Errors, Important Actions</span>
+</div>
+
 </div>
 
 </div>
@@ -950,25 +954,24 @@ Page Components
 
 ---
 
-**🚀 Future Vision**:
+## 🚀 Future Vision
 
--**CSR Marketplace**
+<div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; margin: 20px 0;">
 
--**IoT + Satellite validation**
+### 🌟 **Upcoming Features**
+- **🌐 CSR Marketplace**: Direct B2B platform for corporate-NGO transactions
+- **🛰️ IoT + Satellite Validation**: Real-time impact verification using satellite imagery
+- **🌍 Cross-border CSR Expansion**: International CSR project management
+- **🤖 Full Agent Autonomy**: Self-managing AI agents for complete automation
 
--**Cross-border CSR expansion**
+### 🧩 **Platform Uniqueness**
 
--**Full agent autonomy**
+#### 🥇 **First Agent-Powered CSR + ESG Platform**
+- **🇮🇳 India-first, global-ready**: Built for Indian CSR laws, scalable globally
+- **🔗 Bridges corporates, NGOs, and regulators**: Complete ecosystem integration
+- **✅ Prototype built and functional**: Working solution, not just concepts
 
-**🧩 Uniqueness**:
-
-**🥇 First agent-powered CSR + ESG platform (not just dashboards)**
-
--**🇮🇳 India-first, global-ready.**
-
--**🔗 Bridges corporates, NGOs, and regulators.**
-
--**✅ Prototype built and functional**
+</div>
 
 <div align="center">
 Made with care for sustainability‑minded teams 🌍

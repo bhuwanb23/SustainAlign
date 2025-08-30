@@ -27,7 +27,7 @@ def require_auth(f):
     return decorated_function
 
 
-@comparisons_bp.route('/comparisons', methods=['GET'])
+@comparisons_bp.route('/', methods=['GET'])
 @require_auth
 def get_comparisons():
     """Get all comparisons for the authenticated user"""
@@ -43,7 +43,7 @@ def get_comparisons():
         return api_response(error=str(e), status_code=500)
 
 
-@comparisons_bp.route('/comparisons', methods=['POST'])
+@comparisons_bp.route('/', methods=['POST'])
 @require_auth
 def create_comparison():
     """Create a new comparison"""
@@ -90,7 +90,7 @@ def create_comparison():
         return api_response(error=str(e), status_code=500)
 
 
-@comparisons_bp.route('/comparisons/<int:comparison_id>', methods=['GET'])
+@comparisons_bp.route('/<int:comparison_id>', methods=['GET'])
 @require_auth
 def get_comparison(comparison_id):
     """Get a specific comparison with all its projects"""
@@ -109,7 +109,7 @@ def get_comparison(comparison_id):
         return api_response(error=str(e), status_code=500)
 
 
-@comparisons_bp.route('/comparisons/<int:comparison_id>', methods=['PUT'])
+@comparisons_bp.route('/<int:comparison_id>', methods=['PUT'])
 @require_auth
 def update_comparison(comparison_id):
     """Update a comparison"""
@@ -138,7 +138,7 @@ def update_comparison(comparison_id):
         return api_response(error=str(e), status_code=500)
 
 
-@comparisons_bp.route('/comparisons/<int:comparison_id>', methods=['DELETE'])
+@comparisons_bp.route('/<int:comparison_id>', methods=['DELETE'])
 @require_auth
 def delete_comparison(comparison_id):
     """Delete a comparison"""
@@ -158,7 +158,7 @@ def delete_comparison(comparison_id):
         return api_response(error=str(e), status_code=500)
 
 
-@comparisons_bp.route('/comparisons/<int:comparison_id>/projects', methods=['POST'])
+@comparisons_bp.route('/<int:comparison_id>/projects', methods=['POST'])
 @require_auth
 def add_project_to_comparison(comparison_id):
     """Add a project to a comparison"""
@@ -208,7 +208,7 @@ def add_project_to_comparison(comparison_id):
         return api_response(error=str(e), status_code=500)
 
 
-@comparisons_bp.route('/comparisons/<int:comparison_id>/projects/<int:project_id>', methods=['DELETE'])
+@comparisons_bp.route('/<int:comparison_id>/projects/<int:project_id>', methods=['DELETE'])
 @require_auth
 def remove_project_from_comparison(comparison_id, project_id):
     """Remove a project from a comparison"""
@@ -236,7 +236,7 @@ def remove_project_from_comparison(comparison_id, project_id):
         return api_response(error=str(e), status_code=500)
 
 
-@comparisons_bp.route('/comparisons/<int:comparison_id>/projects/<int:project_id>', methods=['PUT'])
+@comparisons_bp.route('/<int:comparison_id>/projects/<int:project_id>', methods=['PUT'])
 @require_auth
 def update_project_in_comparison(comparison_id, project_id):
     """Update project notes or priority in comparison"""

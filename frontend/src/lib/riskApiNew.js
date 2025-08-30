@@ -3,7 +3,7 @@
  * Handles corporate collaboration risk assessment and daily analysis
  */
 
-const API_BASE = '/api'
+const API_BASE = '/api/projects'
 
 /**
  * Get comprehensive risk analysis for corporate collaboration projects
