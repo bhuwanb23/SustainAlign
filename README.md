@@ -20,6 +20,7 @@
 > **AI-Powered CSR/ESG Platform**: Aligning corporates, NGOs, and regulators through intelligent project discovery, evaluation, and impact tracking. SustainAlign is the first agent-powered platform that automates CSR + Sustainability metrics end-to-end — ensuring corporates spend smarter, NGOs gain visibility, and regulators get compliance-ready transparency.
 
 Abstract
+
 Did you know? India is the only country in the world with a legislated CSR law — yet ₹7,000+ crore goes unspent every year. Why? Because corporates can’t find credible NGOs, NGOs can’t prove impact, and regulators drown in compliance chaos.
 
 ❌ Current CSR reality: 90 days of manual project search, fragmented reports, compliance risks, and greenwashing.
@@ -43,7 +44,7 @@ SustainAlign is the first India-first, AI-agentic CSR & ESG platform, powered by
 ⚡ Clarity: One platform, one story, one mission → CSR money reaches where it matters, with proof.
 
 👉 SustainAlign = LinkedIn + Bloomberg Terminal for CSR & ESG in India.
-Not just an idea. Not just a demo. A working prototype solving a real India-first problem with IBM at its core
+Not just an idea. Not just a demo. A working prototype solving a real India-first problem 
 ---
 
 ## 🎯 Problem Statement
