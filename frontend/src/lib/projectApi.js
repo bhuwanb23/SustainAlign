@@ -932,3 +932,31 @@ export const getReportJob = async (jobId) => {
     throw error
   }
 }
+
+/**
+ * Clear invalid project IDs from localStorage
+ * This helps when there are stale project IDs that no longer exist in the database
+ */
+export function clearInvalidProjectIds() {
+  try {
+    const comparisonSelected = localStorage.getItem('comparisonSelected')
+    if (!comparisonSelected) return
+    
+    const projects = JSON.parse(comparisonSelected)
+    if (!Array.isArray(projects)) {
+      localStorage.removeItem('comparisonSelected')
+      return
+    }
+    
+    // Keep only projects with valid IDs (1-100 for now, adjust based on your database)
+    const validProjects = projects.filter(p => p && p.id && p.id >= 1 && p.id <= 100)
+    
+    if (validProjects.length !== projects.length) {
+      console.log(`Cleared ${projects.length - validProjects.length} invalid project IDs from localStorage`)
+      localStorage.setItem('comparisonSelected', JSON.stringify(validProjects))
+    }
+  } catch (error) {
+    console.error('Error clearing invalid project IDs:', error)
+    localStorage.removeItem('comparisonSelected')
+  }
+}

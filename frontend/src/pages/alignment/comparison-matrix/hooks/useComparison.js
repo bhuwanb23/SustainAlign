@@ -1,46 +1,59 @@
 import { useEffect, useState } from 'react'
-import { getProject } from '../../../../lib/projectApi'
+import { getComparison, getOrCreateDefaultComparison, removeProjectFromComparison } from '../../../../lib/comparisonApi'
 
 export default function useComparison() {
   const [projects, setProjects] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [comparison, setComparison] = useState(null)
+  const [removingProjectId, setRemovingProjectId] = useState(null)
 
   useEffect(() => {
     const load = async () => {
-      let items = []
+      setLoading(true)
+      setError(null)
+      
       try {
-        items = JSON.parse(localStorage.getItem('comparisonSelected') || '[]')
-        if (!Array.isArray(items)) items = []
-      } catch (e) {
-        items = []
-      }
-
-      // Enrich any missing fields by fetching from API
-      try {
-        const enriched = await Promise.all(items.map(async (p) => {
-          if (p && p.id && (p.fundingRequired == null || p.durationMonths == null || !p.sdg || !p.name)) {
-            try {
-              const full = await getProject(p.id)
-              const merged = {
-                ...p,
-                name: p.name || full.title,
-                cost: p.cost ?? (full.financials?.total_project_cost ?? 0),
-                fundingRequired: p.fundingRequired ?? (full.financials?.funding_required ?? 0),
-                durationMonths: p.durationMonths ?? (full.timeline?.duration_months ?? null),
-                pastProjectsCompleted: p.pastProjectsCompleted ?? (full.ngo_credibility?.past_projects_completed ?? null),
-                sdg: p.sdg && p.sdg.length ? p.sdg : (full.sdg_goals || []),
-                esg: p.esg ?? full.esg_rating,
-                risk: p.risk ?? full.risk_level,
-              }
-              return merged
-            } catch (e) {
-              return p
+        // Get or create a default comparison for the user
+        const defaultComparison = await getOrCreateDefaultComparison()
+        setComparison(defaultComparison)
+        
+        // Extract projects from the comparison
+        if (defaultComparison && defaultComparison.items) {
+          const projectData = defaultComparison.items.map(item => {
+            const project = item.project
+            if (!project) return null
+            
+            const mappedProject = {
+              id: project.id,
+              name: project.title || 'Untitled Project',
+              organization: project.ngo_name || 'NGO Organization',
+              cost: Number(project.financials?.total_project_cost) || 0,
+              fundingRequired: Number(project.financials?.funding_required) || 0,
+              durationMonths: Number(project.timeline?.duration_months) || 0,
+              pastProjectsCompleted: Number(project.ngo_credibility?.past_projects_completed) || 0,
+              sdg: project.sdg_goals || [],
+              esg: project.esg_rating || null,
+              risk: project.risk_level || null,
+              notes: item.notes || '',
+              priority: item.priority || 0,
+              addedAt: item.added_at
             }
-          }
-          return p
-        }))
-        setProjects(enriched)
+            
+            return mappedProject
+          }).filter(Boolean)
+          
+          setProjects(projectData)
+        } else {
+          setProjects([])
+        }
+        
       } catch (e) {
-        setProjects(items)
+        console.error('Error loading comparison data:', e)
+        setError('Failed to load comparison data. Please try again.')
+        setProjects([])
+      } finally {
+        setLoading(false)
       }
     }
 
@@ -48,7 +61,84 @@ export default function useComparison() {
   }, [])
 
   const selectedCount = projects.length
-  return { projects, selectedCount }
+  
+  // Remove a project from the comparison
+  const removeProject = async (comparisonId, projectId) => {
+    try {
+      setLoading(true)
+      setRemovingProjectId(projectId) // Set the project being removed
+      
+      // Call the API to remove the project
+      await removeProjectFromComparison(comparisonId, projectId)
+      
+      // Show success message
+      const projectName = projects.find(p => p.id === projectId)?.name || 'Project'
+      alert(`${projectName} has been removed from the comparison successfully!`)
+      
+      // Refresh the comparison data to get the updated list
+      await refreshComparison()
+      
+    } catch (e) {
+      console.error('Error removing project from comparison:', e)
+      setError('Failed to remove project from comparison.')
+    } finally {
+      setLoading(false)
+      setRemovingProjectId(null) // Reset the project being removed
+    }
+  }
+  
+  // Refresh the comparison data
+  const refreshComparison = async () => {
+    if (!comparison) return
+    
+    try {
+      setLoading(true)
+      const updatedComparison = await getComparison(comparison.id)
+      setComparison(updatedComparison)
+      
+      // Update projects list
+      if (updatedComparison && updatedComparison.items) {
+        const projectData = updatedComparison.items.map(item => {
+          const project = item.project
+          if (!project) return null
+          
+          return {
+            id: project.id,
+            name: project.title || 'Untitled Project',
+            organization: project.ngo_name || 'NGO Organization',
+            cost: Number(project.financials?.total_project_cost) || 0,
+            fundingRequired: Number(project.financials?.funding_required) || 0,
+            durationMonths: Number(project.timeline?.duration_months) || 0,
+            pastProjectsCompleted: Number(project.ngo_credibility?.past_projects_completed) || 0,
+            sdg: project.sdg_goals || [],
+            esg: project.esg_rating || null,
+            risk: project.risk_level || null,
+            notes: item.notes || '',
+            priority: item.priority || 0,
+            addedAt: item.added_at
+          }
+        }).filter(Boolean)
+        
+        setProjects(projectData)
+      }
+    } catch (e) {
+      console.error('Error refreshing comparison:', e)
+      setError('Failed to refresh comparison data.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return { 
+    projects, 
+    selectedCount, 
+    loading, 
+    error, 
+    comparison,
+    refreshComparison,
+    removeProject,
+    removingProjectId
+  }
 }
 
 

@@ -16,7 +16,9 @@ from models import (
     ProjectApplication,
     ProjectImpactReport,
     NGOProfile,
-    AIMatch
+    AIMatch,
+    Comparison,
+    ComparisonItem
 )
 
 # Re-export for backward compatibility
@@ -37,7 +39,9 @@ __all__ = [
     'ProjectApplication',
     'ProjectImpactReport',
     'NGOProfile',
-    'AIMatch'
+    'AIMatch',
+    'Comparison',
+    'ComparisonItem'
 ]
 
 

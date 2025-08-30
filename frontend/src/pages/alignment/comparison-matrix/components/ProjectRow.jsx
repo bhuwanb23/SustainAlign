@@ -15,15 +15,26 @@ function fmt(val) {
   return `${n.toFixed(0)}`
 }
 
-export default function ProjectRow({ project, maxCost, maxFunding, maxDuration }) {
+export default function ProjectRow({ project, maxCost, maxFunding, maxDuration, onRemove, comparisonId, isRemoving = false }) {
+  const handleRemove = () => {
+    if (onRemove && comparisonId && !isRemoving) {
+      const projectName = project.name || 'this project'
+      if (window.confirm(`Are you sure you want to remove "${projectName}" from the comparison?`)) {
+        onRemove(comparisonId, project.id)
+      }
+    }
+  }
+
   return (
     <div className="grid grid-cols-8 gap-4 p-6 border-b border-gray-100 bg-gradient-to-r from-emerald-50/20 to-sky-50/20 hover:from-emerald-100/30 hover:to-sky-100/30 transition-colors">
       <div className="col-span-2 flex items-center space-x-4">
         <div className="w-12 h-12 rounded-lg flex items-center justify-center text-white font-bold shadow"
-             style={{ backgroundColor: '#10B981' }}>{project.icon || '📦'}</div>
+             style={{ backgroundColor: '#10B981' }}>
+          {project.icon || '🌱'}
+        </div>
         <div>
           <h3 className="font-semibold text-gray-900">{project.name}</h3>
-          <p className="text-sm text-gray-600">{project.subtitle}</p>
+          <p className="text-sm text-gray-600">{project.organization || project.ngo_name || 'NGO Organization'}</p>
         </div>
       </div>
       <div className="text-center flex items-center justify-center">
@@ -60,9 +71,19 @@ export default function ProjectRow({ project, maxCost, maxFunding, maxDuration }
           ))}
         </div>
       </div>
-      <div className="text-center flex items-center justify-center space-x-2">
-        <button className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-emerald-700 transition-colors">Select</button>
-        <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm hover:bg-gray-50 transition-colors">Save</button>
+      <div className="text-center flex items-center justify-center">
+        <button 
+          onClick={handleRemove}
+          className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+            isRemoving 
+              ? 'bg-gray-400 text-white cursor-not-allowed' 
+              : 'bg-red-600 text-white hover:bg-red-700'
+          }`}
+          title="Remove project from comparison"
+          disabled={isRemoving}
+        >
+          {isRemoving ? 'Removing...' : 'Remove'}
+        </button>
       </div>
     </div>
   )

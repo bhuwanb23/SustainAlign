@@ -151,7 +151,7 @@ export default function TopNav() {
                                 <div className="text-xs font-semibold text-green-600 mb-2">Alignment & Evaluation Page (Agents 2 & 3)</div>
                                 <div className="flex flex-col gap-1">
                                     <NavLink to="/alignment/matching" className={linkClass}>AI Matching Results File</NavLink>
-                                    <NavLink to="/alignment/comparison" className={linkClass}>Comparison Matrix File</NavLink>
+                                    <NavLink to="/alignment/comparison-matrix" className={linkClass}>Comparison Matrix File</NavLink>
                                     <NavLink to="/alignment/risk" className={linkClass}>Risk Scoring File</NavLink>
                                 </div>
                             </div>

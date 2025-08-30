@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import useComparison from './hooks/useComparison.js'
 import ProjectRow from './components/ProjectRow.jsx'
 import { CostFundingChart, DurationChart } from './components/Charts.jsx'
@@ -12,7 +12,7 @@ function formatNumber(val) {
 }
 
 export default function ComparisonMatrixPage() {
-  const { projects, selectedCount } = useComparison()
+  const { projects, selectedCount, loading, error, comparison, refreshComparison, removeProject, removingProjectId } = useComparison()
   const [mode, setMode] = useState('table')
 
   const stats = useMemo(() => {
@@ -35,6 +35,64 @@ export default function ComparisonMatrixPage() {
     return { maxCost, maxFunding, maxDuration }
   }, [projects])
 
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="p-8 max-w-7xl mx-auto">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading comparison data...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="p-8 max-w-7xl mx-auto">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 text-center">
+          <div className="text-red-500 text-6xl mb-4">⚠️</div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Comparison Error</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <div className="space-y-3">
+            <a 
+              href="/discovery/project-cards" 
+              className="inline-block px-6 py-3 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition"
+            >
+              Go to Project Discovery
+            </a>
+            <button 
+              onClick={refreshComparison} 
+              className="block w-full px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Show empty state
+  if (!projects.length) {
+    return (
+      <div className="p-8 max-w-7xl mx-auto">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 text-center">
+          <div className="text-gray-400 text-6xl mb-4">📊</div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">No Projects in Comparison</h2>
+          <p className="text-gray-600 mb-6">All projects have been removed from your comparison. Add new projects to continue comparing.</p>
+          <a 
+            href="/discovery/project-cards" 
+            className="inline-block px-6 py-3 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition"
+          >
+            Browse Projects
+          </a>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="p-8 max-w-7xl mx-auto">
       {/* Hero with visual context and quick actions */}
@@ -47,6 +105,11 @@ export default function ComparisonMatrixPage() {
                 <div>
                   <h1 className="text-3xl font-bold leading-tight">Project Comparison Matrix</h1>
                   <p className="text-emerald-100">Evaluate shortlisted projects across cost and key metrics.</p>
+                  {comparison && (
+                    <p className="text-sm text-emerald-200 mt-1">
+                      Comparing: {comparison.name}
+                    </p>
+                  )}
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -90,7 +153,16 @@ export default function ComparisonMatrixPage() {
           </div>
           <div>
             {projects.map((p) => (
-              <ProjectRow key={p.id} project={p} maxCost={maxes.maxCost} maxFunding={maxes.maxFunding} maxDuration={maxes.maxDuration} />
+              <ProjectRow 
+                key={p.id} 
+                project={p} 
+                maxCost={maxes.maxCost} 
+                maxFunding={maxes.maxFunding} 
+                maxDuration={maxes.maxDuration} 
+                onRemove={removeProject} 
+                comparisonId={comparison?.id}
+                isRemoving={removingProjectId === p.id}
+              />
             ))}
           </div>
         </section>

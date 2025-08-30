@@ -27,6 +27,7 @@ from .reporting import ReportJob, ReportArtifact
 from .rationale import DecisionRationale, RationaleNote
 from .audit import AuditEvent
 from .ngo_marketplace import NGOImpactEvent, NGODocument, NGOTransparencyReport, NGOCertificate, NGOTestimonial
+from .comparison import Comparison, ComparisonItem
 
 __all__ = [
     'db',
@@ -44,9 +45,10 @@ __all__ = [
     'ProjectMilestone',
     'ProjectApplication',
     'ProjectImpactReport',
-    'NGOProfile'
+    'NGOProfile',
+    'Comparison',
+    'ComparisonItem'
 ]
-
 __all__.append('AIMatch')
 __all__.append('NGORiskAssessment')
 __all__.append('ApprovalRequest')

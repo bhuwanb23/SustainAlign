@@ -105,7 +105,7 @@ export default function App() {
 
         {/* 🎯 Alignment & Evaluation Page (Agents 2 & 3) */}
         <Route path="/alignment/matching" element={<AiMatchingPage />} />
-        <Route path="/alignment/comparison" element={<ComparisonMatrixPage />} />
+        <Route path="/alignment/comparison-matrix" element={<ComparisonMatrixPage />} />
         <Route path="/alignment/risk" element={<RiskScoringPage />} />
 
         {/* 🧑‍⚖️ Decision Support Page (Agent 4) */}

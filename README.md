@@ -251,7 +251,7 @@ Health check: `GET /api/health` → `{ "status": "ok" }`
 | **Auth** | `/login`, `/signup`, `/forgot-password`, `/profile-setup` | - |
 | **Dashboard** | `/dashboard` (admin) | - |
 | **Discovery** | `/discovery/search`, `/discovery/cards` | **Agent 1** |
-| **Alignment** | `/alignment/matching`, `/alignment/comparison`, `/alignment/risk` | **Agent 2 & 3** |
+| **Alignment** | `/alignment/matching`, `/alignment/comparison-matrix`, `/alignment/risk` | **Agent 2 & 3** |
 | **Monitoring** | `/monitoring/impact`, `/monitoring/tracker`, `/monitoring/alerts` | **Agent 5** |
 | **Reporting** | `/reporting/generator`, `/reporting/audit-trail` | **Agent 6** |
 | **Marketplace** | `/marketplace/ngo`, `/marketplace/matching`, `/marketplace/collaboration` | - |
