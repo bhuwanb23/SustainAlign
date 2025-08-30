@@ -23,9 +23,9 @@ Abstract
 
 Did you know? India is the only country in the world with a legislated CSR law — yet ₹7,000+ crore goes unspent every year. Why? Because corporates can’t find credible NGOs, NGOs can’t prove impact, and regulators drown in compliance chaos.
 
-❌ Current CSR reality: 90 days of manual project search, fragmented reports, compliance risks, and greenwashing.
+❌ Current CSR reality: Days of manual project search, fragmented reports, compliance risks, and greenwashing.
 
-✅ With SustainAlign: 90 minutes to discover verified NGOs, align projects with SDGs, get AI-backed recommendations, and auto-generate MCA/SEBI + global ESG-ready reports.
+✅ With SustainAlign: Few minutes to discover verified NGOs, align projects with SDGs, get AI-backed recommendations, and auto-generate MCA/SEBI + global ESG-ready reports.
 
 SustainAlign is the first India-first, AI-agentic CSR & ESG platform It connects corporates, NGOs, and regulators through six specialized agents:
 
@@ -590,7 +590,7 @@ http://localhost:5000/api/health
 
 -**Full agent autonomy**
 
-**🧩 Uniqueness**
+**🧩 Uniqueness**:
 
 **🥇 First agent-powered CSR + ESG platform (not just dashboards)**
 
