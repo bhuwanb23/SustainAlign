@@ -20,14 +20,7 @@
 
 ## 🎯 Problem Statement
 
-**Corporates** must spend on CSR (mandatory in India) but struggle to:
-- Find the right NGOs/projects aligned to their goals
-- Manage scattered, manual reporting processes
-- Ensure compliance and transparency
-
-**NGOs** want visibility and connections with corporates for funding opportunities.
-
-**Regulators & Government** need transparency in CSR funds allocation and impact measurement.
+![Problem Statement](docs/images/problem_statement.png)
 
 ---
 
@@ -35,23 +28,13 @@
 
 SustainAlign uses **6 specialized AI agents** to automate and optimize the entire CSR/ESG lifecycle:
 
-### 🤖 AI Agent Architecture
-
-| Agent | Purpose | Functionality |
-|-------|---------|---------------|
-| **Agent 1** | **Discovery** | Fetches potential NGO projects from multiple sources |
-| **Agent 2 & 3** | **Alignment & Evaluation** | Matches projects to corporate priorities, scores credibility |
-| **Agent 4** | **Decision Support** | Summarizes and explains best-fit projects for decision-makers |
-| **Agent 5** | **Monitoring** | Tracks approved projects with real-time impact & alerts |
-| **Agent 6** | **Reporting** | Auto-generates compliance & ESG reports |
+![Solution Features](docs/images/solution_features.png)
 
 ---
 
 ## 👥 Target Users
 
-- **Corporate Users** – Admins, sustainability officers, CSR managers
-- **NGOs** – Project proposal submission, updates, impact reporting
-- **Regulators/Government** – Compliance oversight, CSR data auditing
+![Target Users](docs/images/target_users.png)
 
 ---
 
@@ -306,6 +289,9 @@ npm run preview   # Preview production build
 ---
 
 ## 📋 Example Walkthrough: Infosys CSR Management
+
+
+![CSR Project Lifecycle](docs/images/lifecycle.png)
 
 ### 1. Profile Setup
 - **Budget**: ₹50 Cr
