@@ -17,14 +17,22 @@ export default function ImpactTrends({ timeSeries, loading }) {
     function polyline(points, w, h, color) {
         if (!points || points.length === 0) return null
         
-        const max = Math.max(...co2Data, ...treesData)
-        const min = Math.min(...co2Data, ...treesData, 0)
+        // Ensure all values are numbers and handle edge cases
+        const validPoints = points.map(p => {
+            const num = Number(p)
+            return isNaN(num) ? 0 : num
+        })
+        
+        const max = Math.max(...validPoints, ...treesData.map(t => Number(t) || 0))
+        const min = Math.min(...validPoints, ...treesData.map(t => Number(t) || 0), 0)
         const span = max - min || 1
-        const stepX = w / (points.length - 1)
-        const path = points.map((y, i) => {
+        const stepX = w / (validPoints.length - 1) || 1
+        
+        const path = validPoints.map((y, i) => {
             const x = i * stepX
             const ny = h - ((y - min) / span) * h
-            return `${x},${ny}`
+            // Ensure ny is a valid number
+            return `${x},${isNaN(ny) ? 0 : Math.max(0, Math.min(h, ny))}`
         }).join(' ')
         return <polyline fill="none" stroke={color} strokeWidth="2" points={path} />
     }
@@ -57,13 +65,17 @@ export default function ImpactTrends({ timeSeries, loading }) {
                         {polyline(co2Data, 540, 263, '#10b981')}
                         {polyline(treesData, 540, 263, '#059669')}
                         {co2Data.map((y,i)=>{
-                            const max = Math.max(...co2Data, ...treesData)
-                            const min = Math.min(...co2Data, ...treesData, 0)
+                            // Ensure y is a valid number
+                            const validY = Number(y) || 0
+                            const max = Math.max(...co2Data.map(c => Number(c) || 0), ...treesData.map(t => Number(t) || 0))
+                            const min = Math.min(...co2Data.map(c => Number(c) || 0), ...treesData.map(t => Number(t) || 0), 0)
                             const span = max - min || 1
-                            const stepX = 540 / (co2Data.length - 1)
+                            const stepX = 540 / (co2Data.length - 1) || 1
                             const x = i * stepX
-                            const ny = 263 - ((y - min) / span) * 263
-                            return <circle key={i} cx={x} cy={ny} r="4" fill="#10b981" />
+                            const ny = 263 - ((validY - min) / span) * 263
+                            // Ensure ny is a valid number and within bounds
+                            const validNy = isNaN(ny) ? 0 : Math.max(0, Math.min(263, ny))
+                            return <circle key={i} cx={x} cy={validNy} r="4" fill="#10b981" />
                         })}
                     </g>
                 </svg>

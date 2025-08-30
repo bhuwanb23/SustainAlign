@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
-import { getImpactSnapshot, getImpactTimeSeries, getImpactRegionStats, getImpactGoals } from '../../../../lib/projectApi'
+import { getTrackerProjects, getProjects } from '../../../../lib/projectApi'
 
 // Advanced Impact Analytics Engine
 class ImpactAnalyticsEngine {
@@ -373,12 +373,131 @@ class ImpactAnalyticsEngine {
     
     return recommendations.length > 0 ? recommendations : ['Risk levels are within acceptable ranges']
   }
+
+  // Project-based Impact Analysis
+  analyzeProjectImpact(projects) {
+    if (!projects || projects.length === 0) return null
+
+    // Extract impact metrics from projects
+    const impactMetrics = {
+      totalProjects: projects.length,
+      activeProjects: projects.filter(p => p.status === 'on-track' || p.status === 'funded' || p.status === 'published').length,
+      completedProjects: projects.filter(p => p.status === 'completed').length,
+      delayedProjects: projects.filter(p => p.status === 'delayed').length,
+      totalBudget: projects.reduce((sum, p) => sum + (p.budget || 0), 0),
+      totalProgress: projects.reduce((sum, p) => sum + (p.progressPct || 0), 0) / projects.length,
+      averageImpactScore: projects.reduce((sum, p) => {
+        const score = p.impact_score || p.impactScore || 0
+        return sum + (typeof score === 'number' ? score : 0)
+      }, 0) / projects.length
+    }
+
+    // Generate time series data based on project progress over time
+    const timeSeriesData = this.generateProjectTimeSeries(projects)
+    
+    // Calculate regional distribution
+    const regionalData = this.generateRegionalData(projects)
+
+    return {
+      metrics: impactMetrics,
+      timeSeries: timeSeriesData,
+      regionalData: regionalData
+    }
+  }
+
+  generateProjectTimeSeries(projects) {
+    // Generate monthly progress data for the last 12 months
+    const months = 12
+    const timeSeries = {
+      co2_reduced_tons: [],
+      trees_planted: [],
+      people_reached: [],
+      investment_leveraged: []
+    }
+
+    for (let i = 0; i < months; i++) {
+      const monthProgress = projects.reduce((monthData, project) => {
+        const progress = (project.progressPct || 0) / 100
+        const monthlyProgress = progress / months
+        
+        // Simulate impact based on project progress and budget
+        const budget = project.budget || 100000
+        const impactMultiplier = project.impact_score || 1
+        
+        monthData.co2_reduced_tons += (budget * 0.001 * monthlyProgress * impactMultiplier)
+        monthData.trees_planted += (budget * 0.01 * monthlyProgress * impactMultiplier)
+        monthData.people_reached += (budget * 0.1 * monthlyProgress * impactMultiplier)
+        monthData.investment_leveraged += (budget * monthlyProgress * impactMultiplier)
+        
+        return monthData
+      }, { co2_reduced_tons: 0, trees_planted: 0, people_reached: 0, investment_leveraged: 0 })
+
+      Object.keys(timeSeries).forEach(key => {
+        timeSeries[key].push({
+          period: i + 1,
+          value: Math.round(monthProgress[key]),
+          date: new Date(2024, i, 1).toISOString().split('T')[0]
+        })
+      })
+    }
+
+    return timeSeries
+  }
+
+  generateRegionalData(projects) {
+    // Group projects by region/location
+    const regionMap = new Map()
+    
+    projects.forEach(project => {
+      // Handle location object or string
+      let location = 'Unknown'
+      if (project.location) {
+        if (typeof project.location === 'string') {
+          location = project.location
+        } else if (typeof project.location === 'object') {
+          // Handle location object with city, country, region properties
+          const parts = []
+          if (project.location.city) parts.push(project.location.city)
+          if (project.location.region) parts.push(project.location.region)
+          if (project.location.country) parts.push(project.location.country)
+          location = parts.length > 0 ? parts.join(', ') : 'Unknown'
+        }
+      } else if (project.region) {
+        location = typeof project.region === 'string' ? project.region : 'Unknown'
+      }
+      
+      const budget = project.budget || 0
+      const impact = project.impact_score || 1
+      
+      if (!regionMap.has(location)) {
+        regionMap.set(location, {
+          name: location,
+          projects: 0,
+          totalBudget: 0,
+          totalImpact: 0,
+          population: Math.floor(Math.random() * 1000000) + 100000 // Mock population
+        })
+      }
+      
+      const region = regionMap.get(location)
+      region.projects += 1
+      region.totalBudget += budget
+      region.totalImpact += impact
+    })
+
+    return Array.from(regionMap.values()).map(region => ({
+      ...region,
+      impact_score: region.totalImpact,
+      project_count: region.projects
+    }))
+  }
 }
 
 // Initialize the analytics engine
 const analyticsEngine = new ImpactAnalyticsEngine()
 
 export default function useImpact() {
+  const [projects, setProjects] = useState([])
   const [snapshot, setSnapshot] = useState(null)
   const [timeSeries, setTimeSeries] = useState({})
   const [regionStats, setRegionStats] = useState([])
@@ -387,58 +506,110 @@ export default function useImpact() {
   const [error, setError] = useState(null)
   const [analysisResults, setAnalysisResults] = useState({})
 
-  const fetchSnapshot = async () => {
+  // Fetch real project data from tracker
+  const fetchProjectData = async () => {
     try {
-      const data = await getImpactSnapshot()
-      // Convert cards array to object format for easier access
-      const snapshotObj = {}
-      data.forEach(card => {
-        const key = card.label.toLowerCase().replace(/[^a-z0-9]/g, '_')
-        snapshotObj[key] = card.value
-      })
-      setSnapshot(snapshotObj)
+      setLoading(true)
+      setError(null)
+      
+      console.log('🔄 Fetching project data for impact analysis...')
+      
+      // Fetch all project data (tracker + approved + published)
+      const [trackerProjects, approvedProjects, publishedProjects] = await Promise.all([
+        getTrackerProjects(),
+        getProjects({ status: 'funded' }),
+        getProjects({ status: 'published' })
+      ])
+      
+      // Combine all projects
+      const allProjects = [
+        ...(Array.isArray(trackerProjects) ? trackerProjects : []),
+        ...(approvedProjects?.projects || approvedProjects || []),
+        ...(publishedProjects?.projects || publishedProjects || [])
+      ]
+      
+      // Remove duplicates
+      const uniqueProjects = allProjects.filter((project, index, self) => 
+        index === self.findIndex(p => p.id === project.id)
+      )
+      
+      console.log('📊 Total projects for impact analysis:', uniqueProjects.length)
+      setProjects(uniqueProjects)
+      
     } catch (err) {
-      console.error('Failed to fetch impact snapshot:', err)
+      console.error('❌ Error fetching project data:', err)
       setError(err.message)
+    } finally {
+      setLoading(false)
     }
   }
 
-  const fetchTimeSeries = async (metricName, filters = {}) => {
-    try {
-      const data = await getImpactTimeSeries(metricName, filters)
-      setTimeSeries(prev => ({
-        ...prev,
-        [metricName]: data
-      }))
-    } catch (err) {
-      console.error(`Failed to fetch time series for ${metricName}:`, err)
-      setError(err.message)
-    }
-  }
+  // Generate impact data from real projects
+  const generateImpactData = useCallback(() => {
+    if (!projects || projects.length === 0) return
 
-  const fetchRegionStats = async (filters = {}) => {
-    try {
-      const data = await getImpactRegionStats(filters)
-      setRegionStats(data)
-    } catch (err) {
-      console.error('Failed to fetch region stats:', err)
-      setError(err.message)
-    }
-  }
+    console.log('🔬 Generating impact data from', projects.length, 'projects...')
 
-  const fetchGoals = async (filters = {}) => {
-    try {
-      const data = await getImpactGoals(filters)
-      setGoals(data)
-    } catch (err) {
-      console.error('Failed to fetch impact goals:', err)
-      setError(err.message)
+    // Generate snapshot from project data
+    const projectAnalysis = analyticsEngine.analyzeProjectImpact(projects)
+    
+    if (projectAnalysis) {
+      // Create snapshot
+      const snapshotData = [
+        { label: 'Total Projects', value: projectAnalysis.metrics.totalProjects },
+        { label: 'Active Projects', value: projectAnalysis.metrics.activeProjects },
+        { label: 'Completed Projects', value: projectAnalysis.metrics.completedProjects },
+        { label: 'Total Budget', value: projectAnalysis.metrics.totalBudget },
+        { label: 'Average Progress', value: Math.round(projectAnalysis.metrics.totalProgress) },
+        { label: 'Average Impact Score', value: Math.round(projectAnalysis.metrics.averageImpactScore * 100) / 100 }
+      ]
+      setSnapshot(snapshotData)
+      
+      // Set time series data
+      setTimeSeries(projectAnalysis.timeSeries)
+      
+      // Set regional data
+      setRegionStats(projectAnalysis.regionalData)
+      
+      // Generate goals based on current progress
+      const goalsData = [
+        {
+          id: 1,
+          title: 'Project Completion Rate',
+          target: 100,
+          current: Math.round((projectAnalysis.metrics.completedProjects / projectAnalysis.metrics.totalProjects) * 100),
+          unit: '%',
+          deadline: '2024-12-31',
+          progress: Math.round((projectAnalysis.metrics.completedProjects / projectAnalysis.metrics.totalProjects) * 100)
+        },
+        {
+          id: 2,
+          title: 'Budget Utilization',
+          target: 100,
+          current: Math.round(projectAnalysis.metrics.totalProgress),
+          unit: '%',
+          deadline: '2024-12-31',
+          progress: Math.round(projectAnalysis.metrics.totalProgress)
+        },
+        {
+          id: 3,
+          title: 'Impact Score Improvement',
+          target: 5,
+          current: Math.round(projectAnalysis.metrics.averageImpactScore * 100) / 100,
+          unit: 'score',
+          deadline: '2024-12-31',
+          progress: Math.round((projectAnalysis.metrics.averageImpactScore / 5) * 100)
+        }
+      ]
+      setGoals(goalsData)
     }
-  }
+  }, [projects])
 
   // Advanced Analysis Functions
   const performAdvancedAnalysis = useCallback(() => {
-    if (!snapshot || !timeSeries || !regionStats) return
+    if (!projects || projects.length === 0) return
+
+    console.log('🧠 Performing advanced analysis on', projects.length, 'projects...')
 
     const analysis = {
       // Statistical Analysis
@@ -463,21 +634,27 @@ export default function useImpact() {
       benchmarks: null
     }
 
-    // Analyze each time series
+    // Analyze time series data
     Object.keys(timeSeries).forEach(metric => {
       const data = timeSeries[metric]
       if (data && data.length > 0) {
-        analysis.statistics[metric] = analyticsEngine.calculateStatistics(data)
-        analysis.trends[metric] = analyticsEngine.analyzeTrend(data)
-        analysis.anomalies[metric] = analyticsEngine.detectAnomalies(data)
-        analysis.seasonalPatterns[metric] = analyticsEngine.detectSeasonalPatterns(data)
-        analysis.predictions[metric] = analyticsEngine.predictFutureTrends(data)
+        const values = data.map(d => d.value)
+        analysis.statistics[metric] = analyticsEngine.calculateStatistics(values)
+        analysis.trends[metric] = analyticsEngine.analyzeTrend(values)
+        analysis.anomalies[metric] = analyticsEngine.detectAnomalies(values)
+        analysis.seasonalPatterns[metric] = analyticsEngine.detectSeasonalPatterns(values)
+        analysis.predictions[metric] = analyticsEngine.predictFutureTrends(values)
       }
     })
 
-    // Calculate overall impact score
+    // Calculate overall impact score from project metrics
     if (snapshot) {
-      analysis.impactScore = analyticsEngine.calculateImpactScore(snapshot)
+      const metrics = {}
+      snapshot.forEach(item => {
+        const key = item.label.toLowerCase().replace(/[^a-z0-9]/g, '_')
+        metrics[key] = item.value
+      })
+      analysis.impactScore = analyticsEngine.calculateImpactScore(metrics)
     }
 
     // Analyze geographic distribution
@@ -485,63 +662,54 @@ export default function useImpact() {
       analysis.geographicDistribution = analyticsEngine.analyzeGeographicDistribution(regionStats)
     }
 
-    // Risk assessment
-    const primaryMetric = timeSeries.co2_reduced_tons || timeSeries.trees_planted || Object.values(timeSeries)[0]
-    if (primaryMetric) {
-      analysis.riskAssessment = analyticsEngine.assessImpactRisk(primaryMetric, snapshot)
+    // Risk assessment based on project progress volatility
+    const progressData = projects.map(p => p.progressPct || 0).filter(p => p > 0)
+    if (progressData.length > 0) {
+      analysis.riskAssessment = analyticsEngine.assessImpactRisk(progressData, {})
     }
 
     // Industry benchmarks (mock data for demonstration)
     const industryAverages = {
-      co2_reduced_tons: 500,
-      trees_planted: 5000,
-      people_reached: 5000,
-      investment_leveraged: 500000
+      total_projects: 50,
+      active_projects: 35,
+      completed_projects: 15,
+      total_budget: 5000000,
+      average_progress: 65,
+      average_impact_score: 3.5
     }
     if (snapshot) {
-      analysis.benchmarks = analyticsEngine.calculateBenchmarks(snapshot, industryAverages)
+      const metrics = {}
+      snapshot.forEach(item => {
+        const key = item.label.toLowerCase().replace(/[^a-z0-9]/g, '_')
+        metrics[key] = item.value
+      })
+      analysis.benchmarks = analyticsEngine.calculateBenchmarks(metrics, industryAverages)
     }
 
     setAnalysisResults(analysis)
-  }, [snapshot, timeSeries, regionStats])
+    console.log('✅ Advanced analysis completed')
+  }, [projects, timeSeries, snapshot, regionStats])
 
   useEffect(() => {
-    const loadAllData = async () => {
-      setLoading(true)
-      setError(null)
-      
-      try {
-        await Promise.all([
-          fetchSnapshot(),
-          fetchTimeSeries('co2_reduced_tons'),
-          fetchTimeSeries('trees_planted'),
-          fetchTimeSeries('people_reached'),
-          fetchTimeSeries('investment_leveraged'),
-          fetchRegionStats(),
-          fetchGoals()
-        ])
-      } catch (err) {
-        console.error('Failed to load impact data:', err)
-        setError(err.message)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    loadAllData()
+    fetchProjectData()
   }, [])
+
+  // Generate impact data when projects change
+  useEffect(() => {
+    if (projects.length > 0) {
+      generateImpactData()
+    }
+  }, [projects, generateImpactData])
 
   // Perform analysis when data changes
   useEffect(() => {
-    if (!loading && snapshot && Object.keys(timeSeries).length > 0) {
+    if (!loading && projects.length > 0 && Object.keys(timeSeries).length > 0) {
       performAdvancedAnalysis()
     }
-  }, [loading, snapshot, timeSeries, regionStats, performAdvancedAnalysis])
+  }, [loading, projects, timeSeries, snapshot, regionStats, performAdvancedAnalysis])
 
   const refreshData = useCallback(() => {
-    setLoading(true)
-    setError(null)
-    loadAllData()
+    fetchProjectData()
   }, [])
 
   return {
@@ -552,10 +720,7 @@ export default function useImpact() {
     loading,
     error,
     analysisResults,
-    refreshData,
-    fetchTimeSeries,
-    fetchRegionStats,
-    fetchGoals,
-    performAdvancedAnalysis
+    projects,
+    refreshData
   }
 }

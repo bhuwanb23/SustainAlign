@@ -51,22 +51,30 @@ export default function MonthlyGoals({ goals, loading }) {
             </h3>
             <div className="space-y-4">
                 {goals && goals.length > 0 ? (
-                    goals.slice(0, 5).map((goal, index) => (
-                        <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                            <div className="flex-1">
-                                <h4 className="font-medium text-gray-800 capitalize">
-                                    {goal.metric.replace(/_/g, ' ')}
-                                </h4>
-                                <p className="text-sm text-gray-600">
-                                    {goal.current} / {goal.target}
-                                </p>
+                    goals.slice(0, 5).map((goal, index) => {
+                        // Add null checks and default values
+                        const metric = goal?.metric || 'Unknown Metric'
+                        const current = goal?.current || 0
+                        const target = goal?.target || 0
+                        const status = goal?.status || 'unknown'
+                        
+                        return (
+                            <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <div className="flex-1">
+                                    <h4 className="font-medium text-gray-800 capitalize">
+                                        {typeof metric === 'string' ? metric.replace(/_/g, ' ') : 'Unknown Metric'}
+                                    </h4>
+                                    <p className="text-sm text-gray-600">
+                                        {current} / {target}
+                                    </p>
+                                </div>
+                                <div className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(status)}`}>
+                                    <span className="mr-1">{getStatusIcon(status)}</span>
+                                    {typeof status === 'string' ? status.replace(/_/g, ' ') : 'unknown'}
+                                </div>
                             </div>
-                            <div className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(goal.status)}`}>
-                                <span className="mr-1">{getStatusIcon(goal.status)}</span>
-                                {goal.status.replace(/_/g, ' ')}
-                            </div>
-                        </div>
-                    ))
+                        )
+                    })
                 ) : (
                     <div className="text-center py-8 text-gray-500">
                         <p>No goals data available</p>
