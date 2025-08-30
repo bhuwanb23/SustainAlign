@@ -435,6 +435,94 @@ def create_sample_data():
         )
         db.session.add(application)
         
+        # Create sample impact data
+        from datetime import date, timedelta
+        
+        # Create impact snapshot
+        impact_snapshot = ImpactMetricSnapshot(
+            company_id=company.id,
+            as_of_date=date.today(),
+            beneficiaries=8920,
+            trees_planted=15750,
+            co2_reduced_tons=2450.5,
+            water_saved_liters=125000,
+            energy_generated_kwh=50000,
+            waste_reduced_tons=150.2
+        )
+        db.session.add(impact_snapshot)
+        
+        # Create impact time series data
+        for i in range(6):
+            co2_point = ImpactTimeSeries(
+                metric_name='co2_reduced_tons',
+                ts_date=date.today() - timedelta(days=30 * (5 - i)),
+                value=400 + (i * 50) + (i * 20),  # Increasing trend
+                company_id=company.id
+            )
+            db.session.add(co2_point)
+            
+            trees_point = ImpactTimeSeries(
+                metric_name='trees_planted',
+                ts_date=date.today() - timedelta(days=30 * (5 - i)),
+                value=2000 + (i * 300) + (i * 100),  # Increasing trend
+                company_id=company.id
+            )
+            db.session.add(trees_point)
+        
+        # Create impact goals
+        impact_goal1 = ImpactGoal(
+            metric_name='trees_planted',
+            period_month='2024-12',
+            target_value=20000,
+            current_value=15750,
+            status='on_track',
+            company_id=company.id
+        )
+        db.session.add(impact_goal1)
+        
+        impact_goal2 = ImpactGoal(
+            metric_name='co2_reduced_tons',
+            period_month='2024-12',
+            target_value=3000,
+            current_value=2450,
+            status='on_track',
+            company_id=company.id
+        )
+        db.session.add(impact_goal2)
+        
+        impact_goal3 = ImpactGoal(
+            metric_name='beneficiaries',
+            period_month='2024-12',
+            target_value=10000,
+            current_value=8920,
+            status='at_risk',
+            company_id=company.id
+        )
+        db.session.add(impact_goal3)
+        
+        # Create regional impact stats
+        region_stat1 = ImpactRegionStat(
+            country='India',
+            region='Karnataka',
+            city='Bangalore',
+            metric_name='co2_reduced_tons',
+            period_month='2024-12',
+            value=1200.5,
+            company_id=company.id
+        )
+        db.session.add(region_stat1)
+        
+        region_stat2 = ImpactRegionStat(
+            country='India',
+            region='Maharashtra',
+            city='Mumbai',
+            metric_name='trees_planted',
+            period_month='2024-12',
+            value=8000,
+            company_id=company.id
+        )
+        db.session.add(region_stat2)
+        
         db.session.commit()
 
         # Optional: seed one AI match linking the sample project and company

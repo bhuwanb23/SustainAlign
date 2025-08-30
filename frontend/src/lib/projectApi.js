@@ -407,3 +407,116 @@ export const createAiMatch = async (matchData) => {
     throw error
   }
 }
+
+// Impact Dashboard API
+export const getImpactSnapshot = async (companyId = null) => {
+  try {
+    const queryParams = new URLSearchParams()
+    if (companyId) queryParams.append('company_id', companyId)
+    
+    const url = `${API_BASE_URL}/impact/overview${queryParams.toString() ? `?${queryParams.toString()}` : ''}`
+    
+    const response = await fetch(url, {
+      method: 'GET'
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    return data.cards || []
+  } catch (error) {
+    console.error('Error fetching impact snapshot:', error)
+    throw error
+  }
+}
+
+export const getImpactTimeSeries = async (metricName, filters = {}) => {
+  try {
+    const queryParams = new URLSearchParams()
+    queryParams.append('metric', metricName)
+    
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        queryParams.append(key, value)
+      }
+    })
+
+    const url = `${API_BASE_URL}/impact/trends${queryParams.toString() ? `?${queryParams.toString()}` : ''}`
+    
+    const response = await fetch(url, {
+      method: 'GET'
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    return data.series || []
+  } catch (error) {
+    console.error('Error fetching impact time series:', error)
+    throw error
+  }
+}
+
+export const getImpactRegionStats = async (filters = {}) => {
+  try {
+    const queryParams = new URLSearchParams()
+    
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        queryParams.append(key, value)
+      }
+    })
+
+    const url = `${API_BASE_URL}/impact/regions${queryParams.toString() ? `?${queryParams.toString()}` : ''}`
+    
+    const response = await fetch(url, {
+      method: 'GET'
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    return data.rows || []
+  } catch (error) {
+    console.error('Error fetching impact region stats:', error)
+    throw error
+  }
+}
+
+export const getImpactGoals = async (filters = {}) => {
+  try {
+    const queryParams = new URLSearchParams()
+    
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        queryParams.append(key, value)
+      }
+    })
+
+    const url = `${API_BASE_URL}/impact/goals${queryParams.toString() ? `?${queryParams.toString()}` : ''}`
+    
+    const response = await fetch(url, {
+      method: 'GET'
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    return data.goals || []
+  } catch (error) {
+    console.error('Error fetching impact goals:', error)
+    throw error
+  }
+}
