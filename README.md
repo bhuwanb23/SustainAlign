@@ -506,7 +506,7 @@ npm audit            # Security audit
 
 ### 🏛️ Architecture Overview
 
-<div style="background: linear-gradient(135deg, #fef7ff 0%, #f3e8ff 100%); padding: 20px; border-radius: 12px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<div style="background: linear-gradient(135deg,rgb(58, 159, 227) 0%,rgba(7, 250, 165, 0.9) 100%); padding: 20px; border-radius: 12px; margin: 20px 0; border: 1px solid #e2e8f0; color:black";>
 
 #### 🔐 **Authentication Layer**
 - **JWT Token Management**: Secure token generation and validation
@@ -566,7 +566,7 @@ AIMatch (company_id, project_id, score)
 
 ### 🔌 API Endpoints
 
-<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 20px; border-radius: 12px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<div style="background: linear-gradient(135deg,rgb(58, 159, 227) 0%,rgba(7, 250, 165, 0.9) 100%); padding: 20px; border-radius: 12px; margin: 20px 0; border: 1px solid #e2e8f0; color:black";>
 
 #### 🔐 **Authentication**
 ```http
@@ -712,7 +712,8 @@ http://localhost:5000/api/health
 
 ### 🌟 Design Philosophy
 
-<div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); padding: 25px; border-radius: 16px; margin: 25px 0; border-left: 4px solid #10b981; border: 1px solid #e2e8f0;">
+
+<div style="background: linear-gradient(135deg,rgb(58, 159, 227) 0%,rgba(7, 250, 165, 0.9) 100%); padding: 20px; border-radius: 12px; margin: 20px 0; border: 1px solid #e2e8f0; color:black";>
 
 **Our design principles reflect the core values of sustainability, innovation, and trust that drive SustainAlign's mission to transform CSR management.**
 
@@ -736,27 +737,23 @@ http://localhost:5000/api/health
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 25px 0;">
 
-<div style="background: #f8fafc; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
+<div style="background: linear-gradient(135deg,rgb(58, 159, 227) 0%,rgba(7, 250, 165, 0.9) 100%); padding: 20px; border-radius: 12px; margin: 20px 0; border: 1px solid #e2e8f0; color:black";>
 
 ##### 🎯 **Cards & Containers**
 - **Elevation Levels**: 3-tier shadow system
 - **Border Radius**: Consistent 8px/12px/16px
 - **Spacing**: 8px grid system throughout
 - **Hover States**: Subtle animations and transitions
-
 </div>
-
-<div style="background: #f8fafc; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
+<div style="background: linear-gradient(135deg,rgb(58, 159, 227) 0%,rgba(7, 250, 165, 0.9) 100%); padding: 20px; border-radius: 12px; margin: 20px 0; border: 1px solid #e2e8f0; color:black";>
 
 ##### 🎨 **Interactive Elements**
 - **Buttons**: Primary, Secondary, Ghost variants
 - **Forms**: Floating labels with validation states
 - **Navigation**: Breadcrumbs and progress indicators
 - **Modals**: Backdrop blur with smooth animations
-
 </div>
-
-<div style="background: #f8fafc; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
+<div style="background: linear-gradient(135deg,rgb(58, 159, 227) 0%,rgba(7, 250, 165, 0.9) 100%); padding: 20px; border-radius: 12px; margin: 20px 0; border: 1px solid #e2e8f0; color:black";>
 
 ##### 📊 **Data Visualization**
 - **Charts**: Highcharts with custom themes
@@ -765,7 +762,6 @@ http://localhost:5000/api/health
 - **Empty States**: Helpful illustrations and CTAs
 
 </div>
-
 </div>
 
 ### 🎭 **User Experience Design**
@@ -956,7 +952,7 @@ Page Components
 
 ## 🚀 Future Vision
 
-<div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; margin: 20px 0;">
+<div style="background: linear-gradient(135deg,rgb(58, 159, 227) 0%,rgba(7, 250, 165, 0.9) 100%); padding: 20px; border-radius: 12px; margin: 20px 0; border: 1px solid #e2e8f0; color:black";>
 
 ### 🌟 **Upcoming Features**
 - **🌐 CSR Marketplace**: Direct B2B platform for corporate-NGO transactions
