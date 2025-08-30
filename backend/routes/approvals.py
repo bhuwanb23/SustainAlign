@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from datetime import datetime
-from models import ApprovalRequest, ApprovalStep, db
+from models import ApprovalRequest, ApprovalStep, db, Project
 from functools import wraps
 
 approvals_bp = Blueprint('approvals', __name__)
@@ -244,7 +244,16 @@ def update_approval_step(approval_id, step_id):
         # Recompute the overall approval status
         approval = ApprovalRequest.query.get(approval_id)
         if approval:
+            old_status = approval.status
             approval.recompute_status()
+            
+            # If approval status changed to 'approved', update the project status to 'funded'
+            if approval.status == 'approved' and old_status != 'approved' and approval.project_id:
+                project = Project.query.get(approval.project_id)
+                if project:
+                    project.status = 'funded'
+                    print(f"✅ Project {project.id} ({project.title}) status updated to 'funded' after approval")
+            
             db.session.commit()
         
         return jsonify({
@@ -302,7 +311,16 @@ def update_step_status(approval_id, step_id):
         # Recompute the overall approval status
         approval = ApprovalRequest.query.get(approval_id)
         if approval:
+            old_approval_status = approval.status
             approval.recompute_status()
+            
+            # If approval status changed to 'approved', update the project status to 'funded'
+            if approval.status == 'approved' and old_approval_status != 'approved' and approval.project_id:
+                project = Project.query.get(approval.project_id)
+                if project:
+                    project.status = 'funded'
+                    print(f"✅ Project {project.id} ({project.title}) status updated to 'funded' after approval")
+            
             db.session.commit()
         
         return jsonify({

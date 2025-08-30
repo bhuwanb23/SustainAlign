@@ -10,6 +10,10 @@ export default function ProjectTrackerPage() {
   const { filter, setFilter, projects, timeline, loading, error, refreshData } = useTracker()
   const [active, setActive] = useState(null)
 
+  // Calculate counts for header
+  const totalCount = projects.length
+  const approvedCount = projects.filter(p => p.status === 'funded' || p.status === 'published').length
+
   if (error) {
     return (
       <div className="bg-gray-50 min-h-screen flex items-center justify-center">
@@ -29,7 +33,11 @@ export default function ProjectTrackerPage() {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <HeaderBar onNew={() => {}} />
+      <HeaderBar 
+        onNew={() => {}} 
+        projectCount={totalCount}
+        approvedCount={approvedCount}
+      />
       <main className="max-w-7xl mx-auto px-6 py-8">
         <FiltersBar filter={filter} setFilter={setFilter} />
         <TimelineOverview timeline={timeline} />

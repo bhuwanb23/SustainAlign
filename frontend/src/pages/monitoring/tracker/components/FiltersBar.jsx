@@ -23,6 +23,7 @@ export default function FiltersBar({ filter, setFilter }) {
           <h3 className="text-lg font-semibold text-gray-900">Filter Projects</h3>
           <div className="flex space-x-2">
             <Btn value="all">All Projects</Btn>
+            <Btn value="approved">✅ Approved</Btn>
             <Btn value="on-track">✔️ On Track</Btn>
             <Btn value="delayed">⚠️ Delayed</Btn>
             <Btn value="completed">🏁 Completed</Btn>
