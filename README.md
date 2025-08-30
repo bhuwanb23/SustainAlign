@@ -1,5 +1,8 @@
 <div align="center">
 
+<img src="docs/images/logo.png" alt="SustainAlign Logo" width="100" height="100" style="vertical-align: middle; margin-right: 10px;" />
+
+
 # 🌱 SustainAlign
 
 **End-to-End CSR/ESG Management & Alignment Platform with AI Agents**
@@ -14,7 +17,8 @@
 
 </div>
 
-> **AI-Powered CSR/ESG Platform**: Aligning corporates, NGOs, and regulators through intelligent project discovery, evaluation, and impact tracking.
+> **AI-Powered CSR/ESG Platform**: Aligning corporates, NGOs, and regulators through intelligent project discovery, evaluation, and impact tracking. SustainAlign is the first agent-powered platform that automates CSR + Sustainability metrics end-to-end — ensuring corporates spend smarter, NGOs gain visibility, and regulators get compliance-ready transparency.
+
 
 ---
 
@@ -22,19 +26,110 @@
 
 ![Problem Statement](docs/images/problem_statement.png)
 
+**The Challenge**: Corporates in India face mandatory CSR spending requirements but struggle with:
+- **Project Discovery**: Finding the right NGOs and projects aligned to their goals
+- **Manual Reporting**: Scattered, time-consuming compliance documentation
+- **Transparency Issues**: Lack of visibility into CSR fund utilization and impact
+- **NGO Visibility**: Limited opportunities for NGOs to showcase their projects
+- **Regulatory Compliance**: Complex reporting requirements for government bodies
+
 ---
 
 ## 🚀 Solution: AI-Agent Powered Platform
 
-SustainAlign is a Ai powered CSR focused platform which is design to connec the NGO projects with corporate companies to promote CSR in the environment. 
+SustainAlign is an AI-powered CSR-focused platform designed to connect NGO projects with corporate companies to promote sustainable development and CSR initiatives.
 
 ![Solution Features](docs/images/solution_features.png)
+
+**Our AI-Agent Ecosystem**:
+- **🤖 Agent 1 (Discovery)**: Intelligent project discovery and filtering
+- **🎯 Agent 2 (Alignment)**: Company-project matching and scoring
+- **📊 Agent 3 (Evaluation)**: Risk assessment and credibility scoring
+- **🧠 Agent 4 (Decision Support)**: AI-powered decision recommendations
+- **📈 Agent 5 (Monitoring)**: Real-time impact tracking and alerts
+- **📋 Agent 6 (Reporting)**: Automated compliance and ESG reporting
 
 ---
 
 ## 👥 Target Users
 
 ![Target Users](docs/images/target_users.png)
+
+**Primary Stakeholders**:
+- **🏢 Corporate Users**: Sustainability officers, CSR managers, decision-makers
+- **🌍 NGOs**: Project managers, impact coordinators, community leaders
+- **🏛️ Regulators**: Government bodies, compliance officers, auditors
+- **👥 Communities**: Beneficiaries, local stakeholders, impact recipients
+
+---
+
+## 🌟 Platform Transformation: Before vs After
+
+### Before SustainAlign
+![Before Implementation](docs/images/before%20vs%20after.jpg)
+
+**Traditional Challenges**:
+- Manual project discovery through scattered sources
+- Time-consuming approval processes
+- Limited transparency in fund utilization
+- Complex compliance reporting
+- No real-time impact tracking
+
+### After SustainAlign Implementation
+![After Implementation](docs/images/before%20vs%20after%202.jpg)
+
+**Modern Solutions**:
+- AI-powered project discovery and matching
+- Streamlined approval workflows
+- Real-time transparency and tracking
+- Automated compliance reporting
+- Comprehensive impact analytics
+
+### Enhanced Impact Areas
+![Enhanced Impact Areas](docs/images/before%20vs%20after%203.jpg)
+
+**Improved Outcomes**:
+- Better project alignment with corporate goals
+- Increased NGO visibility and funding opportunities
+- Enhanced regulatory compliance and transparency
+- Measurable impact tracking and reporting
+
+---
+
+## 🇮🇳 India Impact Areas & Focus
+
+### Primary Impact Sectors
+![India Impact Areas](docs/images/India%20Impact%20areas.png)
+
+**Key Focus Areas**:
+- **Education**: Digital literacy, skill development, rural education
+- **Healthcare**: Primary healthcare, maternal health, disease prevention
+- **Environment**: Afforestation, waste management, renewable energy
+- **Rural Development**: Infrastructure, livelihood, community empowerment
+- **Women Empowerment**: Skill training, entrepreneurship, leadership
+
+### Regional Impact Distribution
+![Regional Impact Areas](docs/images/India%20Impact%20areas%202.png.jpg)
+
+**Geographic Coverage**:
+- **North India**: Education and healthcare initiatives
+- **South India**: Technology and skill development
+- **East India**: Rural development and agriculture
+- **West India**: Industrial and urban development
+- **Central India**: Tribal and community development
+
+---
+
+## 🔗 User Connections & Ecosystem
+
+![User Connections](docs/images/users_connections.png)
+
+**Platform Ecosystem**:
+- **Corporate ↔ NGO**: Direct project funding and collaboration
+- **NGO ↔ Community**: Local impact and beneficiary engagement
+- **Corporate ↔ Regulator**: Compliance reporting and transparency
+- **AI Agents**: Intelligent matching and decision support
+- **Platform**: Centralized management and coordination
 
 ---
 
@@ -192,6 +287,18 @@ sustainalign/
 │  │  └─ main.jsx                   # App bootstrap + Router
 │  └─ vite.config.js                # Tailwind v4 plugin + path aliases
 │
+├─ docs/                     # Project documentation and images
+│  └─ images/                # Visual assets and screenshots
+│     ├─ problem_statement.png      # Problem visualization
+│     ├─ solution_features.png      # Solution overview
+│     ├─ target_users.png          # User personas
+│     ├─ lifecycle.png             # CSR project lifecycle
+│     ├─ users_connections.png     # Platform ecosystem
+│     ├─ before vs after*.jpg      # Transformation comparison
+│     ├─ India Impact areas*.png   # Regional focus areas
+│     ├─ logo.png                  # SustainAlign branding
+│     └─ Poster - Sustain Align.png # Project overview poster
+│
 └─ html/                     # Static prototypes (reference designs)
 ```
 
@@ -290,7 +397,6 @@ npm run preview   # Preview production build
 
 ## 📋 Example Walkthrough: Infosys CSR Management
 
-
 ![CSR Project Lifecycle](docs/images/lifecycle.png)
 
 ### 1. Profile Setup
@@ -360,6 +466,60 @@ http://localhost:5000/api/health
 - **Corporates** → Smarter CSR spend, no compliance headache
 - **NGOs** → More visibility, fair funding opportunities  
 - **Regulators** → Transparent, AI-audited CSR tracking
+
+---
+
+## 🎨 Visual Design System
+
+### Brand Identity
+**Design Principles**:
+- **Sustainability**: Green color palette representing environmental focus
+- **Technology**: Modern, clean interfaces with AI-powered features
+- **Trust**: Professional design conveying reliability and transparency
+- **Accessibility**: Inclusive design for all user types
+
+### Project Overview
+**Key Visual Elements**:
+- **Hero Section**: Clear value proposition and platform overview
+- **Feature Highlights**: AI agents, impact tracking, compliance reporting
+- **User Journey**: Step-by-step process visualization
+- **Call-to-Action**: Clear next steps for stakeholders
+
+---
+
+## 📱 Live Application Screenshots
+
+<div style="display: flex; justify-content: center; gap: 20px; margin: 20px 0; flex-wrap: wrap;">
+
+<div style="text-align: center;">
+<img src="docs/images/Screenshot_30-8-2025_204726_127.0.0.1.jpeg" alt="Project Discovery Interface" width="300" height="200" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+<p><strong>Project Discovery Interface</strong></p>
+</div>
+
+<div style="text-align: center;">
+<img src="docs/images/Screenshot_30-8-2025_204753_127.0.0.1.jpeg" alt="Project Management Dashboard" width="300" height="200" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+<p><strong>Project Management Dashboard</strong></p>
+</div>
+
+</div>
+
+**Features Demonstrated**:
+- **Search & Filter**: Advanced project discovery with multiple criteria
+- **Project Cards**: Clean, informative project presentations
+- **AI Matching**: Intelligent project recommendations
+- **User Experience**: Intuitive navigation and interaction
+
+**Platform Capabilities**:
+- **Real-time Updates**: Live project status and progress tracking
+- **Data Visualization**: Charts and metrics for project insights
+- **Workflow Management**: Streamlined approval and monitoring processes
+- **Responsive Design**: Mobile-friendly interface across devices
+
+**What These Screenshots Show**:
+- **Working Application**: Real, functional SustainAlign platform
+- **Professional UI**: Clean, modern interface design
+- **User Experience**: Intuitive navigation and project management
+- **Platform Features**: Actual implementation of AI-powered CSR management
 
 ---
 
