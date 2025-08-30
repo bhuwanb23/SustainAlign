@@ -1,4 +1,47 @@
+import { useState } from 'react'
+import { createAiMatch } from '../../../../lib/projectApi'
+
 export default function MatchList({ items }) {
+  const [creatingMatches, setCreatingMatches] = useState(new Set())
+
+  const handleCreateMatch = async (projectId) => {
+    if (creatingMatches.has(projectId)) return
+    
+    setCreatingMatches(prev => new Set(prev).add(projectId))
+    
+    try {
+      // For demo purposes, use a default company ID (1)
+      // In a real app, this would come from the current user's company
+      const matchData = {
+        project_id: projectId,
+        company_id: 1, // Default company ID
+        alignment_score: Math.floor(Math.random() * 30) + 70, // Random score 70-100
+        investment_min: 50000,
+        investment_max: 500000,
+        investment_currency: 'USD',
+        timeline_months: 12,
+        rationale: 'AI-generated match based on company preferences and project alignment'
+      }
+      
+      await createAiMatch(matchData)
+      alert('AI match created successfully!')
+    } catch (error) {
+      console.error('Failed to create AI match:', error)
+      alert('Failed to create AI match: ' + error.message)
+    } finally {
+      setCreatingMatches(prev => {
+        const newSet = new Set(prev)
+        newSet.delete(projectId)
+        return newSet
+      })
+    }
+  }
+
+  const handleViewDetails = (projectId) => {
+    // Navigate to project details page
+    window.location.href = `/discovery/projects/${projectId}`
+  }
+
   return (
     <div className="space-y-6">
       {items.map((m) => (
@@ -29,8 +72,21 @@ export default function MatchList({ items }) {
               ))}
             </div>
             <div className="flex space-x-2">
-              <button className="px-4 py-2 bg-emerald-600 text-white rounded-lg shadow hover:bg-emerald-700 transition-colors">View Details</button>
-              <button className="px-4 py-2 border border-emerald-600 text-emerald-600 rounded-lg hover:bg-emerald-50 transition-colors">Save</button>
+              <button 
+                onClick={() => handleViewDetails(m.projectId)}
+                className="px-4 py-2 bg-emerald-600 text-white rounded-lg shadow hover:bg-emerald-700 transition-colors"
+              >
+                View Details
+              </button>
+              <button 
+                onClick={() => handleCreateMatch(m.projectId)}
+                disabled={creatingMatches.has(m.projectId)}
+                className={`px-4 py-2 border border-emerald-600 text-emerald-600 rounded-lg hover:bg-emerald-50 transition-colors ${
+                  creatingMatches.has(m.projectId) ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+              >
+                {creatingMatches.has(m.projectId) ? 'Creating...' : 'Create Match'}
+              </button>
             </div>
           </div>
         </article>

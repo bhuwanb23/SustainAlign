@@ -3,12 +3,32 @@ import { ALIGNMENT_FILTERS, INVESTMENT_RANGES, TIMELINE_FILTERS, SDG_FOCUS } fro
 
 export default function FiltersPanel({ onApply }) {
   const [selectedSdgs, setSelectedSdgs] = useState(new Set())
+  const [alignmentFilter, setAlignmentFilter] = useState('high')
+  const [investmentRange, setInvestmentRange] = useState('All Ranges')
+  const [timelineFilters, setTimelineFilters] = useState(new Set(['short', 'medium']))
 
   const toggleSdg = (id) => {
     const next = new Set(selectedSdgs)
     if (next.has(id)) next.delete(id)
     else next.add(id)
     setSelectedSdgs(next)
+  }
+
+  const toggleTimeline = (id) => {
+    const next = new Set(timelineFilters)
+    if (next.has(id)) next.delete(id)
+    else next.add(id)
+    setTimelineFilters(next)
+  }
+
+  const handleApply = () => {
+    const filters = {
+      alignment: alignmentFilter,
+      investment_range: investmentRange,
+      timeline: Array.from(timelineFilters),
+      sdgs: Array.from(selectedSdgs)
+    }
+    onApply(filters)
   }
 
   return (
@@ -21,7 +41,14 @@ export default function FiltersPanel({ onApply }) {
           <div className="space-y-2">
             {ALIGNMENT_FILTERS.map((f) => (
               <label key={f.id} className="flex items-center">
-                <input type="checkbox" className="rounded text-emerald-600" defaultChecked={f.defaultChecked} />
+                <input 
+                  type="radio" 
+                  name="alignment"
+                  value={f.id}
+                  checked={alignmentFilter === f.id}
+                  onChange={(e) => setAlignmentFilter(e.target.value)}
+                  className="rounded text-emerald-600" 
+                />
                 <span className="ml-2 text-sm">{f.label}</span>
                 <span className={`ml-auto w-3 h-3 rounded-full ${f.colorDotClass}`} />
               </label>
@@ -31,7 +58,11 @@ export default function FiltersPanel({ onApply }) {
 
         <div className="mb-6">
           <label className="text-sm font-medium text-gray-700 mb-3 block">Investment Range</label>
-          <select className="w-full border border-gray-200 rounded-xl px-3 py-2 bg-white shadow-sm focus:ring-2 focus:ring-emerald-300 focus:border-emerald-300">
+          <select 
+            value={investmentRange}
+            onChange={(e) => setInvestmentRange(e.target.value)}
+            className="w-full border border-gray-200 rounded-xl px-3 py-2 bg-white shadow-sm focus:ring-2 focus:ring-emerald-300 focus:border-emerald-300"
+          >
             {INVESTMENT_RANGES.map((r) => (
               <option key={r}>{r}</option>
             ))}
@@ -43,7 +74,12 @@ export default function FiltersPanel({ onApply }) {
           <div className="space-y-2">
             {TIMELINE_FILTERS.map((t) => (
               <label key={t.id} className="flex items-center">
-                <input type="checkbox" className="rounded text-emerald-600" defaultChecked={t.defaultChecked} />
+                <input 
+                  type="checkbox" 
+                  checked={timelineFilters.has(t.id)}
+                  onChange={() => toggleTimeline(t.id)}
+                  className="rounded text-emerald-600" 
+                />
                 <span className="ml-2 text-sm">{t.label}</span>
               </label>
             ))}
@@ -70,7 +106,7 @@ export default function FiltersPanel({ onApply }) {
           </div>
         </div>
 
-        <button onClick={onApply} className="w-full bg-emerald-600 text-white py-2 rounded-xl shadow hover:bg-emerald-700 transition-colors">
+        <button onClick={handleApply} className="w-full bg-emerald-600 text-white py-2 rounded-xl shadow hover:bg-emerald-700 transition-colors">
           Apply Filters
         </button>
       </div>

@@ -355,3 +355,55 @@ export const createApproval = async (data) => {
     throw error
   }
 }
+
+// AI Matching API
+export const getAiMatches = async (filters = {}) => {
+  try {
+    const queryParams = new URLSearchParams()
+    
+    // Add filter parameters
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        queryParams.append(key, value)
+      }
+    })
+
+    const url = `${API_BASE_URL}/ai-matches${queryParams.toString() ? `?${queryParams.toString()}` : ''}`
+    
+    const response = await fetch(url, {
+      method: 'GET'
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error fetching AI matches:', error)
+    throw error
+  }
+}
+
+export const createAiMatch = async (matchData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/ai-matches`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(matchData)
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error creating AI match:', error)
+    throw error
+  }
+}

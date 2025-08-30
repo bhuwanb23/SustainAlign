@@ -277,8 +277,97 @@ def create_sample_data():
         db.session.add(ngo_profile)
         db.session.flush()
         
+        # Create sample AI matches
+        ai_match1 = AIMatch(
+            project_id=project.id,
+            company_id=company.id,
+            alignment_score=96,
+            investment_min=250000,
+            investment_max=500000,
+            investment_currency='USD',
+            timeline_months=18,
+            location_text='Vietnam, Cambodia',
+            tags=[{'icon': '💧', 'bg': 'bg-blue-100', 'fg': 'text-blue-600'}, {'icon': '🍃', 'bg': 'bg-green-100', 'fg': 'text-green-600'}],
+            rationale='High alignment with company ESG goals and budget range'
+        )
+        db.session.add(ai_match1)
+        
+        ai_match2 = AIMatch(
+            project_id=project.id,
+            company_id=company.id,
+            alignment_score=92,
+            investment_min=150000,
+            investment_max=300000,
+            investment_currency='USD',
+            timeline_months=24,
+            location_text='Global',
+            tags=[{'icon': '🎓', 'bg': 'bg-blue-100', 'fg': 'text-blue-600'}, {'icon': '💻', 'bg': 'bg-orange-100', 'fg': 'text-orange-600'}],
+            rationale='Strong match for digital education focus area'
+        )
+        db.session.add(ai_match2)
+        
+        # Create another sample project for more AI matches
+        project2 = Project(
+            title='Renewable Energy Microgrids',
+            short_description='Solar-powered microgrids for 30 remote communities, reducing carbon emissions by 15,000 tons annually',
+            ngo_name='GreenEnergy NGO',
+            location_city='Nairobi',
+            location_region='Kenya',
+            location_country='Kenya',
+            total_project_cost=1200000,
+            funding_required=800000,
+            currency='USD',
+            csr_eligibility=True,
+            preferred_contribution_type='cash',
+            start_date=date.today(),
+            end_date=date.today() + timedelta(days=1095),
+            ngo_registration_number='GREEN001',
+            ngo_80g_status='Valid',
+            ngo_fcra_status='Valid',
+            ngo_rating=5,
+            ngo_verification_badge='Verified',
+            past_projects_completed=15,
+            status='published',
+            visibility='public',
+            created_by=user.id
+        )
+        project2.set_sdg_goals([7, 13])  # Affordable Energy, Climate Action
+        project2.set_csr_focus_areas(['Environment', 'Renewable Energy'])
+        project2.set_target_beneficiaries(['Rural Communities', 'Low-income households'])
+        project2.set_expected_outcomes({
+            'communities_served': 30,
+            'carbon_reduction': '15,000 tons annually',
+            'households_benefited': 5000
+        })
+        project2.set_kpis({
+            'energy_access': '100%',
+            'carbon_reduction': '15,000 tons/year',
+            'community_engagement': '95%'
+        })
+        project2.set_project_images([
+            'https://example.com/solar1.jpg',
+            'https://example.com/solar2.jpg'
+        ])
+        project2.proposal_document_url = 'https://example.com/solar-proposal.pdf'
+        db.session.add(project2)
+        db.session.flush()
+        
+        # Create AI match for project2
+        ai_match3 = AIMatch(
+            project_id=project2.id,
+            company_id=company.id,
+            alignment_score=87,
+            investment_min=800000,
+            investment_max=1200000,
+            investment_currency='USD',
+            timeline_months=36,
+            location_text='Kenya, Tanzania',
+            tags=[{'icon': '☀️', 'bg': 'bg-yellow-100', 'fg': 'text-yellow-600'}, {'icon': '🍃', 'bg': 'bg-green-100', 'fg': 'text-green-600'}],
+            rationale='Excellent match for environmental sustainability goals'
+        )
+        db.session.add(ai_match3)
+        
         # Create sample project
-        from datetime import date, timedelta
         project = Project(
             title='Digital Literacy for Rural Students',
             short_description='Providing computer education and digital skills to 500 students in rural Karnataka villages',

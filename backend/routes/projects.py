@@ -93,6 +93,38 @@ def list_ai_matches():
     return jsonify([m.to_dict() for m in matches])
 
 
+@projects_bp.post('/ai-matches')
+def create_ai_match():
+    """Create a new AI match (public for dev)"""
+    data = request.get_json() or {}
+    
+    # Validate required fields
+    if not data.get('project_id') or not data.get('company_id'):
+        return jsonify({'error': 'project_id and company_id are required'}), 400
+    
+    # Create the AI match
+    match = AIMatch(
+        project_id=data.get('project_id'),
+        company_id=data.get('company_id'),
+        alignment_score=data.get('alignment_score', 0),
+        investment_min=data.get('investment_min'),
+        investment_max=data.get('investment_max'),
+        investment_currency=data.get('investment_currency', 'USD'),
+        timeline_months=data.get('timeline_months'),
+        location_text=data.get('location_text'),
+        tags=data.get('tags'),
+        rationale=data.get('rationale')
+    )
+    
+    db.session.add(match)
+    db.session.commit()
+    
+    return jsonify({
+        'message': 'AI match created successfully',
+        'match': match.to_dict()
+    }), 201
+
+
 @projects_bp.get('/ngo-risk')
 def list_ngo_risk():
     """Summaries for NGO risk scoring page (public)"""
