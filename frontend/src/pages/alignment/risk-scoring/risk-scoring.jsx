@@ -7,6 +7,8 @@ import {
   ProjectRiskTable 
 } from './components/RiskPanel.jsx'
 import { exportRiskReport } from '../../../lib/riskApiNew.js'
+import AlertsGrid from '../../monitoring/alerts/components/AlertsGrid.jsx'
+import RiskMeter from '../../monitoring/alerts/components/RiskMeter.jsx'
 
 export default function RiskScoringPage() {
   const {
@@ -25,7 +27,9 @@ export default function RiskScoringPage() {
     unusualActivities,
     dailyMetrics,
     projectRiskDistribution,
-    refreshData
+    refreshData,
+    riskAlerts,
+    overallRiskScore
   } = useRiskScoring()
 
   const [activeTab, setActiveTab] = useState('overview')
@@ -105,6 +109,17 @@ export default function RiskScoringPage() {
           </div>
 
           <div className="p-6">
+            {/* Risk Meter - Overall System Risk */}
+            <div className="mb-6">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">Overall System Risk Level</h3>
+                  <span className="text-sm text-gray-500">Based on all corporate projects</span>
+                </div>
+                <RiskMeter percent={overallRiskScore} />
+              </div>
+            </div>
+
             {/* Headline Metrics and Daily Analysis */}
             <HeadlineMetrics 
               summary={corporateSummary} 
@@ -132,6 +147,11 @@ export default function RiskScoringPage() {
                     >
                       <span>{tab.icon}</span>
                       {tab.label}
+                      {tab.id === 'alerts' && riskAlerts.length > 0 && (
+                        <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] flex items-center justify-center">
+                          {riskAlerts.length}
+                        </span>
+                      )}
                     </button>
                   ))}
                 </nav>
@@ -197,6 +217,22 @@ export default function RiskScoringPage() {
 
                 {/* Recent Unusual Activities */}
                 <UnusualActivitiesPanel activities={recentUnusualActivities} />
+
+                {/* High Priority Alerts Preview */}
+                {riskAlerts.length > 0 && (
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+                    <div className="p-6 border-b border-gray-100">
+                      <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                        <span className="text-red-500">⚠️</span>
+                        High Priority Alerts ({riskAlerts.filter(a => a.severity === 'critical').length})
+                      </h3>
+                      <p className="text-sm text-gray-600 mt-1">Critical alerts requiring immediate attention</p>
+                    </div>
+                    <div className="p-6">
+                      <AlertsGrid alerts={riskAlerts.filter(a => a.severity === 'critical').slice(0, 3)} />
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -205,7 +241,50 @@ export default function RiskScoringPage() {
             )}
 
             {activeTab === 'alerts' && (
-              <UnusualActivitiesPanel activities={unusualActivities} />
+              <div className="space-y-6">
+                {/* Alerts Summary */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900">Risk Alerts Overview</h3>
+                    <div className="flex items-center gap-4 text-sm">
+                      <span className="text-gray-600">Total Alerts: {riskAlerts.length}</span>
+                      <span className="text-red-600">Critical: {riskAlerts.filter(a => a.severity === 'critical').length}</span>
+                      <span className="text-orange-600">Medium: {riskAlerts.filter(a => a.severity === 'medium').length}</span>
+                      <span className="text-green-600">Low: {riskAlerts.filter(a => a.severity === 'low').length}</span>
+                    </div>
+                  </div>
+                  
+                  {/* Alert Filters */}
+                  <div className="flex items-center gap-4 mb-6">
+                    <select className="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                      <option>All Severities</option>
+                      <option>Critical Only</option>
+                      <option>Medium & Critical</option>
+                      <option>Low Priority</option>
+                    </select>
+                    <select className="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                      <option>All Companies</option>
+                      {companies.map(company => (
+                        <option key={company.company_id}>{company.company_name}</option>
+                      ))}
+                    </select>
+                    <button className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm hover:bg-emerald-700">
+                      Export Alerts
+                    </button>
+                  </div>
+                </div>
+
+                {/* Alerts Grid */}
+                {riskAlerts.length > 0 ? (
+                  <AlertsGrid alerts={riskAlerts} />
+                ) : (
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
+                    <div className="text-6xl mb-4">✅</div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No Active Alerts</h3>
+                    <p className="text-gray-600">All projects are currently within acceptable risk parameters.</p>
+                  </div>
+                )}
+              </div>
             )}
 
             {activeTab === 'recent' && (
