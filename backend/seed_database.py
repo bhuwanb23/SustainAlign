@@ -106,8 +106,8 @@ def seed_database():
         company_data = sample_data.get('companies', {})
         
         if 'companies' in company_data:
-            for company_data_item in company_data['companies']:
-                company = Company(**company_data_item)
+            for company_item in company_data['companies']:
+                company = Company(**company_item)
                 db.session.add(company)
             db.session.commit()
             stats['companies'] = len(company_data['companies'])
