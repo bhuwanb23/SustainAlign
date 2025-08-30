@@ -1,6 +1,24 @@
 export default function ProjectDetails({ project, onClose }) {
   if (!project) return null
 
+  // Helper function to safely render values that might be objects
+  const renderValue = (value) => {
+    if (value === null || value === undefined) return '—'
+    if (typeof value === 'object') {
+      // Handle location objects
+      if (value.city || value.country || value.region) {
+        const parts = []
+        if (value.city) parts.push(value.city)
+        if (value.region) parts.push(value.region)
+        if (value.country) parts.push(value.country)
+        return parts.join(', ')
+      }
+      // Handle other objects - convert to string
+      return JSON.stringify(value)
+    }
+    return value
+  }
+
   const Section = ({ title, children }) => (
     <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
       <h3 className="text-base font-semibold text-gray-900 mb-3">{title}</h3>
@@ -26,39 +44,39 @@ export default function ProjectDetails({ project, onClose }) {
 
         <div className="p-6 overflow-y-auto space-y-4">
           <Section title="1. Project Basics">
-            <p><span className="font-medium">Project Title:</span> {project.title || '—'}</p>
-            <p><span className="font-medium">NGO / Implementing Partner:</span> {project.ngo || project.subtitle || '—'}</p>
-            <p><span className="font-medium">Sector:</span> {project.sector || project.metricLabel || '—'}</p>
-            <p><span className="font-medium">SDGs:</span> {(project.sdgs || project.sdg || []).join(', ') || '—'}</p>
-            <p><span className="font-medium">Location / Region:</span> {project.region || project.location || '—'}</p>
+            <p><span className="font-medium">Project Title:</span> {renderValue(project.title)}</p>
+            <p><span className="font-medium">NGO / Implementing Partner:</span> {renderValue(project.ngo || project.subtitle)}</p>
+            <p><span className="font-medium">Sector:</span> {renderValue(project.sector || project.metricLabel)}</p>
+            <p><span className="font-medium">SDGs:</span> {Array.isArray(project.sdgs || project.sdg) ? (project.sdgs || project.sdg).join(', ') : renderValue(project.sdgs || project.sdg)}</p>
+            <p><span className="font-medium">Location / Region:</span> {renderValue(project.region || project.location)}</p>
           </Section>
 
           <Section title="2. Timeline & Milestones">
-            <p><span className="font-medium">Start Date – End Date:</span> {project.start || '—'} – {project.end || '—'}</p>
-            <p><span className="font-medium">Current Phase:</span> {project.phase || '—'}</p>
+            <p><span className="font-medium">Start Date – End Date:</span> {renderValue(project.start)} – {renderValue(project.end)}</p>
+            <p><span className="font-medium">Current Phase:</span> {renderValue(project.phase)}</p>
             <div className="flex items-center gap-3">
               <span className="font-medium">Milestone Progress:</span>
               <div className="w-48 bg-gray-200 rounded-full h-2">
                 <div className="h-2 rounded-full bg-emerald-500" style={{ width: `${project.progressPct || 0}%` }} />
               </div>
-              <span className="text-xs text-gray-600">{project.milestoneSummary || `${project.completedMilestones || 0}/${project.totalMilestones || 0} completed`}</span>
+              <span className="text-xs text-gray-600">{renderValue(project.milestoneSummary || `${project.completedMilestones || 0}/${project.totalMilestones || 0} completed`)}</span>
             </div>
-            <p><span className="font-medium">Next Milestone & Due Date:</span> {project.nextMilestone || '—'} {project.nextDue ? `· ${project.nextDue}` : ''}</p>
+            <p><span className="font-medium">Next Milestone & Due Date:</span> {renderValue(project.nextMilestone)} {project.nextDue ? `· ${renderValue(project.nextDue)}` : ''}</p>
           </Section>
 
           <Section title="3. Budget & Financials">
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3">
                 <div className="text-xs text-emerald-700">Allocated</div>
-                <div className="text-base font-semibold text-emerald-800">{project.allocated || project.budget || '—'}</div>
+                <div className="text-base font-semibold text-emerald-800">{renderValue(project.allocated || project.budget)}</div>
               </div>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                 <div className="text-xs text-blue-700">Spent</div>
-                <div className="text-base font-semibold text-blue-800">{project.spent || '—'}</div>
+                <div className="text-base font-semibold text-blue-800">{renderValue(project.spent)}</div>
               </div>
               <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
                 <div className="text-xs text-amber-700">Remaining</div>
-                <div className="text-base font-semibold text-amber-800">{project.remaining || '—'}</div>
+                <div className="text-base font-semibold text-amber-800">{renderValue(project.remaining)}</div>
               </div>
               <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
                 <div className="text-xs text-purple-700">% Utilized</div>
@@ -84,25 +102,25 @@ export default function ProjectDetails({ project, onClose }) {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg p-3">
                 <div className="text-xs">Current Status</div>
-                <div className="font-semibold">{project.statusText || project.badge?.text || '—'}</div>
+                <div className="font-semibold">{renderValue(project.statusText || project.badge?.text)}</div>
               </div>
               <div className="bg-rose-50 border border-rose-200 text-rose-800 rounded-lg p-3">
                 <div className="text-xs">Issues Raised</div>
-                <div className="font-semibold">{project.issues || '—'}</div>
+                <div className="font-semibold">{renderValue(project.issues)}</div>
               </div>
               <div className="bg-amber-50 border border-amber-200 text-amber-800 rounded-lg p-3 md:col-span-1">
                 <div className="text-xs">AI Suggestions</div>
-                <div className="font-semibold">{project.aiSuggestions || 'No critical risks detected.'}</div>
+                <div className="font-semibold">{renderValue(project.aiSuggestions || 'No critical risks detected.')}</div>
               </div>
             </div>
           </Section>
 
           <Section title="6. Supporting Data">
-            <p><span className="font-medium">Latest NGO Report:</span> {project.latestReport || '—'}</p>
-            <p><span className="font-medium">Evidence Links:</span> {(project.evidenceLinks || []).length ? (
+            <p><span className="font-medium">Latest NGO Report:</span> {renderValue(project.latestReport)}</p>
+            <p><span className="font-medium">Evidence Links:</span> {Array.isArray(project.evidenceLinks) && project.evidenceLinks.length ? (
               <span className="space-x-2">{project.evidenceLinks.map((l, i) => <a key={i} href={l} target="_blank" rel="noreferrer" className="text-emerald-700 hover:underline">Link {i+1}</a>)}</span>
             ) : '—'}</p>
-            <p><span className="font-medium">Verification Status:</span> {project.verification || '—'}</p>
+            <p><span className="font-medium">Verification Status:</span> {renderValue(project.verification)}</p>
           </Section>
         </div>
       </div>
