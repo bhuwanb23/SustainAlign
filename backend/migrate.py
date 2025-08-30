@@ -523,6 +523,114 @@ def create_sample_data():
         )
         db.session.add(region_stat2)
         
+        # Create sample rationale data
+        rationale = DecisionRationale(
+            project_id=project.id,
+            company_id=company.id,
+            title='Digital Literacy Project Analysis',
+            context={
+                'ngo_name': 'EduCare Foundation',
+                'budget': 1500000,
+                'duration': 12,
+                'description': 'Comprehensive analysis of the digital literacy project for rural students in Karnataka',
+                'sdg_goals': [
+                    {'number': 4, 'name': 'Quality Education'},
+                    {'number': 9, 'name': 'Industry, Innovation and Infrastructure'},
+                    {'number': 10, 'name': 'Reduced Inequalities'}
+                ],
+                'sdg_alignment_score': 95,
+                'cost_breakdown': {
+                    'infrastructure': 900000,
+                    'training': 450000,
+                    'monitoring': 150000
+                },
+                'impact_metrics': {
+                    'students_enrolled': 500,
+                    'villages_covered': 10,
+                    'cost_per_beneficiary': 3000
+                },
+                'ngo_credibility': {
+                    'rating': 8.5,
+                    'years_experience': 8,
+                    'projects_completed': 25
+                },
+                'roi_score': 8.2
+            },
+            criteria={
+                'sdg_alignment': 0.4,
+                'budget_efficiency': 0.35,
+                'ngo_credibility': 0.2,
+                'impact_potential': 0.05
+            },
+            options=[
+                {'key': 'approve', 'label': 'Approve Project', 'data': {'confidence': 0.92}},
+                {'key': 'modify', 'label': 'Request Modifications', 'data': {'confidence': 0.85}},
+                {'key': 'reject', 'label': 'Reject Project', 'data': {'confidence': 0.15}}
+            ],
+            selected_option='approve',
+            pros=[
+                'Strong alignment with company education focus areas',
+                'Proven NGO with excellent track record',
+                'Cost-effective solution with high impact potential',
+                'Addresses critical digital divide in rural areas'
+            ],
+            cons=[
+                'Requires significant upfront infrastructure investment',
+                'Dependency on reliable electricity and internet connectivity',
+                'Need for ongoing technical support and maintenance'
+            ],
+            reasoning_steps=[
+                'Analyzed project alignment with SDG goals and company priorities',
+                'Evaluated NGO credibility and past performance',
+                'Assessed cost-benefit ratio and ROI potential',
+                'Reviewed risk factors and mitigation strategies',
+                'Considered scalability and long-term sustainability'
+            ],
+            score_breakdown={
+                'approve': {
+                    'sdg_alignment': 0.95,
+                    'budget_efficiency': 0.88,
+                    'ngo_credibility': 0.92,
+                    'impact_potential': 0.85
+                },
+                'modify': {
+                    'sdg_alignment': 0.85,
+                    'budget_efficiency': 0.75,
+                    'ngo_credibility': 0.88,
+                    'impact_potential': 0.78
+                },
+                'reject': {
+                    'sdg_alignment': 0.45,
+                    'budget_efficiency': 0.35,
+                    'ngo_credibility': 0.60,
+                    'impact_potential': 0.25
+                }
+            },
+            attachments=[
+                {'name': 'Project Proposal', 'url': 'https://example.com/proposal.pdf'},
+                {'name': 'NGO Credentials', 'url': 'https://example.com/credentials.pdf'},
+                {'name': 'Financial Analysis', 'url': 'https://example.com/financial.pdf'}
+            ],
+            created_by=user.id
+        )
+        db.session.add(rationale)
+        db.session.flush()
+        
+        # Create sample rationale notes
+        note1 = RationaleNote(
+            rationale_id=rationale.id,
+            author='Priya Sharma',
+            content='This project aligns perfectly with our education focus area and has strong potential for impact.'
+        )
+        db.session.add(note1)
+        
+        note2 = RationaleNote(
+            rationale_id=rationale.id,
+            author='AI Assistant',
+            content='High confidence score based on comprehensive analysis of project parameters and NGO track record.'
+        )
+        db.session.add(note2)
+        
         db.session.commit()
 
         # Optional: seed one AI match linking the sample project and company

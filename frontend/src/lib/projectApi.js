@@ -520,3 +520,116 @@ export const getImpactGoals = async (filters = {}) => {
     throw error
   }
 }
+
+// Rationale API
+export const getRationales = async (filters = {}) => {
+  try {
+    const queryParams = new URLSearchParams()
+    
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        queryParams.append(key, value)
+      }
+    })
+
+    const url = `${API_BASE_URL}/rationales${queryParams.toString() ? `?${queryParams.toString()}` : ''}`
+    
+    const response = await fetch(url, {
+      method: 'GET'
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error fetching rationales:', error)
+    throw error
+  }
+}
+
+export const getRationale = async (rationaleId) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/rationales/${rationaleId}`, {
+      method: 'GET'
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error fetching rationale:', error)
+    throw error
+  }
+}
+
+export const createRationale = async (rationaleData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/rationales`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(rationaleData)
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error creating rationale:', error)
+    throw error
+  }
+}
+
+export const updateRationale = async (rationaleId, rationaleData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/rationales/${rationaleId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(rationaleData)
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error updating rationale:', error)
+    throw error
+  }
+}
+
+export const addRationaleNote = async (rationaleId, noteData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/rationales/${rationaleId}/notes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(noteData)
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error adding rationale note:', error)
+    throw error
+  }
+}

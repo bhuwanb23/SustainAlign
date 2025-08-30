@@ -332,6 +332,125 @@ def tracker_project_detail(project_id: int):
     return jsonify(rec.to_detail())
 
 
+# Rationale endpoints (public for dev)
+@projects_bp.get('/rationales')
+def list_rationales():
+    """Get all decision rationales with optional filtering"""
+    project_id = request.args.get('project_id', type=int)
+    company_id = request.args.get('company_id', type=int)
+    
+    query = DecisionRationale.query
+    
+    if project_id:
+        query = query.filter(DecisionRationale.project_id == project_id)
+    if company_id:
+        query = query.filter(DecisionRationale.company_id == company_id)
+    
+    rationales = query.order_by(DecisionRationale.created_at.desc()).limit(100).all()
+    return jsonify([rationale.to_dict() for rationale in rationales])
+
+
+@projects_bp.get('/rationales/<int:rationale_id>')
+def get_rationale(rationale_id: int):
+    """Get a specific decision rationale"""
+    rationale = DecisionRationale.query.get_or_404(rationale_id)
+    return jsonify(rationale.to_dict())
+
+
+@projects_bp.post('/rationales')
+def create_rationale():
+    """Create a new decision rationale"""
+    data = request.get_json() or {}
+    
+    # Validate required fields
+    if not data.get('title'):
+        return jsonify({'error': 'title is required'}), 400
+    
+    rationale = DecisionRationale(
+        project_id=data.get('project_id'),
+        company_id=data.get('company_id'),
+        title=data.get('title'),
+        context=data.get('context'),
+        criteria=data.get('criteria'),
+        options=data.get('options'),
+        selected_option=data.get('selected_option'),
+        pros=data.get('pros'),
+        cons=data.get('cons'),
+        reasoning_steps=data.get('reasoning_steps'),
+        score_breakdown=data.get('score_breakdown'),
+        attachments=data.get('attachments'),
+        created_by=data.get('created_by')
+    )
+    
+    db.session.add(rationale)
+    db.session.commit()
+    
+    return jsonify({
+        'message': 'Rationale created successfully',
+        'rationale': rationale.to_dict()
+    }), 201
+
+
+@projects_bp.put('/rationales/<int:rationale_id>')
+def update_rationale(rationale_id: int):
+    """Update a decision rationale"""
+    rationale = DecisionRationale.query.get_or_404(rationale_id)
+    data = request.get_json() or {}
+    
+    # Update fields
+    if 'title' in data:
+        rationale.title = data['title']
+    if 'context' in data:
+        rationale.context = data['context']
+    if 'criteria' in data:
+        rationale.criteria = data['criteria']
+    if 'options' in data:
+        rationale.options = data['options']
+    if 'selected_option' in data:
+        rationale.selected_option = data['selected_option']
+    if 'pros' in data:
+        rationale.pros = data['pros']
+    if 'cons' in data:
+        rationale.cons = data['cons']
+    if 'reasoning_steps' in data:
+        rationale.reasoning_steps = data['reasoning_steps']
+    if 'score_breakdown' in data:
+        rationale.score_breakdown = data['score_breakdown']
+    if 'attachments' in data:
+        rationale.attachments = data['attachments']
+    
+    db.session.commit()
+    
+    return jsonify({
+        'message': 'Rationale updated successfully',
+        'rationale': rationale.to_dict()
+    })
+
+
+@projects_bp.post('/rationales/<int:rationale_id>/notes')
+def add_rationale_note(rationale_id: int):
+    """Add a note to a decision rationale"""
+    rationale = DecisionRationale.query.get_or_404(rationale_id)
+    data = request.get_json() or {}
+    
+    if not data.get('content'):
+        return jsonify({'error': 'content is required'}), 400
+    
+    note = RationaleNote(
+        rationale_id=rationale_id,
+        author=data.get('author'),
+        content=data.get('content')
+    )
+    
+    db.session.add(note)
+    db.session.commit()
+    
+    return jsonify({
+        'message': 'Note added successfully',
+        'note': note.to_dict()
+    }), 201
+
+
 # Audit trail endpoints (public)
 @projects_bp.get('/audit-events')
 def list_audit_events():
@@ -497,61 +616,7 @@ def get_report_job(job_id: int):
     return jsonify(j.to_dict())
 
 
-# Decision rationale endpoints (public)
-@projects_bp.post('/rationales')
-def create_rationale():
-    data = request.get_json() or {}
-    r = DecisionRationale(
-        project_id=data.get('project_id'),
-        company_id=data.get('company_id'),
-        title=data.get('title') or 'Decision Rationale',
-        context=data.get('context') or {},
-        criteria=data.get('criteria') or {},
-        options=data.get('options') or [],
-        selected_option=data.get('selected_option'),
-        pros=data.get('pros') or [],
-        cons=data.get('cons') or [],
-        reasoning_steps=data.get('reasoning_steps') or [],
-        score_breakdown=data.get('score_breakdown') or {},
-        attachments=data.get('attachments') or [],
-    )
-    db.session.add(r)
-    db.session.commit()
-    return jsonify(r.to_dict()), 201
 
-
-@projects_bp.get('/rationales')
-def list_rationales():
-    project_id = request.args.get('project_id', type=int)
-    q = DecisionRationale.query.order_by(DecisionRationale.created_at.desc())
-    if project_id:
-        q = q.filter(DecisionRationale.project_id == project_id)
-    items = [i.to_dict() for i in q.limit(50).all()]
-    return jsonify(items)
-
-
-@projects_bp.get('/rationales/<int:rid>')
-def get_rationale(rid: int):
-    r = DecisionRationale.query.get(rid)
-    if not r:
-        return jsonify({'error': 'Not found'}), 404
-    return jsonify(r.to_dict())
-
-
-@projects_bp.post('/rationales/<int:rid>/notes')
-def add_rationale_note(rid: int):
-    r = DecisionRationale.query.get(rid)
-    if not r:
-        return jsonify({'error': 'Not found'}), 404
-    data = request.get_json() or {}
-    n = RationaleNote(
-        rationale_id=r.id,
-        author=data.get('author'),
-        content=data.get('content') or ''
-    )
-    db.session.add(n)
-    db.session.commit()
-    return jsonify(n.to_dict()), 201
 
 
 @projects_bp.get('/projects/<int:project_id>')

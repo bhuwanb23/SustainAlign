@@ -1,14 +1,43 @@
-export function DecisionFactors() {
+export function DecisionFactors({ rationale, loading }) {
+  if (loading) {
+    return (
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+        <div className="animate-pulse">
+          <div className="h-6 bg-gray-200 rounded mb-4"></div>
+          <div className="space-y-4">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i}>
+                <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                <div className="h-2 bg-gray-200 rounded"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (!rationale || !rationale.criteria) {
+    return (
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+        <h4 className="text-lg font-semibold text-gray-900 mb-4">Decision Factors</h4>
+        <p className="text-gray-500 text-sm">No decision criteria available</p>
+      </div>
+    )
+  }
+
+  const factors = Object.entries(rationale.criteria).map(([key, value]) => ({
+    label: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+    color: 'bg-blue-500',
+    width: `${value * 100}%`,
+    pct: `${Math.round(value * 100)}%`
+  }))
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
       <h4 className="text-lg font-semibold text-gray-900 mb-4">Decision Factors</h4>
       <div className="space-y-4">
-        {[
-          { label: 'SDG Alignment', color: 'bg-blue-500', width: '40%', pct: '40%' },
-          { label: 'Budget Efficiency', color: 'bg-green-500', width: '35%', pct: '35%' },
-          { label: 'NGO Credibility', color: 'bg-purple-500', width: '20%', pct: '20%' },
-          { label: 'Impact Potential', color: 'bg-orange-500', width: '5%', pct: '5%' },
-        ].map((f) => (
+        {factors.map((f) => (
           <div key={f.label}>
             <div className="flex justify-between text-sm mb-2">
               <span className="text-gray-600">{f.label}</span>
