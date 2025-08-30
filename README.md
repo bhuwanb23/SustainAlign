@@ -570,15 +570,6 @@ http://localhost:5000/api/health
 - **Platform Features**: Actual implementation of AI-powered CSR management
 
 ---
-**⚡ Challenges We Faced**:
-
--**NGO data integration inconsistencies**
-
--**Mapping budgets → SDGs**
-
--**Explainability for corporates**
-
--**Compliance complexity (MCA, SEBI, global ESG standards)**
 
 **🚀 Future Vision**:
 
