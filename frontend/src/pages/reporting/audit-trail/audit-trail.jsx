@@ -12,9 +12,29 @@ export default function AuditTrailPage() {
     dateFilter, setDateFilter,
     entries, details, expandedId, toggle,
     summary,
+    loading,
+    error,
     onExport,
     onAddEntry,
+    refreshData,
   } = useAuditTrail()
+
+  if (error) {
+    return (
+      <div className="bg-gradient-to-br from-emerald-50 to-blue-50 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-600 text-xl font-semibold mb-4">Error loading audit trail</div>
+          <div className="text-gray-600 mb-4">{error}</div>
+          <button
+            onClick={refreshData}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="bg-gradient-to-br from-emerald-50 to-blue-50 min-h-screen">
@@ -30,13 +50,22 @@ export default function AuditTrailPage() {
           dateFilter={dateFilter}
           setDateFilter={setDateFilter}
         />
-        <Timeline
-          entries={entries}
-          details={details}
-          expandedId={expandedId}
-          toggle={toggle}
-        />
-        <SummaryCards summary={summary} />
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <div className="text-gray-600">Loading audit trail...</div>
+          </div>
+        ) : (
+          <>
+            <Timeline
+              entries={entries}
+              details={details}
+              expandedId={expandedId}
+              toggle={toggle}
+            />
+            <SummaryCards summary={summary} />
+          </>
+        )}
       </main>
     </div>
   )

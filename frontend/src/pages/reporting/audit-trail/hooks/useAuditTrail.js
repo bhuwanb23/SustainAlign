@@ -1,4 +1,5 @@
-import { useMemo, useState, useCallback } from 'react'
+import { useMemo, useState, useCallback, useEffect } from 'react'
+import { getAuditEvents, getAuditSummary } from '../../../../lib/projectApi'
 
 function normalize(str) {
   return String(str || '').toLowerCase()
@@ -10,120 +11,151 @@ export default function useAuditTrail() {
   const [statusFilter, setStatusFilter] = useState('all')
   const [dateFilter, setDateFilter] = useState('')
   const [expandedId, setExpandedId] = useState(null)
+  const [events, setEvents] = useState([])
+  const [summary, setSummary] = useState({})
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  const entries = useMemo(() => [
-    {
-      id: 'e1',
-      category: 'ai',
-      title: 'Risk Assessment Algorithm Update',
-      timeAgo: '2 hours ago',
-      badgeText: 'AI Recommendation',
-      statusDot: 'bg-blue-500',
-      statusText: 'Neutral',
-      statusColor: 'text-blue-600',
-      borderColor: 'border-blue-500',
-      chipBg: 'bg-blue-100',
-      chipText: 'text-blue-700',
-      summary: 'AI system recommends updating risk assessment parameters based on recent market volatility patterns.',
-      meta: 'System AI • ID: RAU-2024-001',
-    },
-    {
-      id: 'e2',
-      category: 'approval',
-      title: 'ESG Investment Policy Amendment',
-      timeAgo: '4 hours ago',
-      badgeText: 'Manager Approval',
-      statusDot: 'bg-emerald-500',
-      statusText: 'Approved',
-      statusColor: 'text-emerald-600',
-      borderColor: 'border-emerald-500',
-      chipBg: 'bg-emerald-100',
-      chipText: 'text-emerald-700',
-      summary: 'Senior management approved new ESG criteria for investment screening process.',
-      meta: 'Sarah Chen, CRO • ID: EPA-2024-002',
-    },
-    {
-      id: 'e3',
-      category: 'compliance',
-      title: 'High-Risk Transaction Alert',
-      timeAgo: '6 hours ago',
-      badgeText: 'Compliance Action',
-      statusDot: 'bg-red-500',
-      statusText: 'Rejected',
-      statusColor: 'text-red-600',
-      borderColor: 'border-red-500',
-      chipBg: 'bg-red-100',
-      chipText: 'text-red-700',
-      summary: 'Compliance system flagged and rejected suspicious transaction exceeding risk thresholds.',
-      meta: 'Compliance Engine • ID: HRT-2024-003',
-    },
-    {
-      id: 'e4',
-      category: 'ai',
-      title: 'Customer Due Diligence Enhancement',
-      timeAgo: '1 day ago',
-      badgeText: 'AI Recommendation',
-      statusDot: 'bg-blue-500',
-      statusText: 'Neutral',
-      statusColor: 'text-blue-600',
-      borderColor: 'border-blue-500',
-      chipBg: 'bg-blue-100',
-      chipText: 'text-blue-700',
-      summary: 'AI suggests implementing enhanced KYC procedures for high-value client onboarding.',
-      meta: 'Compliance AI • ID: CDD-2024-004',
-    },
-  ], [])
+  // Fetch audit events and summary
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      
+      const [eventsData, summaryData] = await Promise.all([
+        getAuditEvents(),
+        getAuditSummary()
+      ])
+      
+      setEvents(eventsData)
+      setSummary(summaryData)
+    } catch (err) {
+      console.error('Error fetching audit data:', err)
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }, [])
 
-  const details = useMemo(() => ({
-    e1: {
-      cardBg: 'bg-blue-50',
-      cardBorder: 'border-blue-200',
-      title: 'Detailed Analysis',
-      titleColor: 'text-blue-800',
-      items: [
-        ['Risk Level', 'Medium (7.2/10)'],
-        ['Affected Systems', 'Portfolio Management, Compliance Engine'],
-        ['Recommendation', 'Implement updated volatility thresholds within 48 hours'],
-        ['Impact Assessment', 'Potential 15% improvement in risk detection accuracy'],
-      ],
-    },
-    e2: {
-      cardBg: 'bg-emerald-50',
-      cardBorder: 'border-emerald-200',
-      title: 'Approval Details',
-      titleColor: 'text-emerald-800',
-      items: [
-        ['Approval Authority', 'Chief Risk Officer'],
-        ['Policy Version', 'ESG-2024-v3.1'],
-        ['Effective Date', 'January 15, 2024'],
-        ['Review Period', 'Quarterly assessment required'],
-      ],
-    },
-    e3: {
-      cardBg: 'bg-red-50',
-      cardBorder: 'border-red-200',
-      title: 'Compliance Action Details',
-      titleColor: 'text-red-800',
-      items: [
-        ['Transaction ID', 'TXN-2024-789456'],
-        ['Risk Score', '9.8/10 (Critical)'],
-        ['Violation Type', 'AML threshold exceeded'],
-        ['Action Taken', 'Transaction blocked, investigation initiated'],
-      ],
-    },
-    e4: {
-      cardBg: 'bg-blue-50',
-      cardBorder: 'border-blue-200',
-      title: 'Enhancement Proposal',
-      titleColor: 'text-blue-800',
-      items: [
-        ['Target Segment', 'Clients with >$10M portfolio value'],
-        ['Additional Checks', 'Enhanced source of funds verification'],
-        ['Implementation Time', '2-3 weeks'],
-        ['Expected Outcome', '40% reduction in onboarding risks'],
-      ],
-    },
-  }), [])
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
+
+  // Transform audit events to match frontend format
+  const transformEvent = useCallback((event) => {
+    const getCategoryFromEntityType = (entityType) => {
+      switch (entityType) {
+        case 'ai_match': return 'ai'
+        case 'approval': return 'approval'
+        case 'compliance': return 'compliance'
+        case 'project': return 'project'
+        case 'report': return 'report'
+        default: return 'system'
+      }
+    }
+
+    const getStatusFromAction = (action) => {
+      switch (action) {
+        case 'created': return 'Created'
+        case 'updated': return 'Updated'
+        case 'deleted': return 'Deleted'
+        case 'approved': return 'Approved'
+        case 'rejected': return 'Rejected'
+        case 'status_changed': return 'Status Changed'
+        case 'generated': return 'Generated'
+        case 'risk_assessment': return 'Risk Assessment'
+        default: return action
+      }
+    }
+
+    const getStatusColor = (action) => {
+      switch (action) {
+        case 'approved': return 'emerald'
+        case 'rejected': return 'red'
+        case 'created': return 'blue'
+        case 'updated': return 'blue'
+        case 'deleted': return 'red'
+        case 'generated': return 'blue'
+        case 'risk_assessment': return 'yellow'
+        default: return 'blue'
+      }
+    }
+
+    const category = getCategoryFromEntityType(event.entityType)
+    const statusText = getStatusFromAction(event.action)
+    const statusColor = getStatusColor(event.action)
+    
+    return {
+      id: event.id.toString(),
+      category,
+      title: event.message || `${event.action} ${event.entityType}`,
+      timeAgo: new Date(event.createdAt).toLocaleString(),
+      badgeText: event.actorRole || 'System',
+      statusDot: `bg-${statusColor}-500`,
+      statusText,
+      statusColor: `text-${statusColor}-600`,
+      borderColor: `border-${statusColor}-500`,
+      chipBg: `bg-${statusColor}-100`,
+      chipText: `text-${statusColor}-700`,
+      summary: event.message || `${event.action} performed on ${event.entityType}`,
+      meta: `${event.actorRole || 'System'} • ID: ${event.entityType.toUpperCase()}-${event.id}`,
+      rawEvent: event
+    }
+  }, [])
+
+  const entries = useMemo(() => {
+    return events.map(transformEvent)
+  }, [events, transformEvent])
+
+  const details = useMemo(() => {
+    const detailsMap = {}
+    
+    const getStatusColor = (action) => {
+      switch (action) {
+        case 'approved': return 'emerald'
+        case 'rejected': return 'red'
+        case 'created': return 'blue'
+        case 'updated': return 'blue'
+        case 'deleted': return 'red'
+        case 'generated': return 'blue'
+        case 'risk_assessment': return 'yellow'
+        default: return 'blue'
+      }
+    }
+    
+    events.forEach(event => {
+      const eventId = event.id.toString()
+      const statusColor = getStatusColor(event.action)
+      
+      // Create detail card based on event metadata
+      const items = []
+      if (event.metadata) {
+        Object.entries(event.metadata).forEach(([key, value]) => {
+          items.push([key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), value.toString()])
+        })
+      }
+      
+      // Add basic event info
+      items.unshift(['Entity Type', event.entityType])
+      items.unshift(['Action', event.action])
+      if (event.actorRole) {
+        items.unshift(['Actor Role', event.actorRole])
+      }
+      if (event.source) {
+        items.unshift(['Source', event.source])
+      }
+      
+      detailsMap[eventId] = {
+        cardBg: `bg-${statusColor}-50`,
+        cardBorder: `border-${statusColor}-200`,
+        title: 'Event Details',
+        titleColor: `text-${statusColor}-800`,
+        items: items.length > 0 ? items : [['No additional details available', '']]
+      }
+    })
+    
+    return detailsMap
+  }, [events])
 
   const filteredEntries = useMemo(() => {
     return entries.filter((e) => {
@@ -141,17 +173,25 @@ export default function useAuditTrail() {
     })
   }, [entries, query, typeFilter, statusFilter])
 
-  const summary = useMemo(() => {
+  const calculatedSummary = useMemo(() => {
     const ai = entries.filter((e) => e.category === 'ai').length
     const approvals = entries.filter((e) => e.statusText === 'Approved').length
     const rejections = entries.filter((e) => e.statusText === 'Rejected').length
+    const total = entries.length
+    
     return {
-      ai, approvals, rejections,
-      complianceScorePct: 94.2,
+      ai, 
+      approvals, 
+      rejections,
+      total,
+      complianceScorePct: summary.total_events > 0 ? Math.round((summary.recent_events / summary.total_events) * 100) : 0,
       riskLevelText: 'Low',
       riskAverage: 2.1,
+      entityCounts: summary.entity_counts || {},
+      actionCounts: summary.action_counts || {},
+      sourceCounts: summary.source_counts || {}
     }
-  }, [entries])
+  }, [entries, summary])
 
   const toggle = useCallback((id) => {
     setExpandedId((prev) => (prev === id ? null : id))
@@ -176,9 +216,12 @@ export default function useAuditTrail() {
     details,
     expandedId,
     toggle,
-    summary,
+    summary: calculatedSummary,
+    loading,
+    error,
     onExport,
     onAddEntry,
+    refreshData: fetchData,
   }
 }
 

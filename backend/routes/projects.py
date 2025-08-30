@@ -451,36 +451,7 @@ def add_rationale_note(rationale_id: int):
     }), 201
 
 
-# Audit trail endpoints (public)
-@projects_bp.get('/audit-events')
-def list_audit_events():
-    entity_type = request.args.get('entity_type')
-    entity_id = request.args.get('entity_id', type=int)
-    q = AuditEvent.query.order_by(AuditEvent.created_at.desc())
-    if entity_type:
-        q = q.filter(AuditEvent.entity_type == entity_type)
-    if entity_id:
-        q = q.filter(AuditEvent.entity_id == entity_id)
-    rows = [e.to_dict() for e in q.limit(500).all()]
-    return jsonify(rows)
 
-
-@projects_bp.post('/audit-events')
-def create_audit_event():
-    data = request.get_json() or {}
-    evt = AuditEvent(
-        entity_type=data.get('entity_type') or 'system',
-        entity_id=data.get('entity_id'),
-        action=data.get('action') or 'updated',
-        actor_user_id=data.get('actor_user_id'),
-        actor_role=data.get('actor_role'),
-        source=data.get('source') or 'api',
-        message=data.get('message'),
-        metadata=data.get('metadata') or {},
-    )
-    db.session.add(evt)
-    db.session.commit()
-    return jsonify(evt.to_dict()), 201
 
 
 # NGO marketplace endpoints (public)
@@ -969,5 +940,132 @@ def apply_to_project(project_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': f'Failed to submit application: {str(e)}'}), 500
+
+
+# Audit endpoints (public for dev)
+@projects_bp.get('/audit/events')
+def list_audit_events():
+    """Get all audit events with optional filtering"""
+    try:
+        # Get query parameters
+        entity_type = request.args.get('entity_type')
+        entity_id = request.args.get('entity_id', type=int)
+        action = request.args.get('action')
+        actor_role = request.args.get('actor_role')
+        source = request.args.get('source')
+        limit = request.args.get('limit', 100, type=int)
+        
+        # Build query
+        query = AuditEvent.query
+        
+        if entity_type:
+            query = query.filter(AuditEvent.entity_type == entity_type)
+        if entity_id:
+            query = query.filter(AuditEvent.entity_id == entity_id)
+        if action:
+            query = query.filter(AuditEvent.action == action)
+        if actor_role:
+            query = query.filter(AuditEvent.actor_role == actor_role)
+        if source:
+            query = query.filter(AuditEvent.source == source)
+        
+        # Order by most recent first
+        events = query.order_by(AuditEvent.created_at.desc()).limit(limit).all()
+        
+        return jsonify([event.to_dict() for event in events])
+        
+    except Exception as e:
+        return jsonify({'error': f'Failed to fetch audit events: {str(e)}'}), 500
+
+
+@projects_bp.get('/audit/events/<int:event_id>')
+def get_audit_event(event_id: int):
+    """Get a specific audit event"""
+    try:
+        event = AuditEvent.query.get_or_404(event_id)
+        return jsonify(event.to_dict())
+    except Exception as e:
+        return jsonify({'error': f'Failed to fetch audit event: {str(e)}'}), 500
+
+
+@projects_bp.post('/audit/events')
+def create_audit_event():
+    """Create a new audit event"""
+    try:
+        data = request.get_json() or {}
+        
+        # Validate required fields
+        if not data.get('entity_type'):
+            return jsonify({'error': 'entity_type is required'}), 400
+        if not data.get('action'):
+            return jsonify({'error': 'action is required'}), 400
+        
+        # Create audit event
+        event = AuditEvent(
+            entity_type=data['entity_type'],
+            entity_id=data.get('entity_id'),
+            action=data['action'],
+            actor_user_id=data.get('actor_user_id'),
+            actor_role=data.get('actor_role'),
+            source=data.get('source', 'api'),
+            message=data.get('message'),
+            meta=data.get('metadata', {})
+        )
+        
+        db.session.add(event)
+        db.session.commit()
+        
+        return jsonify({
+            'message': 'Audit event created successfully',
+            'event': event.to_dict()
+        }), 201
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': f'Failed to create audit event: {str(e)}'}), 500
+
+
+@projects_bp.get('/audit/summary')
+def get_audit_summary():
+    """Get audit summary statistics"""
+    try:
+        # Get basic counts
+        total_events = AuditEvent.query.count()
+        
+        # Count by entity type
+        entity_counts = db.session.query(
+            AuditEvent.entity_type,
+            db.func.count(AuditEvent.id)
+        ).group_by(AuditEvent.entity_type).all()
+        
+        # Count by action
+        action_counts = db.session.query(
+            AuditEvent.action,
+            db.func.count(AuditEvent.id)
+        ).group_by(AuditEvent.action).all()
+        
+        # Count by source
+        source_counts = db.session.query(
+            AuditEvent.source,
+            db.func.count(AuditEvent.id)
+        ).group_by(AuditEvent.source).all()
+        
+        # Recent activity (last 24 hours)
+        from datetime import datetime, timedelta
+        yesterday = datetime.utcnow() - timedelta(days=1)
+        recent_events = AuditEvent.query.filter(
+            AuditEvent.created_at >= yesterday
+        ).count()
+        
+        return jsonify({
+            'total_events': total_events,
+            'recent_events': recent_events,
+            'entity_counts': dict(entity_counts),
+            'action_counts': dict(action_counts),
+            'source_counts': dict(source_counts)
+        })
+        
+    except Exception as e:
+        return jsonify({'error': f'Failed to fetch audit summary: {str(e)}'}), 500
 
 

@@ -633,3 +633,82 @@ export const addRationaleNote = async (rationaleId, noteData) => {
     throw error
   }
 }
+
+// Audit API
+export const getAuditEvents = async (filters = {}) => {
+  try {
+    const params = new URLSearchParams()
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        params.append(key, value)
+      }
+    })
+
+    const response = await fetch(`${API_BASE_URL}/audit/events?${params.toString()}`)
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('Error fetching audit events:', error)
+    throw error
+  }
+}
+
+export const getAuditEvent = async (eventId) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/audit/events/${eventId}`)
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('Error fetching audit event:', error)
+    throw error
+  }
+}
+
+export const createAuditEvent = async (eventData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/audit/events`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(eventData)
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('Error creating audit event:', error)
+    throw error
+  }
+}
+
+export const getAuditSummary = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/audit/summary`)
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('Error fetching audit summary:', error)
+    throw error
+  }
+}

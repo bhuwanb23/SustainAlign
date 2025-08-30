@@ -6,6 +6,7 @@ Run this script to create/update the database schema
 
 import os
 import sys
+from datetime import date, timedelta
 from dotenv import load_dotenv
 
 # Add the current directory to Python path
@@ -16,7 +17,7 @@ from models import (
     db, User, Company, CompanyBranch, CSRContact, Budget, FocusArea, 
     ComplianceDocument, NGOPreference, AIConfig, UserRole,
     Project, ProjectMilestone, ProjectApplication, ProjectImpactReport, NGOProfile, AIMatch, NGORiskAssessment, ApprovalRequest, ApprovalStep,
-    ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal, ProjectTrackingInfo, ProjectTimelineEntry, ReportJob, ReportArtifact, DecisionRationale, RationaleNote, AuditEvent, NGOImpactEvent, NGODocument, NGOTransparencyReport, NGOCertificate, NGOTestimonial, NGOProfile
+    ImpactMetricSnapshot, ImpactTimeSeries, ImpactRegionStat, ImpactGoal, ProjectTrackingInfo, ProjectTimelineEntry, ReportJob, ReportArtifact, DecisionRationale, RationaleNote, AuditEvent, NGOImpactEvent, NGODocument, NGOTransparencyReport, NGOCertificate, NGOTestimonial
 )
 
 def get_table_names():
@@ -277,6 +278,52 @@ def create_sample_data():
         db.session.add(ngo_profile)
         db.session.flush()
         
+        # Create sample project first
+        project = Project(
+            title='Digital Literacy for Rural Students',
+            short_description='Providing computer education and digital skills to 500 students in rural Karnataka villages',
+            ngo_name='EduCare Foundation',
+            location_city='Bangalore',
+            location_region='Karnataka',
+            location_country='India',
+            total_project_cost=2500000,
+            funding_required=1500000,
+            currency='INR',
+            csr_eligibility=True,
+            preferred_contribution_type='cash',
+            start_date=date.today(),
+            end_date=date.today() + timedelta(days=365),
+            ngo_registration_number='EDU001',
+            ngo_80g_status='Valid',
+            ngo_fcra_status='Valid',
+            ngo_rating=4,
+            ngo_verification_badge='Verified',
+            past_projects_completed=25,
+            status='published',
+            visibility='public',
+            created_by=user.id
+        )
+        project.set_sdg_goals([4, 9, 10])  # Quality Education, Industry & Innovation, Reduced Inequalities
+        project.set_csr_focus_areas(['Education', 'Technology', 'Rural Development'])
+        project.set_target_beneficiaries(['Students', 'Rural Communities', 'Youth'])
+        project.set_expected_outcomes({
+            'students_enrolled': 500,
+            'villages_covered': 10,
+            'computer_labs_established': 5
+        })
+        project.set_kpis({
+            'digital_literacy_rate': '80%',
+            'employment_placement': '60%',
+            'community_engagement': '90%'
+        })
+        project.set_project_images([
+            'https://example.com/project1.jpg',
+            'https://example.com/project2.jpg'
+        ])
+        project.proposal_document_url = 'https://example.com/proposal.pdf'
+        db.session.add(project)
+        db.session.flush()
+        
         # Create sample AI matches
         ai_match1 = AIMatch(
             project_id=project.id,
@@ -367,51 +414,7 @@ def create_sample_data():
         )
         db.session.add(ai_match3)
         
-        # Create sample project
-        project = Project(
-            title='Digital Literacy for Rural Students',
-            short_description='Providing computer education and digital skills to 500 students in rural Karnataka villages',
-            ngo_name='EduCare Foundation',
-            location_city='Bangalore',
-            location_region='Karnataka',
-            location_country='India',
-            total_project_cost=2500000,
-            funding_required=1500000,
-            currency='INR',
-            csr_eligibility=True,
-            preferred_contribution_type='cash',
-            start_date=date.today(),
-            end_date=date.today() + timedelta(days=365),
-            ngo_registration_number='EDU001',
-            ngo_80g_status='Valid',
-            ngo_fcra_status='Valid',
-            ngo_rating=4,
-            ngo_verification_badge='Verified',
-            past_projects_completed=25,
-            status='published',
-            visibility='public',
-            created_by=user.id
-        )
-        project.set_sdg_goals([4, 9, 10])  # Quality Education, Industry & Innovation, Reduced Inequalities
-        project.set_csr_focus_areas(['Education', 'Technology', 'Rural Development'])
-        project.set_target_beneficiaries(['Students', 'Rural Communities', 'Youth'])
-        project.set_expected_outcomes({
-            'students_enrolled': 500,
-            'villages_covered': 10,
-            'computer_labs_established': 5
-        })
-        project.set_kpis({
-            'digital_literacy_rate': '80%',
-            'employment_placement': '60%',
-            'community_engagement': '90%'
-        })
-        project.set_project_images([
-            'https://example.com/project1.jpg',
-            'https://example.com/project2.jpg'
-        ])
-        project.proposal_document_url = 'https://example.com/proposal.pdf'
-        db.session.add(project)
-        db.session.flush()
+
         
         # Create sample project milestone
         milestone = ProjectMilestone(
@@ -436,7 +439,6 @@ def create_sample_data():
         db.session.add(application)
         
         # Create sample impact data
-        from datetime import date, timedelta
         
         # Create impact snapshot
         impact_snapshot = ImpactMetricSnapshot(
@@ -630,6 +632,89 @@ def create_sample_data():
             content='High confidence score based on comprehensive analysis of project parameters and NGO track record.'
         )
         db.session.add(note2)
+        
+        # Create sample audit events
+        audit1 = AuditEvent(
+            entity_type='project',
+            entity_id=project.id,
+            action='created',
+            actor_user_id=user.id,
+            actor_role='admin',
+            source='ui',
+            message='Digital Literacy Project created by admin user',
+            meta={
+                'project_title': 'Digital Literacy for Rural Students',
+                'budget': 1500000,
+                'location': 'Karnataka, India'
+            }
+        )
+        db.session.add(audit1)
+        
+        audit2 = AuditEvent(
+            entity_type='approval',
+            entity_id=1,
+            action='status_changed',
+            actor_user_id=user.id,
+            actor_role='manager',
+            source='ui',
+            message='Project approval status changed to approved',
+            meta={
+                'old_status': 'pending',
+                'new_status': 'approved',
+                'approval_level': 'senior_manager'
+            }
+        )
+        db.session.add(audit2)
+        
+        audit3 = AuditEvent(
+            entity_type='ai_match',
+            entity_id=1,
+            action='generated',
+            actor_user_id=None,
+            actor_role='system',
+            source='system',
+            message='AI generated new project-company match',
+            meta={
+                'match_score': 85,
+                'company_name': 'TechCorp Solutions',
+                'project_title': 'Digital Literacy for Rural Students'
+            }
+        )
+        db.session.add(audit3)
+        
+        audit4 = AuditEvent(
+            entity_type='compliance',
+            entity_id=1,
+            action='risk_assessment',
+            actor_user_id=user.id,
+            actor_role='compliance_officer',
+            source='ui',
+            message='Risk assessment completed for NGO partnership',
+            meta={
+                'risk_score': 7.2,
+                'risk_level': 'medium',
+                'ngo_name': 'EduCare Foundation',
+                'assessment_date': '2024-01-15'
+            }
+        )
+        db.session.add(audit4)
+        
+        audit5 = AuditEvent(
+            entity_type='report',
+            entity_id=1,
+            action='generated',
+            actor_user_id=user.id,
+            actor_role='analyst',
+            source='system',
+            message='Monthly impact report generated automatically',
+            meta={
+                'report_type': 'monthly_impact',
+                'period': '2024-01',
+                'projects_covered': 5,
+                'total_beneficiaries': 2500
+            }
+        )
+        db.session.add(audit5)
         
         db.session.commit()
 
