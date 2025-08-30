@@ -570,35 +570,35 @@ http://localhost:5000/api/health
 - **Platform Features**: Actual implementation of AI-powered CSR management
 
 ---
-⚡ Challenges We Faced
+**⚡ Challenges We Faced**:
 
-NGO data integration inconsistencies
+-**NGO data integration inconsistencies**
 
-Mapping budgets → SDGs
+-**Mapping budgets → SDGs**
 
-Explainability for corporates
+-**Explainability for corporates**
 
-Compliance complexity (MCA, SEBI, global ESG standards)
+-**Compliance complexity (MCA, SEBI, global ESG standards)**
 
-🚀 Future Vision
+**🚀 Future Vision**:
 
-CSR Marketplace
+-**CSR Marketplace**
 
-IoT + Satellite validation
+-**IoT + Satellite validation**
 
-Cross-border CSR expansion
+-**Cross-border CSR expansion**
 
-Full agent autonomy
+-**Full agent autonomy**
 
-🧩 Uniqueness
+**🧩 Uniqueness**
 
-🥇 First agent-powered CSR + ESG platform (not just dashboards).
+**🥇 First agent-powered CSR + ESG platform (not just dashboards)**
 
-🇮🇳 India-first, global-ready.
+-**🇮🇳 India-first, global-ready.**
 
-🔗 Bridges corporates, NGOs, and regulators.
+-**🔗 Bridges corporates, NGOs, and regulators.**
 
-✅ Prototype built and functional
+-**✅ Prototype built and functional**
 
 <div align="center">
 Made with care for sustainability‑minded teams 🌍
