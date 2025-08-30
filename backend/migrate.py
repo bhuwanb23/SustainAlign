@@ -845,7 +845,6 @@ def create_sample_data():
 
         # Optional: seed one AI match linking the sample project and company
         try:
-            from models import AIMatch
             sample_match = AIMatch(
                 project_id=project.id,
                 company_id=company.id,
@@ -892,6 +891,86 @@ def create_sample_data():
         except Exception as e:
             db.session.rollback()
             print(f"⚠️  Skipped risk seed: {e}")
+
+        # Seed sample report jobs
+        try:
+            report_job1 = ReportJob(
+                company_id=company.id,
+                period='Q4 2024',
+                report_type='CSR Compliance',
+                metrics={
+                    'carbonFootprint': True,
+                    'waterUsage': True,
+                    'wasteManagement': False,
+                    'energyEfficiency': True,
+                    'socialImpact': True,
+                    'governanceScore': True
+                },
+                status='completed',
+                last_updated_human='2 hours ago'
+            )
+            db.session.add(report_job1)
+            db.session.flush()
+
+            # Add artifacts for the completed report
+            artifact1 = ReportArtifact(
+                job_id=report_job1.id,
+                kind='pdf',
+                url='https://example.com/reports/csr-compliance-q4-2024.pdf',
+                content=None
+            )
+            db.session.add(artifact1)
+
+            artifact2 = ReportArtifact(
+                job_id=report_job1.id,
+                kind='csv',
+                url='https://example.com/reports/csr-compliance-q4-2024-data.csv',
+                content=None
+            )
+            db.session.add(artifact2)
+
+            # Create a second report job (in progress)
+            report_job2 = ReportJob(
+                company_id=company.id,
+                period='Q3 2024',
+                report_type='ESG Progress',
+                metrics={
+                    'carbonFootprint': True,
+                    'waterUsage': False,
+                    'wasteManagement': True,
+                    'energyEfficiency': True,
+                    'socialImpact': False,
+                    'governanceScore': True
+                },
+                status='generating',
+                last_updated_human='5 minutes ago'
+            )
+            db.session.add(report_job2)
+
+            # Create a third report job (queued)
+            report_job3 = ReportJob(
+                company_id=company.id,
+                period='Annual 2024',
+                report_type='SDG Impact',
+                metrics={
+                    'carbonFootprint': True,
+                    'waterUsage': True,
+                    'wasteManagement': True,
+                    'energyEfficiency': True,
+                    'socialImpact': True,
+                    'governanceScore': True
+                },
+                status='queued',
+                last_updated_human='just now'
+            )
+            db.session.add(report_job3)
+
+            db.session.commit()
+            print("✨ Seeded 3 report jobs with artifacts")
+        except Exception as e:
+            db.session.rollback()
+            print(f"⚠️  Skipped report jobs seed: {e}")
+
         print("✅ Sample data created successfully!")
         print("📧 Demo user: demo@techcorp.com")
         print("🔑 Demo password: demo123")

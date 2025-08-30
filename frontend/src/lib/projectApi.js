@@ -844,3 +844,91 @@ export const createTimelineEntry = async (entryData) => {
     throw error
   }
 }
+
+/**
+ * Create a new report generation job
+ * @param {Object} reportData - Report job data
+ * @returns {Promise<Object>} Created report job
+ */
+export const createReportJob = async (reportData) => {
+  try {
+    console.log('🚀 Creating report job:', reportData)
+    
+    const response = await fetch(`${API_BASE_URL}/reports`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(reportData)
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const result = await response.json()
+    console.log('✅ Report job created successfully:', result)
+    return result
+  } catch (error) {
+    console.error('❌ Error creating report job:', error)
+    throw error
+  }
+}
+
+/**
+ * Get all report jobs with optional filtering
+ * @param {Object} filters - Filter parameters
+ * @returns {Promise<Array>} Report jobs list
+ */
+export const getReportJobs = async (filters = {}) => {
+  try {
+    const queryParams = new URLSearchParams()
+    
+    // Add filter parameters
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        queryParams.append(key, value)
+      }
+    })
+
+    const url = `${API_BASE_URL}/reports${queryParams.toString() ? `?${queryParams.toString()}` : ''}`
+    
+    const response = await fetch(url, {
+      method: 'GET'
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error fetching report jobs:', error)
+    throw error
+  }
+}
+
+/**
+ * Get a specific report job by ID
+ * @param {number} jobId - Report job ID
+ * @returns {Promise<Object>} Report job data
+ */
+export const getReportJob = async (jobId) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/reports/${jobId}`, {
+      method: 'GET'
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error fetching report job:', error)
+    throw error
+  }
+}
