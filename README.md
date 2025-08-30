@@ -48,7 +48,7 @@ Not just an idea. Not just a demo. A working prototype solving a real India-firs
 
 ## 🎯 Problem Statement
 
-![Problem Statement](docs/images/Persona.png)
+![Problem Statement](docs/images/problem_statement.png)
 
 **The Challenge**: Corporates in India face mandatory CSR spending requirements but struggle with:
 - **Project Discovery**: Finding the right NGOs and projects aligned to their goals
