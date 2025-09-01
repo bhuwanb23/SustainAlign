@@ -369,15 +369,24 @@ python app.py
 Health check: `GET /api/health` → `{ "status": "ok" }`
 
 ### Sample Accounts
-```
-Corporate user:
-email : admin@techcorp.com
-password : admin123
 
-NGO user:
-email : director@womenempowerment.org
-password : women123
-```
+**For Development & Testing Only**
+
+The platform comes with pre-configured sample accounts for testing different user roles:
+
+#### **Corporate User**
+- **Email**: `admin@techcorp.com`
+- **Password**: `admin123`
+- **Role**: Corporate Sustainability Officer
+- **Access**: Project discovery, AI matching, approval workflows
+
+#### **NGO User**
+- **Email**: `director@womenempowerment.org`
+- **Password**: `women123`
+- **Role**: NGO Director
+- **Access**: Project management, impact reporting, NGO profile
+
+> ⚠️ **Security Note**: These are sample accounts for development only. Change passwords in production environments.
 ---
 
 ## 🖼️ Key Screens and Routes
