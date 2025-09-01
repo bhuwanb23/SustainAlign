@@ -983,6 +983,34 @@ Page Components
 
 </div>
 
+## 👨‍💻 Contributors
+
+Thanks to these amazing people for their contributions! 💡
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/bhuwanb23">
+        <img src="https://avatars.githubusercontent.com/bhuwanb23" width="100px;" alt=""/>
+        <br />
+        <sub><b>Bhuwan B</b></sub>
+      </a>
+      <br />
+      🎨 Developer and Tester
+    </td>
+    <td align="center">
+      <a href="https://github.com/DhikshaG">
+        <img src="https://avatars.githubusercontent.com/DhikshaG" width="100px;" alt=""/>
+        <br />
+        <sub><b>Dhiksha Shivruthi G</b></sub>
+      </a>
+      <br />
+      💻 AI/ML Architect and Data Analyst
+    </td>
+  </tr>
+</table>
+
+
 <div align="center">
 Made with care for sustainability‑minded teams 🌍
 </div>
