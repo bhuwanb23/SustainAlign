@@ -346,12 +346,16 @@ npm run dev
 ```bash
 cd backend
 python -m venv .venv
+
 # Windows PowerShell
 . .venv/Scripts/Activate.ps1
 # macOS/Linux
-# source .venv/bin/activate
+source .venv/bin/activate
 
 pip install -r requirements.txt
+# feed sample data for the website
+python seed_database.py
+
 # Environment (examples)
 $env:SECRET_KEY = "dev-secret"
 $env:CORS_ORIGIN = "http://localhost:5173"
@@ -364,6 +368,16 @@ python app.py
 ```
 Health check: `GET /api/health` → `{ "status": "ok" }`
 
+### Sample Accounts
+```
+Corporate user:
+email : admin@techcorp.com
+password : admin123
+
+NGO user:
+email : director@womenempowerment.org
+password : women123
+```
 ---
 
 ## 🖼️ Key Screens and Routes

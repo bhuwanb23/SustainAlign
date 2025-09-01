@@ -12,7 +12,7 @@ export default function useNgoProfile() {
     let mounted = true
     ;(async () => {
       try {
-        const data = await apiGet('/api/ngos')
+        const data = await apiGet('/api/projects/ngos')
         if (!mounted) return
         setNgos(Array.isArray(data) ? data : [])
       } catch (e) {
