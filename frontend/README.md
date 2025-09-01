@@ -28,6 +28,80 @@ Beautiful, fast, and data-rich CSR/ESG management UI – built for hackathons an
 
 ---
 
+## 🏗️ System Architecture
+
+```mermaid
+graph TD
+
+    3["User<br>External Actor"]
+    subgraph 1["Frontend System<br>React/Vite"]
+        12["React Application Core<br>React/Vite"]
+        13["Layouts<br>React"]
+        14["Shared Components<br>React"]
+        15["API Services/Utilities<br>JavaScript"]
+        16["Pages/Views<br>React"]
+        %% Edges at this level (grouped by source)
+        12["React Application Core<br>React/Vite"] -->|Uses| 13["Layouts<br>React"]
+        12["React Application Core<br>React/Vite"] -->|Renders| 16["Pages/Views<br>React"]
+        13["Layouts<br>React"] -->|Uses| 14["Shared Components<br>React"]
+        13["Layouts<br>React"] -->|Wraps| 16["Pages/Views<br>React"]
+        16["Pages/Views<br>React"] -->|Uses| 14["Shared Components<br>React"]
+        16["Pages/Views<br>React"] -->|Uses| 15["API Services/Utilities<br>JavaScript"]
+    end
+    subgraph 2["Backend System<br>Python/Flask"]
+        10["Sample Data<br>Python"]
+        11["Templates<br>HTML/Jinja2"]
+        4["Flask Application Core<br>Flask"]
+        5["Database Management<br>SQLAlchemy/SQLite"]
+        6["API Routes<br>Flask Blueprints"]
+        7["Database Models<br>SQLAlchemy ORM"]
+        8["AI Models/Services<br>Python"]
+        9["Agents<br>Python"]
+        %% Edges at this level (grouped by source)
+        4["Flask Application Core<br>Flask"] -->|Registers| 6["API Routes<br>Flask Blueprints"]
+        4["Flask Application Core<br>Flask"] -->|Uses| 7["Database Models<br>SQLAlchemy ORM"]
+        4["Flask Application Core<br>Flask"] -->|Uses| 8["AI Models/Services<br>Python"]
+        5["Database Management<br>SQLAlchemy/SQLite"] -->|Manages| 7["Database Models<br>SQLAlchemy ORM"]
+        5["Database Management<br>SQLAlchemy/SQLite"] -->|Uses| 10["Sample Data<br>Python"]
+        6["API Routes<br>Flask Blueprints"] -->|Accesses| 7["Database Models<br>SQLAlchemy ORM"]
+        6["API Routes<br>Flask Blueprints"] -->|Uses| 8["AI Models/Services<br>Python"]
+        6["API Routes<br>Flask Blueprints"] -->|Renders| 11["Templates<br>HTML/Jinja2"]
+        9["Agents<br>Python"] -->|Accesses| 7["Database Models<br>SQLAlchemy ORM"]
+    end
+    %% Edges at this level (grouped by source)
+    3["User<br>External Actor"] -->|Interacts with| 1["Frontend System<br>React/Vite"]
+    1["Frontend System<br>React/Vite"] -->|Consumes API| 2["Backend System<br>Python/Flask"]
+```
+
+### **Architecture Overview**
+
+The SustainAlign platform follows a modern **client-server architecture** with clear separation of concerns:
+
+#### **Frontend System (React/Vite)**
+- **React Application Core**: Main application bootstrap and routing
+- **Layouts**: Page structure and navigation components
+- **Shared Components**: Reusable UI components and widgets
+- **API Services**: HTTP client and data fetching utilities
+- **Pages/Views**: Feature-specific page components
+
+#### **Backend System (Python/Flask)**
+- **Flask Application Core**: Main server application and configuration
+- **Database Management**: SQLAlchemy ORM and database operations
+- **API Routes**: RESTful endpoints organized in blueprints
+- **Database Models**: Data models and business logic
+- **AI Models/Services**: Machine learning and AI integration
+- **Agents**: Specialized AI agents for different workflows
+- **Sample Data**: Seed data and test fixtures
+- **Templates**: Server-side rendering templates (if needed)
+
+#### **System Interactions**
+- **User Interface**: Users interact with the React frontend
+- **API Communication**: Frontend consumes backend APIs via HTTP
+- **Data Flow**: Backend manages data persistence and business logic
+- **AI Integration**: Backend provides AI-powered features and insights
+
+---
+
 ## 🚀 Quick Start
 Requirements: Node 18+
 
