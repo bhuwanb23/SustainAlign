@@ -21,12 +21,11 @@ class AIModel:
         except Exception as e:
             logger.warning(f"Could not load .env file: {e}")
         
-        # Try to get API key from environment, fallback to hardcoded key from test_model.py
+        # Get API key from environment variables
         self.api_key = os.getenv('OPENROUTER_API_KEY')
         if not self.api_key:
-            # Fallback to the working API key from test_model.py
-            self.api_key = "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"
-            logger.warning("Using fallback API key from test_model.py")
+            logger.error("OPENROUTER_API_KEY environment variable is not set. Please set it in your .env file.")
+            raise ValueError("OPENROUTER_API_KEY environment variable is required but not set.")
         
         self.base_url = "https://openrouter.ai/api/v1/chat/completions"
         self.model = "deepseek/deepseek-chat-v3.1:free"  # Use the working model from test_model.py

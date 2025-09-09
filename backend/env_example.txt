@@ -15,4 +15,5 @@ SITE_URL=https://sustainalign.com
 SITE_NAME=SustainAlign
 
 # Optional: Other AI Models (you can change the model in ai_model.py)
-# Available models: qwen/qwen3-coder:free, anthropic/claude-3.5-sonnet, openai/gpt-4, etc.
+# Available models: deepseek/deepseek-chat-v3.1:free, qwen/qwen3-coder:free, anthropic/claude-3.5-sonnet, openai/gpt-4, etc.
+# Current working model: deepseek/deepseek-chat-v3.1:free
