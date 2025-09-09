@@ -151,8 +151,8 @@ Ensure all scores are between 0 and 1, and provide detailed reasoning for your r
                 }
             ]
             
-            # Make API request
-            response = self._make_request(messages, temperature=0.3)
+            # Make API request with higher temperature for more variety
+            response = self._make_request(messages, temperature=0.7)
             
             if response is None:
                 # Network or connection error
@@ -316,6 +316,8 @@ ANALYSIS REQUIREMENTS:
 3. Select the best matching project and provide detailed rationale.
 
 4. Consider the company's industry, budget constraints, and strategic objectives in your analysis.
+
+5. IMPORTANT: Consider all available projects carefully and don't always select the same project. Look for different opportunities that could provide unique value.
 
 Please provide your analysis in the specified JSON format with detailed reasoning for your recommendations.
 """

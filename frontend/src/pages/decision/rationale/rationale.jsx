@@ -11,7 +11,8 @@ export default function RecommendationRationalePage() {
     error, 
     isGenerating,
     generateAIRationaleForCompany,
-    resetAutoGeneration
+    resetAutoGeneration,
+    refreshRationales
   } = useRationale()
 
   const handleGenerateAI = async () => {
@@ -21,6 +22,8 @@ export default function RecommendationRationalePage() {
         resetAutoGeneration()
       }
       await generateAIRationaleForCompany()
+      // Refresh the rationales list to show the latest data
+      await refreshRationales()
     } catch (error) {
       console.error('Failed to generate AI rationale:', error)
     }
@@ -68,7 +71,7 @@ export default function RecommendationRationalePage() {
               ) : (
                 <div className="flex items-center">
                   <span className="mr-2">✨</span>
-                  {currentRationale ? 'Refresh Analysis' : 'Generate AI Analysis'}
+                  {currentRationale ? 'Generate New Analysis' : 'Generate AI Analysis'}
                 </div>
               )}
             </button>
@@ -166,12 +169,20 @@ export default function RecommendationRationalePage() {
                   )}
                 </div>
               </div>
-              <button
-                onClick={handleGenerateAI}
-                className="text-xs text-green-600 hover:text-green-800 underline"
-              >
-                Refresh Analysis
-              </button>
+              <div className="flex space-x-2">
+                <button
+                  onClick={handleGenerateAI}
+                  className="text-xs text-green-600 hover:text-green-800 underline"
+                >
+                  Generate New Analysis
+                </button>
+                <button
+                  onClick={refreshRationales}
+                  className="text-xs text-blue-600 hover:text-blue-800 underline"
+                >
+                  Refresh Data
+                </button>
+              </div>
             </div>
           </div>
         )}

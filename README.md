@@ -353,20 +353,31 @@ python -m venv .venv
 source .venv/bin/activate
 
 pip install -r requirements.txt
-# feed sample data for the website
+
+# 1) Create your environment file (do NOT commit .env)
+cp env_example.txt .env   # or copy env_example.txt .env on Windows
+
+# 2) Open .env and set your values, especially:
+#    OPENROUTER_API_KEY=your-openrouter-key
+
+# 3) Seed sample data (optional but recommended)
 python seed_database.py
 
-# Environment (examples)
-$env:SECRET_KEY = "dev-secret"
-$env:CORS_ORIGIN = "http://localhost:5173"
-$env:FLASK_ENV = "development"
-$env:OPENROUTER_API_KEY = "enter your openrouter api keys"
-# Used openroutr api keys and models. Important : Sometimes AI model cause error because openrouter models changes their end points accoridng to time so that it may fails. 
-
+# 4) Run the server
 python app.py
 # http://localhost:5000
 ```
 Health check: `GET /api/health` → `{ "status": "ok" }`
+
+Notes on AI setup
+- Default model: `deepseek/deepseek-chat-v3.1:free` (configured in `backend/ai_models/ai_model.py`).
+- Environment file template: `backend/env_example.txt` (copy to `.env`).
+- `.env` is ignored by git (see `backend/.gitignore`). Never commit keys.
+- If OpenRouter returns a non-200 (e.g. 401/404), the backend automatically falls back to intelligent mock rationales and the UI shows a warning banner.
+- If you repeatedly see very similar recommendations, that can be correct for identical input data. To vary results you can:
+  - Click “Generate New Analysis” then “Refresh Data” on the Rationale page
+  - Change filters/company (e.g. use company_id 2–5) or projects
+  - Adjust temperature/model in `ai_model.py`
 
 ### Sample Accounts
 
