@@ -17,3 +17,28 @@ SITE_NAME=SustainAlign
 # Optional: Other AI Models (you can change the model in ai_model.py)
 # Available models: deepseek/deepseek-chat-v3.1:free, qwen/qwen3-coder:free, anthropic/claude-3.5-sonnet, openai/gpt-4, etc.
 # Current working model: deepseek/deepseek-chat-v3.1:free
+
+# IBM WatsonX Orchestrate Configuration
+# Copy this file to .env and add these variables
+
+# WatsonX Orchestrate Environment Configuration
+WATSON_ENV_NAME=sustainalign-dev
+WATSON_SERVICE_URL=https://your-watson-service-instance-url
+WATSON_API_KEY=your-watson-api-key
+WATSON_PROJECT_ID=your-watson-project-id
+
+# Optional: Specific LLM Model Configuration
+WATSON_DEFAULT_LLM=watsonx/meta-llama/llama-3-2-90b-instruct
+WATSON_GRANITE_MODEL=watsonx/ibm/granite-3.0-20b-instruct
+
+# Optional: Agent Configuration
+WATSON_AGENT_STYLE=react
+WATSON_MAX_COLLABORATORS=5
+
+# Optional: Tool Configuration
+WATSON_TOOL_TIMEOUT=300
+WATSON_MAX_RETRIES=3
+
+# Optional: Logging Configuration
+WATSON_LOG_LEVEL=INFO
+WATSON_ENABLE_DEBUG=false

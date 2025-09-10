@@ -1,0 +1,16 @@
+{
+  "test_timestamp": "2025-09-10T12:25:47.396114",
+  "tests": {
+    "configuration": false,
+    "tools": true,
+    "service": true,
+    "enhanced_matching": true,
+    "api_endpoints": false
+  },
+  "summary": {
+    "total_tests": 5,
+    "passed_tests": 3,
+    "failed_tests": 2,
+    "success_rate": 60.0
+  }
+}

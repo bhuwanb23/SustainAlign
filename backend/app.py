@@ -10,6 +10,8 @@ from routes.profile import profile_bp
 from routes.comparisons import comparisons_bp
 from routes.approvals import approvals_bp
 from routes.ai_matching import ai_matching_bp
+from routes.watson_agents import watson_bp
+from routes.enhanced_ai_matching import enhanced_ai_bp
 
 
 def create_app() -> Flask:
@@ -39,6 +41,8 @@ def create_app() -> Flask:
 	app.register_blueprint(comparisons_bp, url_prefix="/api/comparisons")
 	app.register_blueprint(approvals_bp, url_prefix="/api/approvals")
 	app.register_blueprint(ai_matching_bp)
+	app.register_blueprint(watson_bp)
+	app.register_blueprint(enhanced_ai_bp)
 
 	# View pages
 	from routes.views import views_bp
