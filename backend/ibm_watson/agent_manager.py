@@ -295,7 +295,7 @@ Focus on measurable, verifiable impact metrics and long-term sustainability.
                 "orchestrate", "env", "add",
                 "-n", self.config.environment_name,
                 "-u", self.config.service_url,
-                "--type", "ibm_iam",
+                "--type", self.config.env_type,
                 "--activate"
             ]
             result = subprocess.run(cmd, capture_output=True, text=True)

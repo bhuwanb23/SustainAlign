@@ -10,6 +10,7 @@ class WatsonConfig:
     
     def __init__(self):
         self.environment_name = os.getenv('WATSON_ENV_NAME', 'sustainalign-dev')
+        self.env_type = os.getenv('WATSON_ENV_TYPE', 'mcsp')  # mcsp (trial), ibm_iam (IBM Cloud), developer (local)
         self.service_url = os.getenv('WATSON_SERVICE_URL', '')
         self.api_key = os.getenv('WATSON_API_KEY', '')
         self.project_id = os.getenv('WATSON_PROJECT_ID', '')
@@ -80,6 +81,13 @@ class WatsonConfig:
     
     def is_configured(self) -> bool:
         """Check if Watson configuration is complete"""
+        # mcsp and developer flows don't require a project_id
+        if self.env_type in ('mcsp', 'developer'):
+            return all([
+                self.service_url,
+                self.api_key
+            ])
+        # ibm_iam (IBM Cloud) flow requires project_id
         return all([
             self.service_url,
             self.api_key,

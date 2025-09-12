@@ -73,8 +73,12 @@ def setup_watson_environment():
     print("🎉 IBM WatsonX Orchestrate setup complete!")
     print("\nNext steps:")
     print("1. Start your SustainAlign backend server")
-    print("2. Test the Watson agents using the API endpoints")
-    print("3. Check agent status at: GET /api/watson/agents/status")
+    print("2. For mcsp (trial) flow, set env vars (PowerShell):")
+    print("   $env:WATSON_ENV_TYPE='mcsp'")
+    print("   $env:WATSON_SERVICE_URL='<Service Instance URL>'")
+    print("   $env:WATSON_API_KEY='<Your API Key>'")
+    print("3. Test the Watson agents using the API endpoints")
+    print("4. Check agent status at: GET /api/watson/agents/status")
     
     return True
 
