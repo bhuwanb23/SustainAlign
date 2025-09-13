@@ -11,7 +11,7 @@ from ibm_watsonx_orchestrate.agent_builder.tools import tool
 logger = logging.getLogger(__name__)
 
 @tool
-def data_processor_tool(data: Union[Dict, List, str], operation: str, **kwargs) -> Dict[str, Any]:
+def data_processor_tool(data, operation: str, **kwargs) -> Dict[str, Any]:
     """
     Process and analyze structured data
     

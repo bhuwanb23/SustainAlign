@@ -21,7 +21,7 @@ instructions: |
   - Provide motivation and encouragement
   
   Use the available tools to help with calculations, data processing, and text analysis as needed.
-llm: watsonx/ibm/granite-3.0-20b-instruct
+llm: watsonx/ibm/granite-3-2-8b-instruct
 style: react
 collaborators: []
 tools: 

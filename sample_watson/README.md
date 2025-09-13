@@ -360,6 +360,7 @@ The project includes these pre-built tools:
 
 For detailed instructions on creating, configuring, and deploying agents, see:
 - **[Agent Creation Guide](docs/AGENT_GUIDE.md)** - Comprehensive guide
+- **[Agent Integration Guide](docs/AGENT_INTEGRATION.md)** - How to use agents in your code
 - **[Security Improvements](docs/SECURITY_IMPROVEMENTS.md)** - Security best practices
 
 ## 🎯 Current Working Setup
@@ -391,6 +392,64 @@ Try these sample prompts in the chat interface:
 - "What can you do for me?"
 - "Can you analyze some data for me?"
 - "Help me with text processing tasks"
+
+## 💻 Programmatic Agent Usage
+
+### Using Agents in Your Code
+
+#### 1. Agent Wrapper (Recommended)
+```bash
+# List available agents
+python scripts/agent_wrapper.py list
+
+# Get agent information
+python scripts/agent_wrapper.py info Basic_Chat_Agent
+
+# Chat with agent (provides instructions)
+python scripts/agent_wrapper.py chat Basic_Chat_Agent "Hello!"
+
+# Interactive mode
+python scripts/agent_wrapper.py interactive
+```
+
+#### 2. API-based Chat Client
+```bash
+# List agents with details
+python scripts/api_agent_chat.py list
+
+# Send single message
+python scripts/api_agent_chat.py chat Basic_Chat_Agent "Your message"
+
+# Interactive chat
+python scripts/api_agent_chat.py
+```
+
+#### 3. Simple Integration Example
+```python
+from scripts.agent_wrapper import AgentWrapper
+
+# Initialize wrapper
+wrapper = AgentWrapper()
+
+# List available agents
+wrapper.list_agents()
+
+# Chat with an agent
+response = wrapper.chat_with_agent("Basic_Chat_Agent", "Hello!")
+print(response)
+```
+
+### Available Chat Scripts
+
+1. **`agent_wrapper.py`** - Simple wrapper with agent information
+2. **`api_agent_chat.py`** - Full-featured API-based chat client
+3. **`cli_agent_chat.py`** - CLI-based chat client
+4. **`simple_agent_usage.py`** - Comprehensive usage examples
+
+### Integration Patterns
+
+For detailed integration patterns, error handling, and best practices, see:
+- **[Agent Integration Guide](docs/AGENT_INTEGRATION.md)**
 
 ## Usage Examples
 
