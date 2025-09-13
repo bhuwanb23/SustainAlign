@@ -9,6 +9,14 @@ import sys
 import subprocess
 import logging
 from pathlib import Path
+from typing import Optional
+
+try:
+    from dotenv import load_dotenv  # type: ignore
+    load_dotenv()
+except Exception:
+    # dotenv is optional; we proceed if not installed
+    pass
 
 # Add current directory to Python path
 current_dir = Path(__file__).parent
@@ -16,9 +24,17 @@ sys.path.insert(0, str(current_dir))
 
 logger = logging.getLogger(__name__)
 
+def _get_api_key() -> Optional[str]:
+    """Fetch API key from environment (.env supported via python-dotenv if installed).
+
+    Supports either WATSON_API_KEY (commonly used in app envs) or WO_API_KEY (used by Orchestrate).
+    """
+    api_key = os.getenv('WATSON_API_KEY') or os.getenv('WO_API_KEY')
+    return api_key
+
 def check_api_key():
     """Check if API key is configured"""
-    api_key = os.getenv('WATSON_API_KEY')
+    api_key = _get_api_key()
     if not api_key:
         print("❌ WATSON_API_KEY not found in environment variables")
         print("   Please set your API key:")
@@ -47,15 +63,28 @@ def check_orchestrate_cli():
 
 def create_simple_env():
     """Create a simple .env file for orchestrate CLI"""
-    api_key = os.getenv('WATSON_API_KEY')
+    api_key = _get_api_key()
     if not api_key:
         print("❌ No API key found to create .env file")
+        print("   Please set WATSON_API_KEY or WO_API_KEY environment variable")
+        return False
+    
+    # Get instance URL from environment
+    instance = os.getenv('WO_INSTANCE') or os.getenv('WATSON_SERVICE_URL')
+    if not instance:
+        print("❌ No instance URL found")
+        print("   Please set WO_INSTANCE or WATSON_SERVICE_URL environment variable")
+        print("   Example: export WO_INSTANCE=https://api.ap-south-1.dl.watson-orchestrate.ibm.com")
         return False
     
     env_file = current_dir / ".env"
     with open(env_file, 'w') as f:
-        f.write(f"WO_DEVELOPER_EDITION_SOURCE=mcsp\n")
+        # Orchestrate Developer Edition expects WO_* variables
+        f.write("WO_DEVELOPER_EDITION_SOURCE=orchestrate\n")
         f.write(f"WO_API_KEY={api_key}\n")
+        f.write(f"WO_INSTANCE={instance}\n")
+        # Also write WATSON_API_KEY for consistency with other scripts
+        f.write(f"WATSON_API_KEY={api_key}\n")
     
     print(f"✅ Created .env file: {env_file}")
     return True
@@ -67,7 +96,7 @@ def test_tools_locally():
     # Test calculator tool
     print("   Testing calculator tool...")
     try:
-        from tools.calculator import calculator_tool
+        from tools.calculator  import calculator_tool
         result = calculator_tool("add", [1, 2, 3, 4])
         if result.get('success', False):
             print(f"   ✅ Calculator working - Result: {result.get('result')}")

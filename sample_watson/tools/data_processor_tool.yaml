@@ -1,10 +1,10 @@
 spec_version: v1
-kind: tool
+kind: python
 name: data_processor_tool
 description: Processes and analyzes structured data including filtering, sorting, aggregation, and validation
 implementation:
   type: python
-  entry_point: data_processor_tool
+  entry_point: tools.data_processor:data_processor_tool
 parameters:
   type: object
   properties:

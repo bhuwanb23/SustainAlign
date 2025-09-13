@@ -6,9 +6,11 @@ Processes and analyzes structured data
 import logging
 import json
 from typing import Dict, Any, List, Union
+from ibm_watsonx_orchestrate.agent_builder.tools import tool
 
 logger = logging.getLogger(__name__)
 
+@tool
 def data_processor_tool(data: Union[Dict, List, str], operation: str, **kwargs) -> Dict[str, Any]:
     """
     Process and analyze structured data

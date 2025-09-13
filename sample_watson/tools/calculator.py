@@ -6,9 +6,11 @@ Performs basic mathematical calculations
 import logging
 import math
 from typing import Dict, Any, Union
+from ibm_watsonx_orchestrate.agent_builder.tools import tool
 
 logger = logging.getLogger(__name__)
 
+@tool
 def calculator_tool(operation: str, numbers: list, **kwargs) -> Dict[str, Any]:
     """
     Perform basic mathematical calculations

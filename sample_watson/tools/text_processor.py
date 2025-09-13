@@ -6,9 +6,11 @@ Processes and analyzes text content
 import logging
 import re
 from typing import Dict, Any, List
+from ibm_watsonx_orchestrate.agent_builder.tools import tool
 
 logger = logging.getLogger(__name__)
 
+@tool
 def text_processor_tool(text: str, operation: str, **kwargs) -> Dict[str, Any]:
     """
     Process and analyze text content

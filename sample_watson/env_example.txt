@@ -4,7 +4,10 @@
 # REQUIRED: Your watsonx Orchestrate API Key
 WATSON_API_KEY=your-watsonx-orchestrate-api-key
 
-# Optional: Service URL (if you have a specific instance)
+# REQUIRED: Your watsonx Orchestrate Instance URL
+WO_INSTANCE=https://api.ap-south-1.dl.watson-orchestrate.ibm.com
+
+# Alternative: Service URL (if you have a specific instance)
 # WATSON_SERVICE_URL=https://your-watson-service-instance-url
 
 # Optional: Project ID (if using IBM Cloud)
