@@ -299,6 +299,12 @@ sustainalign/
 │  ├─ models/                # SQLAlchemy models (users, companies, projects, ai matching, ...)
 │  ├─ routes/                # auth, projects, profile, reports, views
 │  ├─ templates/             # Minimal admin HTML (Tailwind)
+│  ├─ ibm_watson/            # IBM WatsonX Orchestrate AI agents & tools
+│  │  ├─ agents/             # AI agent YAML configurations
+│  │  ├─ tools/              # AI tool implementations & configs
+│  │  ├─ deploy_agents.py    # Agent deployment script
+│  │  ├─ test_integration.py # Integration testing
+│  │  └─ demo_integration.py # Capability demonstrations
 │  └─ requirements.txt       # Flask, CORS, SQLAlchemy, PyJWT, etc.
 │
 ├─ frontend/                 # React + Vite SPA
@@ -342,7 +348,7 @@ npm run dev
 # http://localhost:5173
 ```
 
-### Backend (Flask)
+### Backend (Flask + IBM WatsonX Orchestrate)
 ```bash
 cd backend
 python -m venv .venv
@@ -357,15 +363,72 @@ pip install -r requirements.txt
 # 1) Create your environment file (do NOT commit .env)
 cp env_example.txt .env   # or copy env_example.txt .env on Windows
 
-# 2) Open .env and set your values, especially:
+# 2) Open .env and set your values:
 #    OPENROUTER_API_KEY=your-openrouter-key
+#    WO_DEVELOPER_EDITION_SOURCE=orchestrate
+#    WO_API_KEY=your-watson-orchestrate-api-key
+#    WO_INSTANCE=https://api.ap-south-1.dl.watson-orchestrate.ibm.com/instances/your-instance-id
 
-# 3) Seed sample data (optional but recommended)
+# 3) IBM WatsonX Orchestrate Setup (Optional but Recommended)
+cd ibm_watson
+
+# Install IBM WatsonX Orchestrate ADK
+pip install ibm-watsonx-orchestrate
+
+# Set up WatsonX Orchestrate environment
+orchestrate env activate local
+
+# Start WatsonX Orchestrate server (Docker required)
+orchestrate server start -e ../.env
+
+# Wait for server to fully start (check Docker containers)
+docker ps
+
+# Deploy AI agents and tools
+python deploy_agents.py
+
+# Test the integration
+python test_integration.py
+
+# Demo the capabilities
+python demo_integration.py
+
+cd ..
+
+# 4) Seed sample data (optional but recommended)
 python seed_database.py
 
-# 4) Run the server
+# 5) Run the server
 python app.py
 # http://localhost:5000
+```
+
+#### 🤖 IBM WatsonX Orchestrate Integration
+
+**AI Agents Available**:
+- **🔍 CSR Matching Agent**: Intelligent project-company alignment
+- **📊 Project Evaluation Agent**: Risk assessment and feasibility analysis  
+- **🧠 Decision Support Agent**: AI-powered recommendations with rationale
+- **📈 Impact Assessment Agent**: Real-time impact tracking and metrics
+
+**Web Interface**: `http://localhost:3000/chat-lite` (when WatsonX server is running)
+
+**Key Commands**:
+```bash
+# Check server status
+orchestrate server logs
+
+# List deployed agents
+orchestrate agents list
+
+# List deployed tools  
+orchestrate tools list
+
+# Start interactive chat
+orchestrate chat start
+
+# Stop server
+orchestrate server stop
 ```
 Health check: `GET /api/health` → `{ "status": "ok" }`
 
@@ -375,9 +438,17 @@ Notes on AI setup
 - `.env` is ignored by git (see `backend/.gitignore`). Never commit keys.
 - If OpenRouter returns a non-200 (e.g. 401/404), the backend automatically falls back to intelligent mock rationales and the UI shows a warning banner.
 - If you repeatedly see very similar recommendations, that can be correct for identical input data. To vary results you can:
-  - Click “Generate New Analysis” then “Refresh Data” on the Rationale page
+  - Click "Generate New Analysis" then "Refresh Data" on the Rationale page
   - Change filters/company (e.g. use company_id 2–5) or projects
   - Adjust temperature/model in `ai_model.py`
+
+#### 🤖 IBM WatsonX Orchestrate Setup
+- **Docker Required**: WatsonX Orchestrate runs in Docker containers
+- **Free Trial**: Sign up at [watsonx.ai](https://watsonx.ai) for free trial credentials
+- **Web Interface**: Access AI agents at `http://localhost:3000/chat-lite`
+- **Agent Deployment**: Use `python deploy_agents.py` to deploy all AI agents
+- **Integration Testing**: Run `python test_integration.py` to verify setup
+- **Troubleshooting**: Check `orchestrate server logs` for server status
 
 ### Sample Accounts
 
@@ -556,9 +627,16 @@ npm audit            # Security audit
 
 #### 🤖 **AI Integration**
 - **OpenRouter API**: Multi-model AI service integration
+- **IBM WatsonX Orchestrate**: Advanced AI agent ecosystem
 - **Matching Engine**: Intelligent project-company alignment
 - **Risk Assessment**: AI-powered credibility scoring
 - **Recommendation System**: Personalized project suggestions
+
+#### 🧠 **IBM WatsonX Orchestrate AI Agents**
+- **CSR Matching Agent**: Analyzes company profiles and project data for optimal alignment
+- **Project Evaluation Agent**: Assesses project feasibility, risks, and impact potential
+- **Decision Support Agent**: Provides AI-powered recommendations with detailed rationale
+- **Impact Assessment Agent**: Tracks and measures real-time project impact metrics
 
 </div>
 
@@ -654,6 +732,11 @@ CORS_ORIGIN=http://localhost:5173
 
 # AI Services
 OPENROUTER_API_KEY=your-openrouter-key
+
+# IBM WatsonX Orchestrate (Optional)
+WO_DEVELOPER_EDITION_SOURCE=orchestrate
+WO_API_KEY=your-watson-orchestrate-api-key
+WO_INSTANCE=https://api.ap-south-1.dl.watson-orchestrate.ibm.com/instances/your-instance-id
 
 # Server
 PORT=5000
