@@ -1,413 +1,664 @@
 # IBM WatsonX Orchestrate Integration for SustainAlign
 
-This module provides integration with IBM WatsonX Orchestrate Agent Development Kit (ADK) for creating and managing AI agents that support CSR project matching, evaluation, and decision-making processes.
+Complete integration of SustainAlign's AI agents and tools with IBM WatsonX Orchestrate for advanced CSR project analysis, matching, evaluation, and decision support.
 
-## Overview
-
-The IBM Watson integration adds powerful AI agents to the SustainAlign platform that can:
-
-- **CSR Matching Agent**: Analyze and match CSR projects with company objectives
-- **Project Evaluation Agent**: Evaluate project feasibility, risks, and implementation potential
-- **Decision Support Agent**: Provide strategic decision support for CSR investments
-- **Impact Assessment Agent**: Assess social and environmental impact of projects
-
-## Features
+## 🏗️ Architecture Overview
 
 ### 🤖 AI Agents
-- **CSR Matching Agent**: Matches projects with company SDG priorities, geographic focus, and budget constraints
-- **Project Evaluation Agent**: Evaluates project feasibility, complexity, and risk factors
-- **Decision Support Agent**: Optimizes budget allocation across multiple projects
-- **Impact Assessment Agent**: Calculates social, environmental, and economic impact metrics
+- **CSR_Matching_Agent**: Analyzes company CSR objectives and matches them with NGO projects
+- **Project_Evaluation_Agent**: Evaluates project feasibility, impact potential, and sustainability
+- **Decision_Support_Agent**: Provides strategic decision support for CSR investments and portfolio optimization
+- **Impact_Assessment_Agent**: Assesses social and environmental impact of CSR projects
 
-### 🛠️ Tools
-- **Project Analyzer**: Analyzes project alignment, feasibility, and impact potential
-- **Impact Calculator**: Calculates comprehensive impact metrics across multiple dimensions
-- **Risk Assessor**: Assesses project risks across financial, operational, environmental, social, and regulatory categories
-- **Budget Optimizer**: Optimizes budget allocation using cost-effectiveness analysis
+### 🛠️ Analysis Tools
+- **project_analyzer_tool**: Analyzes projects for alignment, feasibility, and impact potential
+- **impact_calculator_tool**: Calculates comprehensive social and environmental impact metrics
+- **risk_assessor_tool**: Assesses project risks across multiple dimensions with mitigation strategies
+- **budget_optimizer_tool**: Optimizes budget allocation across multiple projects based on various criteria
 
-### 🔧 Integration
-- RESTful API endpoints for agent interactions
-- Seamless integration with existing SustainAlign backend
-- Support for IBM Granite LLM models and other WatsonX models
-- Comprehensive error handling and logging
+## 📁 Directory Structure
 
-## Installation
+```
+backend/ibm_watson/
+├── agents/                          # Agent YAML specifications
+│   ├── csr_matching_agent.yaml
+│   ├── project_evaluation_agent.yaml
+│   ├── decision_support_agent.yaml
+│   └── impact_assessment_agent.yaml
+├── tools/                          # Tool implementations and YAML specs
+│   ├── project_analyzer.py
+│   ├── project_analyzer_tool.yaml
+│   ├── impact_calculator.py
+│   ├── impact_calculator_tool.yaml
+│   ├── risk_assessor.py
+│   ├── risk_assessor_tool.yaml
+│   ├── budget_optimizer.py
+│   └── budget_optimizer_tool.yaml
+├── deploy_agents.py                # Deployment script
+├── test_integration.py             # Integration testing script
+├── demo_integration.py             # Live demonstration script
+└── README.md                       # This file
+```
 
-### Prerequisites
+## 🚀 Complete Setup Guide
 
-1. **Python 3.11+**: Ensure you have Python 3.11 or later installed
-2. **IBM WatsonX Orchestrate Account**: Sign up for a free 30-day trial at [developer.watson-orchestrate.ibm.com](https://developer.watson-orchestrate.ibm.com)
-3. **Docker**: Required for local development (optional for cloud deployment)
+### 📋 Prerequisites Checklist
 
-### Setup Steps
+Before starting, ensure you have:
+- [ ] Python 3.8+ installed
+- [ ] IBM WatsonX account and credentials
+- [ ] Docker Desktop running (for local development)
+- [ ] Terminal/Command Prompt access
 
-1. **Install IBM WatsonX Orchestrate ADK**:
+### Step 1: Prerequisites
+
+1. **Install IBM WatsonX Orchestrate Developer Edition**
    ```bash
+   # Install the ADK
    pip install --upgrade ibm-watsonx-orchestrate
-   ```
-
-2. **Configure Environment Variables**:
-   ```bash
-   # Copy the example configuration
-   cp env_watson_example.txt .env
    
-   # Edit .env and add your Watson credentials
-   WATSON_SERVICE_URL=https://your-watson-service-instance-url
-   WATSON_API_KEY=your-watson-api-key
-   WATSON_PROJECT_ID=your-watson-project-id
+   # Verify installation
+   orchestrate --version
    ```
 
-3. **Run Setup Script**:
+2. **Get IBM WatsonX Credentials**
+   - Sign up for IBM WatsonX at https://watsonx.ai
+   - Get your API key and service URL
+   - Note your entitlement key for myibm source
+
+### Step 2: Environment Setup
+
+1. **Create Environment File**
+   ```bash
+   # Create .env file in project root
+   cat > .env << EOF
+   # For watsonx.ai integration (recommended)
+   WO_DEVELOPER_EDITION_SOURCE=myibm
+   WO_ENTITLEMENT_KEY=your_entitlement_key_here
+   WATSONX_APIKEY=your_watsonx_api_key_here
+   WATSONX_SPACE_ID=your_space_id_here
+   
+   # OR for watsonx Orchestrate service
+   # WO_DEVELOPER_EDITION_SOURCE=orchestrate
+   # WO_INSTANCE=https://api.ap-south-1.dl.watson-orchestrate.ibm.com
+   # WO_API_KEY=your_api_key_here
+   EOF
+   ```
+
+2. **Start WatsonX Orchestrate Server**
+   ```bash
+   # Start the orchestrate server
+   orchestrate server start -e .env
+   
+   # In a new terminal, start the copilot server (optional)
+   orchestrate copilot start -e .env
+   
+   # Activate local environment
+   orchestrate env activate local
+   ```
+
+3. **Verify Server is Running**
+   ```bash
+   # Check server status
+   orchestrate health
+   
+   # Check environment status
+   orchestrate env status
+   ```
+
+### Step 3: Deploy Agents and Tools
+
+1. **Navigate to IBM Watson Directory**
    ```bash
    cd backend/ibm_watson
-   python setup.py --setup
    ```
 
-4. **Verify Installation**:
+2. **Deploy All Agents and Tools**
    ```bash
-   python setup.py --list
-   python setup.py --test
+   # Deploy everything automatically
+   python deploy_agents.py
    ```
 
-## Configuration
+3. **Verify Deployment**
+   ```bash
+   # List deployed agents
+   orchestrate agents list
+   
+   # List deployed tools
+   orchestrate tools list
+   
+   # Check specific agent status
+   orchestrate agents status CSR_Matching_Agent
+   ```
+
+### Step 4: Test Integration
+
+1. **Run Integration Tests**
+   ```bash
+   # Test all agents and tools
+   python test_integration.py
+   ```
+
+2. **Run Live Demo**
+   ```bash
+   # See agents and tools in action
+   python demo_integration.py
+   ```
+
+### Step 5: Interact with Agents
+
+1. **Command Line Interface**
+   ```bash
+   # Start interactive chat
+   orchestrate chat start
+   
+   # Select an agent and start chatting
+   # Example: "Analyze this project for alignment with our company objectives"
+   ```
+
+2. **Web Interface**
+   ```bash
+   # Open web interface in browser
+   # URL: http://localhost:3000/chat-lite
+   
+   # Select agent from dropdown and start chatting
+   ```
+
+## 🔧 Manual Deployment (Alternative)
+
+If you prefer to deploy manually instead of using the automated script:
+
+### Deploy Tools First
+```bash
+# Deploy individual tools
+orchestrate tools import -f tools/project_analyzer_tool.yaml
+orchestrate tools import -f tools/impact_calculator_tool.yaml
+orchestrate tools import -f tools/risk_assessor_tool.yaml
+orchestrate tools import -f tools/budget_optimizer_tool.yaml
+```
+
+### Deploy Agents
+```bash
+# Deploy individual agents
+orchestrate agents import -f agents/csr_matching_agent.yaml
+orchestrate agents import -f agents/project_evaluation_agent.yaml
+orchestrate agents import -f agents/decision_support_agent.yaml
+orchestrate agents import -f agents/impact_assessment_agent.yaml
+```
+
+## 🧪 Testing Commands
+
+### Test Individual Tools
+```bash
+# Test project analyzer tool directly
+python -c "
+from tools.project_analyzer import project_analyzer_function
+result = project_analyzer_function(
+    project_data={'name': 'Test Project', 'budget': 10000, 'sdg_focus': [4]},
+    company_profile={'sdg_priorities': [4], 'available_budget': 50000},
+    analysis_type='alignment'
+)
+print(f'Alignment Score: {result[\"overall_score\"]}')
+"
+```
+
+### Test Agent Availability
+```bash
+# Check if agents are properly deployed
+orchestrate agents list --verbose
+
+# Check specific agent details
+orchestrate agents describe CSR_Matching_Agent
+
+# Check agent status
+orchestrate agents status CSR_Matching_Agent
+```
+
+### Test Tool Availability
+```bash
+# Check if tools are properly deployed
+orchestrate tools list --verbose
+
+# Check specific tool details
+orchestrate tools describe project_analyzer_tool
+
+# Check tool status
+orchestrate tools status project_analyzer_tool
+```
+
+## 🎯 Usage Examples
+
+### 1. CSR Matching Agent
+```
+User: "Analyze this rural education project for alignment with our company objectives"
+Agent: Uses project_analyzer_tool and impact_calculator_tool to provide comprehensive analysis
+```
+
+### 2. Project Evaluation Agent
+```
+User: "Evaluate the feasibility of this clean water project"
+Agent: Uses project_analyzer_tool and risk_assessor_tool to assess feasibility and risks
+```
+
+### 3. Decision Support Agent
+```
+User: "Help me optimize our CSR budget allocation across these 5 projects"
+Agent: Uses budget_optimizer_tool and risk_assessor_tool to provide optimization recommendations
+```
+
+### 4. Impact Assessment Agent
+```
+User: "Assess the social and environmental impact of this community development project"
+Agent: Uses impact_calculator_tool and project_analyzer_tool to measure comprehensive impact
+```
+
+## 🔍 Troubleshooting
+
+### Common Issues and Solutions
+
+1. **"orchestrate command not found"**
+   ```bash
+   # Install IBM WatsonX Orchestrate ADK
+   pip install --upgrade ibm-watsonx-orchestrate
+   
+   # Verify installation
+   orchestrate --version
+   ```
+
+2. **"No active environment"**
+   ```bash
+   # Check environment status
+   orchestrate env status
+   
+   # Activate local environment
+   orchestrate env activate local
+   
+   # Or add new environment
+   orchestrate env add -n sustainalign -u <your_service_url> --type <env_type>
+   ```
+
+3. **"Agent deployment failed"**
+   ```bash
+   # Check YAML syntax
+   orchestrate agents validate agents/csr_matching_agent.yaml
+   
+   # Check tool dependencies
+   orchestrate tools list
+   
+   # Deploy tools first, then agents
+   python deploy_agents.py
+   ```
+
+4. **"Tool execution errors"**
+   ```bash
+   # Check tool logs
+   orchestrate tools logs project_analyzer_tool
+   
+   # Validate tool YAML
+   orchestrate tools validate tools/project_analyzer_tool.yaml
+   ```
+
+5. **"Server not running"**
+   ```bash
+   # Start server
+   orchestrate server start -e .env
+   
+   # Check server status
+   orchestrate health
+   
+   # Check if ports are available
+   netstat -an | grep :3000
+   netstat -an | grep :4321
+   ```
+
+### Debug Commands
+
+```bash
+# Check all logs
+orchestrate logs
+
+# Check agent logs
+orchestrate agents logs CSR_Matching_Agent
+
+# Check tool logs
+orchestrate tools logs project_analyzer_tool
+
+# Health check
+orchestrate health
+
+# Environment status
+orchestrate env status
+
+# Server status
+orchestrate server status
+```
+
+## 📊 Monitoring and Maintenance
+
+### Regular Checks
+```bash
+# Daily health check
+orchestrate health
+
+# Check agent status
+orchestrate agents list
+
+# Check tool status
+orchestrate tools list
+
+# Monitor resource usage
+orchestrate server status
+```
+
+### Restart Services
+```bash
+# Restart orchestrate server
+orchestrate server stop
+orchestrate server start -e .env
+
+# Restart copilot server
+orchestrate copilot stop
+orchestrate copilot start -e .env
+```
+
+## 🚀 Production Deployment
 
 ### Environment Variables
-
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `WATSON_ENV_NAME` | Environment name for Watson | No (default: sustainalign-dev) |
-| `WATSON_SERVICE_URL` | Watson service instance URL | Yes |
-| `WATSON_API_KEY` | Watson API key | Yes |
-| `WATSON_PROJECT_ID` | Watson project ID | Yes |
-| `WATSON_DEFAULT_LLM` | Default LLM model | No |
-| `WATSON_GRANITE_MODEL` | Granite model to use | No |
-
-### Agent Configuration
-
-Agents are configured in `config.py` with the following settings:
-
-- **LLM Models**: IBM Granite models (3.0-8b, 3.0-20b, 3.0-70b)
-- **Agent Styles**: ReAct style for complex reasoning tasks
-- **Tool Integration**: Each agent has access to specific tools
-- **Collaboration**: Agents can collaborate with each other
-
-## API Endpoints
-
-### Agent Management
-
-- `POST /api/watson/initialize` - Initialize Watson service
-- `GET /api/watson/agents/status` - Get status of deployed agents
-- `GET /api/watson/health` - Health check for Watson service
-
-### Project Analysis
-
-- `POST /api/watson/analyze-alignment` - Analyze project alignment with company objectives
-- `POST /api/watson/evaluate-feasibility` - Evaluate project feasibility
-- `POST /api/watson/assess-impact` - Assess project impact
-- `POST /api/watson/comprehensive-analysis` - Get comprehensive analysis using multiple agents
-
-### Budget Optimization
-
-- `POST /api/watson/optimize-budget` - Optimize budget allocation across projects
-
-### Tool Execution
-
-- `POST /api/watson/tools/execute` - Execute a specific Watson tool
-
-## Usage Examples
-
-### 1. Analyze Project Alignment
-
-```python
-import requests
-
-# Analyze project alignment
-response = requests.post('/api/watson/analyze-alignment', json={
-    'project_id': 'project-123'
-})
-
-result = response.json()
-print(f"Alignment Score: {result['tool_analysis']['overall_score']}")
-print(f"Recommendations: {result['recommendations']}")
-```
-
-### 2. Evaluate Project Feasibility
-
-```python
-# Evaluate project feasibility
-response = requests.post('/api/watson/evaluate-feasibility', json={
-    'project_id': 'project-123'
-})
-
-result = response.json()
-feasibility_score = result['feasibility_analysis']['overall_score']
-risk_level = result['risk_analysis']['risk_level']
-print(f"Feasibility: {feasibility_score}, Risk: {risk_level}")
-```
-
-### 3. Optimize Budget Allocation
-
-```python
-# Optimize budget allocation
-response = requests.post('/api/watson/optimize-budget', json={
-    'available_budget': 1000000,
-    'project_ids': ['project-1', 'project-2', 'project-3'],
-    'constraints': {
-        'min_projects': 2,
-        'max_projects': 5
-    }
-})
-
-result = response.json()
-selected_projects = result['optimization_result']['selected_projects']
-print(f"Selected {len(selected_projects)} projects for optimal allocation")
-```
-
-### 4. Get Comprehensive Analysis
-
-```python
-# Get comprehensive analysis
-response = requests.post('/api/watson/comprehensive-analysis', json={
-    'project_id': 'project-123'
-})
-
-result = response.json()
-overall_score = result['overall_score']
-recommendations = result['comprehensive_recommendations']
-print(f"Overall Score: {overall_score}")
-print(f"Recommendations: {recommendations}")
-```
-
-## Agent Details
-
-### CSR Matching Agent
-
-**Purpose**: Matches CSR projects with company objectives and priorities
-
-**Capabilities**:
-- SDG alignment analysis
-- Geographic focus matching
-- Budget compatibility assessment
-- Impact potential evaluation
-
-**Tools Used**:
-- Project Analyzer Tool
-- Impact Calculator Tool
-
-### Project Evaluation Agent
-
-**Purpose**: Evaluates project feasibility and implementation potential
-
-**Capabilities**:
-- Feasibility assessment
-- Risk analysis
-- Resource requirement evaluation
-- Timeline analysis
-
-**Tools Used**:
-- Project Analyzer Tool
-- Risk Assessor Tool
-
-### Decision Support Agent
-
-**Purpose**: Provides strategic decision support for CSR investments
-
-**Capabilities**:
-- Budget optimization
-- Portfolio analysis
-- ROI assessment
-- Risk-return analysis
-
-**Tools Used**:
-- Budget Optimizer Tool
-- Risk Assessor Tool
-
-### Impact Assessment Agent
-
-**Purpose**: Assesses social and environmental impact of projects
-
-**Capabilities**:
-- Social impact calculation
-- Environmental impact assessment
-- Economic impact analysis
-- Sustainability evaluation
-
-**Tools Used**:
-- Impact Calculator Tool
-- Project Analyzer Tool
-
-## Tool Details
-
-### Project Analyzer Tool
-
-Analyzes projects across three dimensions:
-
-1. **Alignment Analysis**: SDG alignment, geographic alignment, budget alignment
-2. **Feasibility Analysis**: Timeline feasibility, complexity assessment, resource availability
-3. **Impact Analysis**: Scale impact, metrics quality, sustainability potential
-
-### Impact Calculator Tool
-
-Calculates comprehensive impact metrics:
-
-- **Social Impact**: Beneficiary reach, education impact, health impact, community impact
-- **Environmental Impact**: Carbon reduction, water conservation, waste reduction, biodiversity
-- **Economic Impact**: Job creation, local spending, skill development, market development
-
-### Risk Assessor Tool
-
-Assesses risks across five categories:
-
-- **Financial Risks**: Budget adequacy, funding reliability, currency volatility
-- **Operational Risks**: Complexity, team capacity, technology requirements, location factors
-- **Environmental Risks**: Impact assessment, climate vulnerability, resource dependency
-- **Social Risks**: Community engagement, stakeholder conflicts, cultural sensitivity
-- **Regulatory Risks**: Compliance status, legal framework, permit requirements
-
-### Budget Optimizer Tool
-
-Optimizes budget allocation using:
-
-- **ROI Analysis**: Expected return on investment calculations
-- **Impact Scoring**: Social, environmental, and economic impact assessment
-- **Risk Assessment**: Project risk evaluation and mitigation
-- **Alignment Scoring**: Company objective alignment
-- **Feasibility Analysis**: Implementation feasibility assessment
-
-## Development
-
-### Adding New Agents
-
-1. **Define Agent Configuration** in `config.py`:
-   ```python
-   "new_agent": {
-       "name": "New_Agent",
-       "description": "Description of the new agent",
-       "llm": "watsonx/ibm/granite-3.0-20b-instruct",
-       "style": "react"
-   }
-   ```
-
-2. **Create Agent Instructions** in `agent_manager.py`:
-   ```python
-   def _get_agent_instructions(self, agent_type: str) -> str:
-       if agent_type == "new_agent":
-           return "Instructions for the new agent..."
-   ```
-
-3. **Deploy the Agent**:
-   ```python
-   agent_manager.deploy_agent("new_agent")
-   ```
-
-### Adding New Tools
-
-1. **Create Tool Function** in `tools/` directory:
-   ```python
-   def new_tool_function(param1: str, param2: int) -> Dict[str, Any]:
-       # Tool implementation
-       return {"result": "success"}
-   ```
-
-2. **Define Tool Configuration** in `config.py`:
-   ```python
-   "new_tool": {
-       "name": "new_tool_tool",
-       "description": "Description of the new tool"
-   }
-   ```
-
-3. **Add Tool to Agent Manager**:
-   ```python
-   def _get_tool_parameters(self, tool_type: str) -> Dict[str, Any]:
-       if tool_type == "new_tool":
-           return {"type": "object", "properties": {...}}
-   ```
-
-### Testing
-
-Run the test suite:
-
 ```bash
-# Test all agents
-python setup.py --test
-
-# Test specific tool
-python -c "from ibm_watson.tools.project_analyzer import project_analyzer_function; print(project_analyzer_function({}, {}, 'alignment'))"
+# Production environment file
+export WO_DEVELOPER_EDITION_SOURCE=myibm
+export WO_ENTITLEMENT_KEY=your_production_entitlement_key
+export WATSONX_APIKEY=your_production_api_key
+export WATSONX_SPACE_ID=your_production_space_id
 ```
 
-## Troubleshooting
-
-### Common Issues
-
-1. **Configuration Not Found**:
-   - Ensure environment variables are set correctly
-   - Check that `.env` file exists and contains required variables
-
-2. **Agent Deployment Failed**:
-   - Verify Watson service URL and API key
-   - Check network connectivity to Watson services
-   - Ensure sufficient permissions for agent deployment
-
-3. **Tool Execution Errors**:
-   - Check tool parameter validation
-   - Verify input data format
-   - Review error logs for specific issues
-
-### Debug Mode
-
-Enable debug logging:
-
-```python
-import logging
-logging.basicConfig(level=logging.DEBUG)
-```
-
-### Health Check
-
-Check service health:
-
+### Production Commands
 ```bash
-curl http://localhost:5000/api/watson/health
+# Deploy to production
+orchestrate env add -n production -u <production_url> --type <env_type>
+orchestrate env activate production
+python deploy_agents.py
 ```
 
-## Performance Considerations
+## 📈 Performance Optimization
 
-- **Model Selection**: Choose appropriate Granite model based on complexity (8b for simple tasks, 70b for complex reasoning)
-- **Tool Timeout**: Set appropriate timeout values for tool execution
-- **Caching**: Consider caching results for repeated analyses
-- **Rate Limiting**: Implement rate limiting for API endpoints
+### Resource Management
+```bash
+# Monitor resource usage
+orchestrate server status
 
-## Security
+# Check memory usage
+ps aux | grep orchestrate
 
-- **API Key Management**: Store Watson API keys securely
-- **Access Control**: Implement proper authentication and authorization
-- **Data Privacy**: Ensure sensitive data is handled appropriately
-- **Audit Logging**: Log all agent interactions for compliance
+# Monitor disk usage
+df -h
+```
 
-## Contributing
+### Scaling
+```bash
+# Scale up resources in Docker Desktop
+# Increase CPU and Memory allocation
+# Restart orchestrate server
+orchestrate server restart
+```
 
-1. Fork the repository
-2. Create a feature branch
-3. Add tests for new functionality
-4. Submit a pull request
+## 🔐 Security Best Practices
 
-## License
+1. **Environment Variables**
+   - Never commit .env files to version control
+   - Use strong, unique API keys
+   - Rotate keys regularly
 
-This module is part of the SustainAlign project and follows the same license terms.
+2. **Access Control**
+   - Limit access to orchestrate server
+   - Use VPN for remote access
+   - Monitor access logs
 
-## Support
+3. **Data Privacy**
+   - Sanitize all inputs
+   - Log all interactions
+   - Implement data retention policies
 
-For issues and questions:
+## 📞 Support and Resources
 
-1. Check the troubleshooting section
-2. Review IBM WatsonX Orchestrate documentation
-3. Create an issue in the project repository
-4. Contact the development team
+### IBM Documentation
+- [WatsonX Orchestrate Documentation](https://developer.watson-orchestrate.ibm.com/)
+- [ADK Tutorial Repository](https://github.com/pdhoolia/wxo-adk-tutorial)
+- [IBM Granite Models](https://www.ibm.com/products/watsonx-ai)
 
-## Resources
+### Troubleshooting Resources
+1. Check this README first
+2. Review IBM documentation
+3. Check project issues
+4. Contact development team
 
-- [IBM WatsonX Orchestrate Documentation](https://developer.watson-orchestrate.ibm.com/)
-- [IBM WatsonX Orchestrate ADK GitHub](https://github.com/IBM/ibm-watsonx-orchestrate-adk)
-- [IBM Granite Models Documentation](https://www.ibm.com/products/watsonx-ai)
-- [SustainAlign Project Repository](https://github.com/your-org/sustainalign)
+## 🎉 Success Indicators
+
+You'll know the integration is working when:
+
+✅ `orchestrate agents list` shows all 4 agents
+✅ `orchestrate tools list` shows all 4 tools
+✅ `python test_integration.py` passes all tests
+✅ `python demo_integration.py` runs successfully
+✅ Web interface at http://localhost:3000/chat-lite works
+✅ Agents respond to questions in chat interface
+
+## 📋 Quick Reference
+
+### Essential Commands
+```bash
+# Setup
+pip install ibm-watsonx-orchestrate
+orchestrate server start -e .env
+orchestrate env activate local
+
+# Deploy
+cd backend/ibm_watson
+python deploy_agents.py
+
+# Test
+python test_integration.py
+python demo_integration.py
+
+# Use
+orchestrate chat start
+# OR open http://localhost:3000/chat-lite
+```
+
+### Complete Command Reference
+
+#### Environment Management
+```bash
+# Environment commands
+orchestrate env add -n <name> -u <url> --type <type>    # Add new environment
+orchestrate env activate <name>                         # Activate environment
+orchestrate env status                                  # Check environment status
+orchestrate env list                                    # List all environments
+```
+
+#### Agent Management
+```bash
+# Agent commands
+orchestrate agents list                                 # List all agents
+orchestrate agents list --verbose                       # Detailed agent list
+orchestrate agents import -f <agent.yaml>               # Import agent
+orchestrate agents describe <agent_name>                # Describe agent
+orchestrate agents status <agent_name>                  # Check agent status
+orchestrate agents logs <agent_name>                    # View agent logs
+orchestrate agents validate <agent.yaml>                # Validate agent YAML
+```
+
+#### Tool Management
+```bash
+# Tool commands
+orchestrate tools list                                  # List all tools
+orchestrate tools list --verbose                        # Detailed tool list
+orchestrate tools import -f <tool.yaml>                 # Import tool
+orchestrate tools describe <tool_name>                  # Describe tool
+orchestrate tools status <tool_name>                    # Check tool status
+orchestrate tools logs <tool_name>                      # View tool logs
+orchestrate tools validate <tool.yaml>                  # Validate tool YAML
+```
+
+#### Server Management
+```bash
+# Server commands
+orchestrate server start -e .env                        # Start server
+orchestrate server stop                                 # Stop server
+orchestrate server restart                              # Restart server
+orchestrate server status                               # Check server status
+orchestrate health                                      # Health check
+```
+
+#### Chat and Interaction
+```bash
+# Chat commands
+orchestrate chat start                                  # Start chat interface
+orchestrate copilot start -e .env                       # Start copilot server
+orchestrate copilot stop                                # Stop copilot server
+```
+
+#### Monitoring and Debugging
+```bash
+# Monitoring commands
+orchestrate logs                                        # View all logs
+orchestrate models                                      # List available models
+orchestrate settings                                    # Configure settings
+orchestrate evaluations                                 # Evaluate agent performance
+```
+
+### File Locations
+- Agents: `backend/ibm_watson/agents/`
+- Tools: `backend/ibm_watson/tools/`
+- Scripts: `backend/ibm_watson/`
+- Environment: `.env` (project root)
+
+## 🎯 Step-by-Step Walkthrough
+
+### Quick Start (5 minutes)
+
+1. **Install and Verify**
+   ```bash
+   pip install --upgrade ibm-watsonx-orchestrate
+   orchestrate --version
+   ```
+
+2. **Create Environment File**
+   ```bash
+   # In project root directory
+   echo "WO_DEVELOPER_EDITION_SOURCE=myibm" > .env
+   echo "WO_ENTITLEMENT_KEY=your_key_here" >> .env
+   echo "WATSONX_APIKEY=your_api_key_here" >> .env
+   echo "WATSONX_SPACE_ID=your_space_id_here" >> .env
+   ```
+
+3. **Start Services**
+   ```bash
+   orchestrate server start -e .env
+   orchestrate env activate local
+   ```
+
+4. **Deploy Everything**
+   ```bash
+   cd backend/ibm_watson
+   python deploy_agents.py
+   ```
+
+5. **Test and Use**
+   ```bash
+   python test_integration.py
+   orchestrate chat start
+   ```
+
+### Detailed Walkthrough (15 minutes)
+
+#### Phase 1: Environment Setup (5 min)
+```bash
+# 1. Install ADK
+pip install --upgrade ibm-watsonx-orchestrate
+
+# 2. Verify installation
+orchestrate --version
+
+# 3. Create environment file
+cat > .env << EOF
+WO_DEVELOPER_EDITION_SOURCE=myibm
+WO_ENTITLEMENT_KEY=your_entitlement_key_here
+WATSONX_APIKEY=your_watsonx_api_key_here
+WATSONX_SPACE_ID=your_space_id_here
+EOF
+
+# 4. Start orchestrate server
+orchestrate server start -e .env
+
+# 5. Start copilot server (optional)
+orchestrate copilot start -e .env
+
+# 6. Activate local environment
+orchestrate env activate local
+
+# 7. Verify everything is running
+orchestrate health
+orchestrate env status
+```
+
+#### Phase 2: Deploy Agents and Tools (5 min)
+```bash
+# 1. Navigate to IBM Watson directory
+cd backend/ibm_watson
+
+# 2. Deploy all agents and tools
+python deploy_agents.py
+
+# 3. Verify deployment
+orchestrate agents list
+orchestrate tools list
+
+# 4. Check specific agent status
+orchestrate agents status CSR_Matching_Agent
+```
+
+#### Phase 3: Test and Validate (3 min)
+```bash
+# 1. Run integration tests
+python test_integration.py
+
+# 2. Run live demo
+python demo_integration.py
+
+# 3. Test individual tool
+python -c "
+from tools.project_analyzer import project_analyzer_function
+result = project_analyzer_function(
+    project_data={'name': 'Test', 'budget': 10000, 'sdg_focus': [4]},
+    company_profile={'sdg_priorities': [4], 'available_budget': 50000},
+    analysis_type='alignment'
+)
+print(f'Score: {result[\"overall_score\"]}')
+"
+```
+
+#### Phase 4: Start Using (2 min)
+```bash
+# Option 1: Command line chat
+orchestrate chat start
+
+# Option 2: Web interface
+# Open http://localhost:3000/chat-lite in browser
+```
+
+### 🎉 Success Verification
+
+After completing the walkthrough, you should see:
+
+✅ **Server Running**: `orchestrate health` shows "healthy"
+✅ **Environment Active**: `orchestrate env status` shows "local" as active
+✅ **4 Agents Deployed**: `orchestrate agents list` shows all 4 agents
+✅ **4 Tools Deployed**: `orchestrate tools list` shows all 4 tools
+✅ **Tests Passing**: `python test_integration.py` completes successfully
+✅ **Chat Working**: `orchestrate chat start` opens interactive chat
+✅ **Web UI Accessible**: http://localhost:3000/chat-lite loads properly
+
+---
+
+This integration provides a powerful foundation for AI-driven CSR project analysis and decision support. The agents and tools work together to provide comprehensive insights that help organizations make informed CSR investment decisions.

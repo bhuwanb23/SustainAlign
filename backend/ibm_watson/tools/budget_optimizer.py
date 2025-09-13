@@ -6,9 +6,11 @@ Optimizes budget allocation across multiple projects
 import logging
 from typing import Dict, Any, List
 import json
+from ibm_watsonx_orchestrate.agent_builder.tools import tool
 
 logger = logging.getLogger(__name__)
 
+@tool
 def budget_optimizer_function(available_budget: float, 
                             project_list: List[Dict[str, Any]], 
                             constraints: Dict[str, Any] = None) -> Dict[str, Any]:

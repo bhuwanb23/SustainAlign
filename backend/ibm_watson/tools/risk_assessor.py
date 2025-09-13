@@ -6,9 +6,11 @@ Assesses project risks and mitigation strategies
 import logging
 from typing import Dict, Any, List
 import json
+from ibm_watsonx_orchestrate.agent_builder.tools import tool
 
 logger = logging.getLogger(__name__)
 
+@tool
 def risk_assessor_function(project_data: Dict[str, Any], 
                           risk_factors: List[Dict[str, Any]] = None,
                           mitigation_strategies: List[Dict[str, Any]] = None) -> Dict[str, Any]:

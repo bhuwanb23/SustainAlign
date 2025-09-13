@@ -6,9 +6,11 @@ Calculates social and environmental impact metrics
 import logging
 from typing import Dict, Any, List
 import math
+from ibm_watsonx_orchestrate.agent_builder.tools import tool
 
 logger = logging.getLogger(__name__)
 
+@tool
 def impact_calculator_function(project_metrics: Dict[str, Any], 
                              baseline_data: Dict[str, Any] = None,
                              timeframe: str = "12_months") -> Dict[str, Any]:

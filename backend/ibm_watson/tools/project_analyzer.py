@@ -6,9 +6,11 @@ Analyzes CSR projects for alignment with company goals
 import logging
 from typing import Dict, Any, List
 import json
+from ibm_watsonx_orchestrate.agent_builder.tools import tool
 
 logger = logging.getLogger(__name__)
 
+@tool
 def project_analyzer_function(project_data: Dict[str, Any], 
                             company_profile: Dict[str, Any], 
                             analysis_type: str = "alignment") -> Dict[str, Any]:
