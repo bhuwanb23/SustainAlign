@@ -18,12 +18,12 @@ instructions: |
   6. Provide recommendations for impact optimization
 
   Focus on measurable, verifiable impact metrics and long-term sustainability.
-  Use the impact_calculator_tool and project_analyzer_tool to perform comprehensive impact analysis.
+  Use the impact_calculator_function and project_analyzer_function to perform comprehensive impact analysis.
   Provide clear metrics and recommendations that help organizations maximize their positive impact.
 
 llm: watsonx/ibm/granite-3-2-8b-instruct
 style: react
 collaborators: []
 tools:
-  - impact_calculator_tool
-  - project_analyzer_tool
+  - impact_calculator_function
+  - project_analyzer_function

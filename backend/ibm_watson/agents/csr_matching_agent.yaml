@@ -19,12 +19,12 @@ instructions: |
   6. Suggest optimization strategies for better alignment
 
   Always consider both quantitative metrics and qualitative factors in your analysis.
-  Use the project_analyzer_tool and impact_calculator_tool to perform comprehensive analysis.
+  Use the project_analyzer_function and impact_calculator_function to perform comprehensive analysis.
   Provide clear, actionable recommendations that help organizations make informed CSR investment decisions.
 
 llm: watsonx/ibm/granite-3-2-8b-instruct
 style: react
 collaborators: []
 tools:
-  - project_analyzer_tool
-  - impact_calculator_tool
+  - project_analyzer_function
+  - impact_calculator_function

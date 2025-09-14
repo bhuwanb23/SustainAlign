@@ -19,12 +19,12 @@ instructions: |
   6. Assess project scalability and long-term viability
 
   Focus on evidence-based evaluation and provide actionable insights.
-  Use the project_analyzer_tool and risk_assessor_tool to perform thorough analysis.
+  Use the project_analyzer_function and risk_assessor_function to perform thorough analysis.
   Consider both short-term feasibility and long-term sustainability in your evaluations.
 
 llm: watsonx/ibm/granite-3-2-8b-instruct
 style: react
 collaborators: []
 tools:
-  - project_analyzer_tool
-  - risk_assessor_tool
+  - project_analyzer_function
+  - risk_assessor_function
