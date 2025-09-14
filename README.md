@@ -174,7 +174,49 @@ SustainAlign is an AI-powered CSR-focused platform designed to connect NGO proje
 ## 🔗 Quick Links
 - Frontend guide: `frontend/README.md`
 - Backend guide: `backend/README.md`
+- IBM WatsonX Integration: `backend/ibm_watson/README.md`
+- IBM WatsonX Commands: `backend/ibm_watson/WATSONX_COMMANDS.md`
 - Prototypes: `html/` (e.g. `html/dashboard.html`)
+
+## 🚀 Quick Start Commands
+
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+# http://localhost:5173
+```
+
+### Backend
+```bash
+cd backend
+venv\Scripts\activate  # Windows
+source venv/bin/activate  # Linux/Mac
+pip install -r requirements.txt
+cp config/env_example.txt .env
+python scripts/seed_database.py
+python app.py
+# http://localhost:5000
+```
+
+### IBM WatsonX Orchestrate
+```bash
+cd backend/ibm_watson
+pip install ibm-watsonx-orchestrate
+orchestrate env activate local
+orchestrate server start -e ../.env
+orchestrate tools import -k python -f tools/project_analyzer.py
+orchestrate tools import -k python -f tools/impact_calculator.py
+orchestrate tools import -k python -f tools/risk_assessor.py
+orchestrate tools import -k python -f tools/budget_optimizer.py
+orchestrate agents import -f agents/csr_matching_agent.yaml
+orchestrate agents import -f agents/project_evaluation_agent.yaml
+orchestrate agents import -f agents/decision_support_agent.yaml
+orchestrate agents import -f agents/impact_assessment_agent.yaml
+orchestrate chat start
+# http://localhost:3000/chat-lite
+```
 
 ---
 
@@ -361,7 +403,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 # 1) Create your environment file (do NOT commit .env)
-cp env_example.txt .env   # or copy env_example.txt .env on Windows
+cp config/env_example.txt .env   # or copy config/env_example.txt .env on Windows
 
 # 2) Open .env and set your values:
 #    OPENROUTER_API_KEY=your-openrouter-key
@@ -396,7 +438,7 @@ python demo_integration.py
 cd ..
 
 # 4) Seed sample data (optional but recommended)
-python seed_database.py
+python scripts/seed_database.py
 
 # 5) Run the server
 python app.py
@@ -411,25 +453,242 @@ python app.py
 - **🧠 Decision Support Agent**: AI-powered recommendations with rationale
 - **📈 Impact Assessment Agent**: Real-time impact tracking and metrics
 
+**AI Tools Available**:
+- **Project Analyzer**: Analyzes project alignment and feasibility
+- **Impact Calculator**: Calculates comprehensive impact metrics
+- **Risk Assessor**: Assesses project risks and mitigation strategies
+- **Budget Optimizer**: Optimizes budget allocation across projects
+
 **Web Interface**: `http://localhost:3000/chat-lite` (when WatsonX server is running)
 
-**Key Commands**:
+#### Complete IBM WatsonX Orchestrate Setup Guide
+
+**Prerequisites**:
+- Docker installed and running
+- IBM WatsonX Orchestrate API key
+- Python 3.8+ with virtual environment
+
+**Step 1: Install IBM WatsonX Orchestrate ADK**
+```bash
+# Activate virtual environment
+cd backend
+venv\Scripts\activate  # Windows
+source venv/bin/activate  # Linux/Mac
+
+# Install WatsonX Orchestrate
+pip install ibm-watsonx-orchestrate
+```
+
+**Step 2: Configure Environment**
+```bash
+# Copy environment template
+cp config/env_example.txt .env
+
+# Edit .env with your credentials
+# Add these variables:
+WO_DEVELOPER_EDITION_SOURCE=orchestrate
+WO_API_KEY=your-watsonx-orchestrate-api-key
+WO_INSTANCE=https://api.ap-south-1.dl.watson-orchestrate.ibm.com/instances/your-instance-id
+WATSON_API_KEY=your-watson-api-key
+WATSON_SERVICE_URL=https://api.ap-south-1.dl.watson-orchestrate.ibm.com
+```
+
+**Step 3: Start WatsonX Orchestrate Server**
+```bash
+# Navigate to WatsonX directory
+cd ibm_watson
+
+# Activate local environment
+orchestrate env activate local
+
+# Start server (requires Docker)
+orchestrate server start -e ../.env
+
+# Wait for server to fully start (check Docker containers)
+docker ps
+```
+
+**Step 4: Deploy AI Tools**
+```bash
+# Import all tools (run these commands in ibm_watson directory)
+orchestrate tools import -k python -f tools/project_analyzer.py
+orchestrate tools import -k python -f tools/impact_calculator.py
+orchestrate tools import -k python -f tools/risk_assessor.py
+orchestrate tools import -k python -f tools/budget_optimizer.py
+
+# Verify tools are deployed
+orchestrate tools list
+```
+
+**Step 5: Deploy AI Agents**
+```bash
+# Import all agents (run these commands in ibm_watson directory)
+orchestrate agents import -f agents/csr_matching_agent.yaml
+orchestrate agents import -f agents/project_evaluation_agent.yaml
+orchestrate agents import -f agents/decision_support_agent.yaml
+orchestrate agents import -f agents/impact_assessment_agent.yaml
+
+# Verify agents are deployed
+orchestrate agents list
+```
+
+**Step 6: Start Chat Interface**
+```bash
+# Start interactive chat interface
+orchestrate chat start
+
+# This opens web interface at: http://localhost:3000/chat-lite
+```
+
+#### Essential WatsonX Commands
+
+**Server Management**
 ```bash
 # Check server status
+orchestrate server status
+
+# View server logs
 orchestrate server logs
-
-# List deployed agents
-orchestrate agents list
-
-# List deployed tools  
-orchestrate tools list
-
-# Start interactive chat
-orchestrate chat start
 
 # Stop server
 orchestrate server stop
+
+# Restart server
+orchestrate server restart
 ```
+
+**Environment Management**
+```bash
+# List environments
+orchestrate env list
+
+# Activate environment
+orchestrate env activate local
+
+# Deactivate environment
+orchestrate env deactivate
+```
+
+**Tools Management**
+```bash
+# List all tools
+orchestrate tools list
+
+# Import single tool
+orchestrate tools import -k python -f tools/tool_name.py
+
+# Remove tool
+orchestrate tools remove tool_name
+
+# Get tool details
+orchestrate tools get tool_name
+```
+
+**Agents Management**
+```bash
+# List all agents
+orchestrate agents list
+
+# Import single agent
+orchestrate agents import -f agents/agent_name.yaml
+
+# Remove agent
+orchestrate agents remove agent_name
+
+# Get agent details
+orchestrate agents get agent_name
+```
+
+**Chat & Interaction**
+```bash
+# Start chat interface
+orchestrate chat start
+
+# Start chat with specific agent
+orchestrate chat start --agent agent_name
+
+# List available agents for chat
+orchestrate chat agents
+```
+
+**Health & Debugging**
+```bash
+# Check system health
+orchestrate health
+
+# Check Docker containers
+docker ps
+
+# View container logs
+docker logs container_name
+
+# Check API connectivity
+curl http://localhost:4321/health
+```
+
+#### Troubleshooting
+
+**Common Issues & Solutions**
+
+1. **Docker not running**
+   ```bash
+   # Start Docker Desktop
+   # Check Docker status
+   docker --version
+   docker ps
+   ```
+
+2. **Server won't start**
+   ```bash
+   # Check environment variables
+   cat .env
+   
+   # Restart Docker
+   # Try again
+   orchestrate server start -e ../.env
+   ```
+
+3. **Tools/Agents not importing**
+   ```bash
+   # Check file paths
+   ls tools/
+   ls agents/
+   
+   # Verify YAML syntax
+   # Check Python tool decorators
+   ```
+
+4. **Chat interface not loading**
+   ```bash
+   # Check if server is running
+   orchestrate server status
+   
+   # Check port 3000
+   netstat -an | findstr :3000
+   
+   # Restart chat
+   orchestrate chat start
+   ```
+
+#### Web Interface Usage
+
+**Access Points**
+- **Chat Interface**: http://localhost:3000/chat-lite
+- **Admin Dashboard**: http://localhost:3000/admin
+- **API Documentation**: http://localhost:3000/docs
+
+**Using AI Agents**
+1. Open chat interface
+2. Select agent from dropdown
+3. Type your query or request
+4. Agent will use appropriate tools
+5. Review responses and recommendations
+
+**Example Queries**
+- "Analyze this project for CSR alignment"
+- "Calculate impact metrics for education project"
+- "Assess risks for environmental initiative"
+- "Optimize budget allocation across projects"
 Health check: `GET /api/health` → `{ "status": "ok" }`
 
 Notes on AI setup

@@ -19,17 +19,24 @@ SITE_NAME=SustainAlign
 # Current working model: deepseek/deepseek-chat-v3.1:free
 
 # IBM WatsonX Orchestrate Configuration
-# Copy this file to .env and add these variables
+# Copy this file to .env and add your actual credentials
 
-# WatsonX Orchestrate Environment Configuration
-WATSON_ENV_NAME=sustainalign-dev
-WATSON_SERVICE_URL=https://your-watson-service-instance-url
-WATSON_API_KEY=your-watson-api-key
-WATSON_PROJECT_ID=your-watson-project-id
+# WatsonX Orchestrate Developer Edition Configuration
+WO_DEVELOPER_EDITION_SOURCE=orchestrate
+WO_API_KEY=your-watsonx-orchestrate-api-key-here
+WO_INSTANCE=add-your-instance-key
+WATSON_API_KEY=your-watsonx-orchestrate-api-key-here
+WATSON_SERVICE_URL=add-your-instance-url
+
+# Alternative: WatsonX.ai Configuration (if using myibm source)
+# WO_DEVELOPER_EDITION_SOURCE=myibm
+# WO_ENTITLEMENT_KEY=your-ibm-entitlement-key-here
+# WATSONX_APIKEY=your-watsonx-ai-api-key-here
+# WATSONX_SPACE_ID=your-watsonx-ai-space-id-here
 
 # Optional: Specific LLM Model Configuration
-WATSON_DEFAULT_LLM=watsonx/meta-llama/llama-3-2-90b-instruct
-WATSON_GRANITE_MODEL=watsonx/ibm/granite-3.0-20b-instruct
+WATSON_DEFAULT_LLM=watsonx/ibm/granite-3-2-8b-instruct
+WATSON_GRANITE_MODEL=watsonx/ibm/granite-3-2-8b-instruct
 
 # Optional: Agent Configuration
 WATSON_AGENT_STYLE=react
@@ -42,3 +49,6 @@ WATSON_MAX_RETRIES=3
 # Optional: Logging Configuration
 WATSON_LOG_LEVEL=INFO
 WATSON_ENABLE_DEBUG=false
+
+# Optional: Server Configuration
+CALLBACK_HOST_URL=http://192.168.48.1:4321
