@@ -409,6 +409,8 @@ docker-compose up --build -d
 - **Backend API**: http://localhost:5000
 - **WatsonX Chat**: http://localhost:3001/chat-lite
 
+Since IBM watson also uses docker, it might cause some error, so if the docker conatiners don't work then try the manual setupo of rthis project
+
 ### 🛠️ Manual Setup
 
 #### Frontend (Vite + React)
