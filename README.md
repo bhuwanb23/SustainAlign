@@ -176,6 +176,7 @@ SustainAlign is an AI-powered CSR-focused platform designed to connect NGO proje
 - Backend guide: `backend/README.md`
 - IBM WatsonX Integration: `backend/ibm_watson/README.md`
 - IBM WatsonX Commands: `backend/ibm_watson/WATSONX_COMMANDS.md`
+- Docker Setup: `DOCKER_README.md`
 - Prototypes: `html/` (e.g. `html/dashboard.html`)
 
 ## 🚀 Quick Start Commands
@@ -382,7 +383,35 @@ sustainalign/
 
 ## 🚀 Quickstart
 
-### Frontend (Vite + React)
+### 🐳 Docker (Recommended)
+
+**Prerequisites**: Docker Desktop installed and running
+
+```bash
+# 1. Clone and setup
+git clone <repository-url>
+cd sustainalign
+
+# 2. Configure environment
+cp config/env_example.txt .env
+# Edit .env with your credentials
+
+# 3. Start everything with Docker
+# Windows:
+start-docker.bat
+
+# Linux/Mac:
+docker-compose up --build -d
+```
+
+**Access Points**:
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:5000
+- **WatsonX Chat**: http://localhost:3001/chat-lite
+
+### 🛠️ Manual Setup
+
+#### Frontend (Vite + React)
 ```bash
 cd frontend
 npm install
@@ -390,7 +419,7 @@ npm run dev
 # http://localhost:5173
 ```
 
-### Backend (Flask + IBM WatsonX Orchestrate)
+#### Backend (Flask + IBM WatsonX Orchestrate)
 ```bash
 cd backend
 python -m venv .venv
